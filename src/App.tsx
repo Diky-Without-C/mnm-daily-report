@@ -17,7 +17,7 @@ export default function App() {
   const [text, setText] = useState<string>("");
   const [orders, setOrders] = useState<Report[]>([]);
   const { data, loading, error } = useExcelParser(file, date.getDate());
-  const { data: report, create } = useFirestoreCrud("report");
+  const { data: report } = useFirestoreCrud("report");
   const { data: hulaan } = useFirestoreCrud("hulaan") as {
     data: { text: string }[];
   };
