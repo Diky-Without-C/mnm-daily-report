@@ -1,0 +1,62 @@
+{
+  "itemTypes": [
+    "LYR",
+    "LBL",
+    "DPY",
+    "TRY",
+    "KRT",
+    "STK",
+    "PVC",
+    "PAPAN"
+  ],
+  "filteredName": [],
+  "filteredCode": [],
+  "itemToSplitByName": [
+    "\\(S\\)",
+    "ROBOMAN AP",
+    "ROBOMAN SUPER HERO SERIES",
+    "GASING CARTOON PORORO",
+    "MOTOR CROSS METALIC"
+  ],
+  "itemToSplitByCode": [
+    "522A",
+    "MC288AB",
+    "MD3488L",
+    "FC006"
+  ],
+  "itemToMerge": [
+    [
+      { "code": "MD3308-7" },
+      { "name": "ROBOMAN MERAH" }
+    ]
+  ],
+  "ExtraInfo":[ 
+    "Gunung",
+    "Lipat",
+    "Heli",
+    "Pesawat",
+    "Geep",
+    "Vw",
+    "SNI",
+    "Star Rider",
+    "Merah",
+    "Kuning",
+    "Hijau",
+    "Biru",
+    "Hitam",
+    "Putih",
+    "Bening",
+    "Kotak",
+    "Bulat"
+  ],
+  "CustomTitles": [
+    {
+      "name":  "ROBOMAN MERAH",
+      "to": "ROBOMAN BOX (MC.319)"
+    },
+    {
+      "name":  "MOBIL CARTOON HELI",
+      "to": "MOBIL CARTOON (MD3488)"
+    }
+  ]
+}
