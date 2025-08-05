@@ -68,7 +68,7 @@ export default function InputDate({ onDateChange }: InputDateProps) {
       </button>
 
       <main
-        className={`${isShow ? "block" : "hidden"} absolute top-0 right-0 z-10 w-[250%] rounded-lg bg-red-200 p-2 font-mono shadow`}
+        className={`${isShow ? "block" : "hidden"} absolute top-0 right-0 z-10 w-54 rounded-lg bg-slate-50 p-2 font-mono shadow-lg`}
       >
         <h1 className="mb-3 text-center font-semibold text-gray-800">
           {monthNames[month]} {year}
