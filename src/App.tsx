@@ -39,8 +39,6 @@ export default function App() {
 
   useEffect(() => {
     const cleanData = preProcessedData(data);
-    console.log(cleanData);
-
     setText(dataToText(cleanData, currentDate, hulaan[0]?.text || ""));
   }, [data, file, date]);
 
@@ -49,7 +47,7 @@ export default function App() {
   }, [file, orders, report]);
 
   return (
-    <main className="relative grid h-screen w-full grid-cols-6 [grid-template-rows:1fr_2fr_2fr_2fr_2fr_2fr] gap-2 bg-gray-200 p-6">
+    <main className="relative grid h-screen w-full grid-cols-6 [grid-template-rows:1fr_2fr_2fr_2fr_2fr_2fr] gap-2 bg-gray-300 p-6">
       <header className="col-start-1 col-end-5 row-start-1 row-end-2 mb-4 flex w-full items-end gap-2">
         <h1 className="text-3xl font-bold">Daily Report </h1>
         <span className="text-lg font-semibold">({currentDate})</span>
@@ -65,7 +63,7 @@ export default function App() {
           onClick={() => {
             navigator.clipboard.writeText(text);
           }}
-          className="absolute top-2 right-2 flex cursor-pointer items-center rounded-lg bg-gray-200 p-2 text-gray-900 opacity-85 select-none hover:bg-gray-300 hover:text-black focus:bg-blue-600 focus:text-white"
+          className="absolute top-2 right-2 flex cursor-pointer items-center rounded-lg bg-red-400 p-2 text-white opacity-85 select-none hover:bg-red-500"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -93,24 +91,52 @@ export default function App() {
         </pre>
       </div>
       <section className="relative col-start-3 col-end-5 row-start-2 row-end-7 flex h-full w-full flex-col rounded-xl bg-white p-4 shadow-lg">
-        <h1 className="mb-4 text-center font-mono text-xl font-semibold">
-          Stock di Hulaan
-        </h1>
-        <pre className="overflow-y-auto rounded whitespace-pre-wrap">
-          {hulaan[0]?.text || ""}
-        </pre>
+        <div className="flex justify-between border-b border-gray-500 pb-4">
+          <h1 className="text-xl font-semibold">Pre Order</h1>
+          <span className="flex cursor-pointer items-center rounded-lg bg-red-400 p-2 text-white opacity-85 select-none hover:bg-red-500">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+              className="size-5"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M12 4.5v15m7.5-7.5h-15"
+              />
+            </svg>
+          </span>
+        </div>
+        <Order
+          orders={orders.filter((order) => order.category === "pre order")}
+        ></Order>
       </section>
-      <section className="relative col-start-5 col-end-7 row-start-1 row-end-7 flex h-full w-full flex-col items-center justify-center gap-2 rounded-xl bg-white p-4 shadow-lg">
-        <div className="h-1/2 w-full overflow-y-scroll rounded bg-gray-200 p-2">
-          <Order
-            orders={orders.filter((order) => order.category === "pre order")}
-          ></Order>
+      <section className="relative col-start-5 col-end-7 row-start-2 row-end-7 flex h-full w-full flex-col rounded-xl bg-white p-4 shadow-lg">
+        <div className="flex justify-between border-b border-gray-500 pb-4">
+          <h1 className="mb-2 text-xl font-semibold">Container</h1>
+          <span className="flex cursor-pointer items-center rounded-lg bg-red-400 p-2 text-white opacity-85 select-none hover:bg-red-500">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+              className="size-5"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M12 4.5v15m7.5-7.5h-15"
+              />
+            </svg>
+          </span>
         </div>
-        <div className="h-1/2 w-full overflow-y-scroll rounded bg-gray-200 p-2">
-          <Order
-            orders={orders.filter((order) => order.category === "container")}
-          ></Order>
-        </div>
+        <Order
+          orders={orders.filter((order) => order.category === "container")}
+        ></Order>
       </section>
     </main>
   );
