@@ -6,19 +6,22 @@ interface OrderListProps {
 }
 
 export default function OrderList({ orders }: OrderListProps) {
+  const sorted = [...orders].sort((a, b) => a.number - b.number);
+
   return (
     <ul className="flex h-full w-full flex-col items-center overflow-x-hidden overflow-y-auto">
-      {orders.map((order) => {
+      {sorted.map(({ number, amount, category, code, from, type }, i) => {
+        const label =
+          category === "pre order"
+            ? `(PO.${number} ${from}) ${code} ${type} ${formatNumber(amount)}`
+            : `${from} ${number > 9 ? number : `0${number}`} ${code} ${type} ${formatNumber(amount)}`;
+
         return (
           <li
-            key={order.code}
+            key={i}
             className="relative mb-2 flex h-16 w-full items-center justify-between border-b border-gray-500 p-2"
           >
-            <span>
-              ({order.category === "pre order" ? `PO.${order.number}` : ""}/
-              {order.from}) {order.code} {order.type}{" "}
-              {formatNumber(order.amount)}
-            </span>
+            <span>{label}</span>
             <div className="absolute right-0 flex h-full items-center gap-2">
               <span className="flex cursor-pointer items-center rounded-lg bg-red-400 p-2 text-white opacity-85 select-none hover:bg-red-500">
                 <svg

@@ -1,13 +1,15 @@
 import { itemTypes, ExtraInfo, CustomTitles } from "@constant/constant.json";
+import type { Report } from "@services/firebase/report.type";
 import type { GroupedCategories } from "./groupByCathegory";
 import formatNumber from "./formatNumber";
-import type { Item } from "..";
 import splitByType from "./splitByType";
+import type { Item } from "..";
 
 export default function dataToText(
   data: GroupedCategories,
   date: string,
   hulaan: string,
+  report: Report[],
 ) {
   const categoryLabels = Object.keys(data).map((key) => [
     key,
@@ -38,7 +40,26 @@ export default function dataToText(
       return result.join("\n");
     });
 
-    return `${title}\n${stockLines.join("\n")}`;
+    const reports = report.filter((item) => item.code === first.code);
+    const preOrderRaw = reports.filter((item) => item.category === "pre order");
+    const containerRaw = reports.filter(
+      (item) => item.category === "container",
+    );
+
+    const preOrder = preOrderRaw.map(
+      ({ number, from, type, amount }) =>
+        `(PO.${number} ${from}) ${type} ${formatNumber(amount)}`,
+    );
+    const container = containerRaw.map(
+      ({ number, from, type, amount }) =>
+        `${from} ${number > 9 ? number : `0${number}`} ${type} ${formatNumber(amount)}`,
+    );
+
+    const footer = reports.length
+      ? `CONTAINER\n${[...container, ...preOrder].join("\n")}`
+      : "";
+
+    return `${title}\n${stockLines.join("\n")}\n${footer}`;
   };
 
   const formatCategory = (groups: Item[][], label: string): string => {

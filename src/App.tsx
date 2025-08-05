@@ -39,7 +39,14 @@ export default function App() {
 
   useEffect(() => {
     const cleanData = preProcessedData(data);
-    setText(dataToText(cleanData, currentDate, hulaan[0]?.text || ""));
+    setText(
+      dataToText(
+        cleanData,
+        currentDate,
+        hulaan[0]?.text || "",
+        report as Report[],
+      ),
+    );
   }, [data, file, date]);
 
   useEffect(() => {
