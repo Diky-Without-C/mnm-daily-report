@@ -1,16 +1,14 @@
 {
-  "itemTypes": [
-    "LYR",
-    "LBL",
-    "DPY",
-    "TRY",
-    "KRT",
-    "STK",
-    "PVC",
-    "PAPAN"
-  ],
-  "filteredName": [],
-  "filteredCode": [],
+  "itemTypes": {
+    "LYR": "Layer",
+    "PVC": "PVC",
+    "LBL": "Label",
+    "DPY": "Display",
+    "TRY": "Tray",
+    "KRT": "Kartu",
+    "STK": "Stiker"
+  },
+  "filtered": [{"code": "MC351", "type": "PVC"}],
   "itemToSplitByName": [
     "\\(S\\)",
     "ROBOMAN AP",
@@ -28,6 +26,14 @@
     [
       { "code": "MD3308-7" },
       { "name": "ROBOMAN MERAH" }
+    ],
+    [
+      { "code": "MC351" },
+      { "code": "MC530" }
+    ],
+    [
+      { "name": "ROBOMAN BTM" },
+      { "name": "ROBOMAN IRM" }
     ]
   ],
   "ExtraInfo":[ 
@@ -47,7 +53,10 @@
     "Putih",
     "Bening",
     "Kotak",
-    "Bulat"
+    "Bulat",
+    "Hlk",
+    "Irm",
+    "Bear"
   ],
   "CustomTitles": [
     {

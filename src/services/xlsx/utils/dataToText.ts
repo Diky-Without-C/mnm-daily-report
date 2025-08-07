@@ -3,6 +3,7 @@ import type { Report } from "@services/firebase/report.type";
 import type { GroupedCategories } from "./groupByCathegory";
 import formatNumber from "./formatNumber";
 import splitByType from "./splitByType";
+import capitalize from "./capitalize";
 import type { Item } from "..";
 
 export default function dataToText(
@@ -17,7 +18,9 @@ export default function dataToText(
   ]);
 
   const cleanName = (name: string): string =>
-    name.replace(new RegExp(itemTypes.join("|"), "gi"), "").trim();
+    name
+      .replace(new RegExp(Object.values(itemTypes).join("|"), "gi"), "")
+      .trim();
 
   const formatGroup = (group: Item[]) => {
     const [first] = group;
@@ -34,7 +37,7 @@ export default function dataToText(
           item.name.match(new RegExp(`${ExtraInfo.join("|")}`, "gi"))?.[0] ||
           "";
 
-        return `${index === 0 ? item.type : " ".repeat(item.type.length)}${isMultiple ? ` ${extraInfo === "" ? `(${index + 1})` : extraInfo}` : ""}: ${formatNumber(stock)}`;
+        return `${index === 0 ? item.type : " ".repeat(item.type.length)}${isMultiple || ExtraInfo.includes(capitalize(extraInfo)) ? ` ${extraInfo === "" ? `(${index + 1})` : capitalize(extraInfo)}` : ""}: ${formatNumber(stock)}`;
       });
 
       return result.join("\n");
@@ -56,10 +59,10 @@ export default function dataToText(
     );
 
     const footer = reports.length
-      ? `CONTAINER\n${[...container, ...preOrder].join("\n")}`
+      ? `\nCONTAINER\n${[...container, ...preOrder].join("\n")}`
       : "";
 
-    return `${title}\n${stockLines.join("\n")}\n${footer}`;
+    return `${title}\n${stockLines.join("\n")}${footer}`;
   };
 
   const formatCategory = (groups: Item[][], label: string): string => {

@@ -7,20 +7,19 @@ import groupByCategory from "@services/xlsx/utils/groupByCathegory";
 import splitGroup from "@services/xlsx/utils/splitGroup";
 import mergeGroup from "@services/xlsx/utils/mergeGroup";
 import dataToText from "@services/xlsx/utils/dataToText";
-import Order from "@components/Order";
 import type { Report } from "@services/firebase/report.type";
 import { useFirestoreCrud } from "@services/firebase/useFirebaseStore";
+import { filtered } from "@constant/constant.json";
+import Order from "@components/Order";
 
 export default function App() {
   const [file, setFile] = useState<File | null>(null);
   const [date, setDate] = useState<Date>(new Date());
   const [text, setText] = useState<string>("");
-  const [orders, setOrders] = useState<Report[]>([]);
+
   const { data, loading, error } = useExcelParser(file, date.getDate());
   const { data: report } = useFirestoreCrud("report");
-  const { data: hulaan } = useFirestoreCrud("hulaan") as {
-    data: { text: string }[];
-  };
+  const { data: hulaan } = useFirestoreCrud("hulaan");
 
   const currentDate = new Date(date).toLocaleDateString("en-ID", {
     year: "numeric",
@@ -29,7 +28,11 @@ export default function App() {
   });
 
   const preProcessedData = (data: Item[]) => {
-    const clean = data.filter((item) => item.type !== "");
+    const clean = data.filter(
+      (item) =>
+        item.type !== "" &&
+        !filtered.some((e) => e.code === item.code && e.type === item.type),
+    );
     const pairs = createPair(clean);
     const split = pairs.flatMap((pair) => splitGroup(pair));
     const merge = mergeGroup(split);
@@ -39,22 +42,19 @@ export default function App() {
 
   useEffect(() => {
     const cleanData = preProcessedData(data);
+
     setText(
       dataToText(
         cleanData,
         currentDate,
-        hulaan[0]?.text || "",
+        (hulaan as { text: string }[])[0]?.text || "",
         report as Report[],
       ),
     );
   }, [data, file, date]);
 
-  useEffect(() => {
-    setOrders(report as Report[]);
-  }, [file, orders, report]);
-
   return (
-    <main className="relative grid h-screen w-full grid-cols-6 [grid-template-rows:1fr_2fr_2fr_2fr_2fr_2fr] gap-2 bg-gray-300 p-6">
+    <main className="relative grid h-screen w-full grid-cols-6 [grid-template-rows:1fr_2fr_2fr_2fr_2fr_2fr] gap-2 bg-slate-200 p-6">
       <header className="col-start-1 col-end-5 row-start-1 row-end-2 mb-4 flex w-full items-end gap-2">
         <h1 className="text-3xl font-bold">Daily Report </h1>
         <span className="text-lg font-semibold">({currentDate})</span>
@@ -97,53 +97,13 @@ export default function App() {
                 : text}
         </pre>
       </div>
+
       <section className="relative col-start-3 col-end-5 row-start-2 row-end-7 flex h-full w-full flex-col rounded-xl bg-white p-4 shadow-lg">
-        <div className="flex justify-between border-b border-gray-500 pb-4">
-          <h1 className="text-xl font-semibold">Pre Order</h1>
-          <span className="flex cursor-pointer items-center rounded-lg bg-red-400 p-2 text-white opacity-85 select-none hover:bg-red-500">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={1.5}
-              stroke="currentColor"
-              className="size-5"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M12 4.5v15m7.5-7.5h-15"
-              />
-            </svg>
-          </span>
-        </div>
-        <Order
-          orders={orders.filter((order) => order.category === "pre order")}
-        ></Order>
+        <Order mode="pre order" />
       </section>
+
       <section className="relative col-start-5 col-end-7 row-start-2 row-end-7 flex h-full w-full flex-col rounded-xl bg-white p-4 shadow-lg">
-        <div className="flex justify-between border-b border-gray-500 pb-4">
-          <h1 className="mb-2 text-xl font-semibold">Container</h1>
-          <span className="flex cursor-pointer items-center rounded-lg bg-red-400 p-2 text-white opacity-85 select-none hover:bg-red-500">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={1.5}
-              stroke="currentColor"
-              className="size-5"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M12 4.5v15m7.5-7.5h-15"
-              />
-            </svg>
-          </span>
-        </div>
-        <Order
-          orders={orders.filter((order) => order.category === "container")}
-        ></Order>
+        <Order mode="container" />
       </section>
     </main>
   );

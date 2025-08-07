@@ -8,6 +8,7 @@ export interface Item {
   category: string;
   type: string;
   size: string;
+  weight: string;
   stock: string;
 }
 
@@ -68,25 +69,41 @@ export default function useExcelParser(file: File | null, sheetIndex: number) {
             }
 
             const parts = item.trim().split(" - ");
-            const [type, ...rest] = parts;
-            const isHaveSize = item.match(/\dx\d/gi);
-            const size = isHaveSize ? rest[rest.length - 1] : "";
-            const code = rest[rest.length - (isHaveSize ? 2 : 1)].replace(
-              " -",
-              "",
-            );
-            const name = rest
-              .slice(0, rest.length - (isHaveSize ? 2 : 1))
-              .join(" ")
-              .replace("LOKAL", "")
-              .trim();
+            const [rawType, ...rest] = parts;
+
+            let size = "";
+            let weight = "";
+            let code = "";
+            let name = "";
+
+            const restCopy = [...rest];
+
+            const last = restCopy[restCopy.length - 1];
+            if (/\d+(gr|g|c)/i.test(last)) {
+              weight = restCopy.pop()!;
+            }
+
+            const secondLast = restCopy[restCopy.length - 1];
+            if (/\d+x\d+/i.test(secondLast)) {
+              size = restCopy.pop()!;
+            }
+
+            code = restCopy.pop() || "";
+
+            name = restCopy.join(" ").replace("LOKAL", "").trim();
+
+            const type =
+              rawType in itemTypes
+                ? itemTypes[rawType as keyof typeof itemTypes]
+                : "";
 
             return {
               name,
-              type: itemTypes.includes(type) ? type : "",
+              type,
               code,
               category: currentCategory.trim(),
               size,
+              weight,
               stock,
             };
           })

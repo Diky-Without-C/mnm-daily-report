@@ -20,8 +20,8 @@ export default function groupByCategory(items: Item[][]): GroupedCategories {
     if (group.length === 0) continue;
 
     const sortedGroup = group.sort((a, b) => {
-      const indexA = itemTypes.indexOf(a.type);
-      const indexB = itemTypes.indexOf(b.type);
+      const indexA = Object.values(itemTypes).indexOf(a.type);
+      const indexB = Object.values(itemTypes).indexOf(b.type);
       return indexA - indexB;
     });
 
