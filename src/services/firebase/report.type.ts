@@ -1,11 +1,11 @@
-import { itemTypes } from "@constant/constant.json";
+import { itemTypes, containerTypes } from "@constant/constant.json";
 
 export interface Report {
   category: "pre order" | "container";
   type: (typeof itemTypes)[keyof typeof itemTypes];
   amount: number;
   code: string;
-  from: "MC" | "LOKAL";
+  from: (typeof containerTypes)[number];
   number: number;
   id: string;
 }

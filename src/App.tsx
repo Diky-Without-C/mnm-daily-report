@@ -9,7 +9,6 @@ import mergeGroup from "@services/xlsx/utils/mergeGroup";
 import dataToText from "@services/xlsx/utils/dataToText";
 import type { Report } from "@services/firebase/report.type";
 import { useFirestoreCrud } from "@services/firebase/useFirebaseStore";
-import { filtered } from "@constant/constant.json";
 import Order from "@components/Order";
 
 export default function App() {
@@ -28,11 +27,7 @@ export default function App() {
   });
 
   const preProcessedData = (data: Item[]) => {
-    const clean = data.filter(
-      (item) =>
-        item.type !== "" &&
-        !filtered.some((e) => e.code === item.code && e.type === item.type),
-    );
+    const clean = data.filter((item) => item.type !== "");
     const pairs = createPair(clean);
     const split = pairs.flatMap((pair) => splitGroup(pair));
     const merge = mergeGroup(split);

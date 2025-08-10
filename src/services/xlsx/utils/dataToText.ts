@@ -26,7 +26,7 @@ export default function dataToText(
     const [first] = group;
     const title = CustomTitles.some((title) => first.name.includes(title.name))
       ? CustomTitles.find((title) => first.name.includes(title.name))?.to
-      : `${cleanName(first.name)} (${first.code})`;
+      : `${cleanName(first.name)} (${first.code.replace(/ -/g, "")})`;
 
     const stockLines = splitByType(group).map((items) => {
       const isMultiple = items.length > 1;
@@ -51,7 +51,7 @@ export default function dataToText(
 
     const preOrder = preOrderRaw.map(
       ({ number, from, type, amount }) =>
-        `(PO.${number} ${from}) ${type} ${formatNumber(amount)}`,
+        `(PO.${number}/${from}) ${type} ${formatNumber(amount)}`,
     );
     const container = containerRaw.map(
       ({ number, from, type, amount }) =>

@@ -8,7 +8,8 @@
     "KRT": "Kartu",
     "STK": "Stiker"
   },
-  "filtered": [{"code": "MC351", "type": "PVC"}],
+  "containerTypes": ["MC","MF", "LOKAL"],
+  "filtered": [],
   "itemToSplitByName": [
     "\\(S\\)",
     "ROBOMAN AP",
@@ -20,7 +21,9 @@
     "522A",
     "MC288AB",
     "MD3488L",
-    "FC006"
+    "FC006",
+    "MC568-DB",
+    "MC568-B2"
   ],
   "itemToMerge": [
     [
@@ -56,7 +59,8 @@
     "Bulat",
     "Hlk",
     "Irm",
-    "Bear"
+    "Bear",
+    "Master"
   ],
   "CustomTitles": [
     {

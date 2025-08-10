@@ -92,10 +92,7 @@ export default function useExcelParser(file: File | null, sheetIndex: number) {
 
             name = restCopy.join(" ").replace("LOKAL", "").trim();
 
-            const type =
-              rawType in itemTypes
-                ? itemTypes[rawType as keyof typeof itemTypes]
-                : "";
+            const type = rawType in itemTypes ? rawType : "";
 
             return {
               name,
