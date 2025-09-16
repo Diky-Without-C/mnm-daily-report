@@ -17,8 +17,8 @@ export default function App() {
   const [text, setText] = useState<string>("");
 
   const { data, loading, error } = useExcelParser(file, date.getDate());
-  const { data: report } = useSupabase("report");
-  const { data: hulaan } = useSupabase("hulaan");
+  const { data: report } = useSupabase<Report>("report");
+  const { data: hulaan } = useSupabase<{ text: string; id: string }>("hulaan");
 
   const currentDate = new Date(date).toLocaleDateString("en-ID", {
     year: "numeric",
@@ -42,7 +42,7 @@ export default function App() {
       dataToText(
         cleanData,
         currentDate,
-        (hulaan as { text: string }[])[0]?.text || "",
+        hulaan[0]?.text || "",
         report as Report[],
       ),
     );
