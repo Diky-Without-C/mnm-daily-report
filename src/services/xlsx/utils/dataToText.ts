@@ -1,5 +1,5 @@
 import { itemTypes, ExtraInfo, CustomTitles } from "@constant/constant.json";
-import type { Report } from "@services/firebase/report.type";
+import type { Report } from "@services/supabase/report.type";
 import type { GroupedCategories } from "./groupByCathegory";
 import formatNumber from "./formatNumber";
 import splitByType from "./splitByType";

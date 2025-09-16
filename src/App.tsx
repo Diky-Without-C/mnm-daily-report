@@ -7,8 +7,8 @@ import groupByCategory from "@services/xlsx/utils/groupByCathegory";
 import splitGroup from "@services/xlsx/utils/splitGroup";
 import mergeGroup from "@services/xlsx/utils/mergeGroup";
 import dataToText from "@services/xlsx/utils/dataToText";
-import type { Report } from "@services/firebase/report.type";
-import { useFirestoreCrud } from "@services/firebase/useFirebaseStore";
+import type { Report } from "@services/supabase/report.type";
+import { useSupabase } from "@services/supabase/useSupabaseStore";
 import Order from "@components/Order";
 
 export default function App() {
@@ -17,8 +17,8 @@ export default function App() {
   const [text, setText] = useState<string>("");
 
   const { data, loading, error } = useExcelParser(file, date.getDate());
-  const { data: report } = useFirestoreCrud("report");
-  const { data: hulaan } = useFirestoreCrud("hulaan");
+  const { data: report } = useSupabase("report");
+  const { data: hulaan } = useSupabase("hulaan");
 
   const currentDate = new Date(date).toLocaleDateString("en-ID", {
     year: "numeric",

@@ -1,4 +1,4 @@
-import type { Report } from "@services/firebase/report.type";
+import type { Report } from "@services/supabase/report.type";
 import { itemTypes, containerTypes } from "@constant/constant.json";
 
 interface FormProps {

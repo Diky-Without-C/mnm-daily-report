@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import type { Report } from "@services/firebase/report.type";
-import { useFirestoreCrud } from "@services/firebase/useFirebaseStore";
+import type { Report } from "@services/supabase/report.type";
+import { useSupabase } from "@services/supabase/useSupabaseStore";
 import formatNumber from "@services/xlsx/utils/formatNumber";
 import { itemTypes, containerTypes } from "@constant/constant.json";
 import SearchBar from "./searchBar";
@@ -11,7 +11,7 @@ interface OrderListProps {
 }
 
 export default function OrderList({ mode }: OrderListProps) {
-  const { remove, create, update, data } = useFirestoreCrud("report");
+  const { remove, create, update, data } = useSupabase<Report>("report");
 
   const [orders, setOrders] = useState<Report[]>([]);
   const [selectedIndex, setSelectedIndex] = useState<number>(0);
