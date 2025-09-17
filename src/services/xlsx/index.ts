@@ -57,6 +57,15 @@ export default function useExcelParser(file: File | null, sheetIndex: number) {
 
         let currentCategory = "";
 
+        const codes = {
+          MC: "- MC",
+          MD: "- MD",
+          MF: "- MF",
+          SR: "- SR",
+          FC: "- FC",
+          RM: "- RM",
+        };
+
         const parsed: Item[] = contentRows
           .filter((row) => row.some((cell) => cell !== null && cell !== ""))
           .map((row) => {
@@ -68,7 +77,13 @@ export default function useExcelParser(file: File | null, sheetIndex: number) {
               return;
             }
 
-            const parts = item.trim().split(" - ");
+            let updatedItem = item.replace("LOKAL", "").trim();
+            for (const key in codes) {
+              const value = codes[key as keyof typeof codes];
+              updatedItem = updatedItem.replace(` ${key}`, ` ${value}`);
+            }
+
+            const parts = updatedItem.split(" - ");
             const [rawType, ...rest] = parts;
 
             let size = "";
@@ -90,7 +105,10 @@ export default function useExcelParser(file: File | null, sheetIndex: number) {
 
             code = restCopy.pop() || "";
 
-            name = restCopy.join(" ").replace("LOKAL", "").trim();
+            const rawName = restCopy.join(" ").trim();
+            name = rawName.includes("TOPBLADE")
+              ? `${rawName} ${code.slice(2)}`
+              : rawName;
 
             const type = rawType in itemTypes ? rawType : "";
 
