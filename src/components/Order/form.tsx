@@ -68,7 +68,7 @@ export default function Form({ form, onClose, onChange, onSubmit }: FormProps) {
           label="Type"
           value={form.type}
           onChange={onChange}
-          options={Object.values(itemTypes)}
+          options={Object.values(itemTypes).slice(0,4)}
         />
         <InputField
           name="amount"
@@ -80,14 +80,14 @@ export default function Form({ form, onClose, onChange, onSubmit }: FormProps) {
         <div className="col-span-4 flex justify-end gap-2">
           <button
             type="submit"
-            className="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
+            className="rounded-lg bg-blue-500 px-4 py-2 font-semibold text-white hover:bg-blue-600"
           >
             Submit
           </button>
           <button
             type="button"
             onClick={onClose}
-            className="rounded bg-gray-400 px-4 py-2 text-white hover:bg-gray-500"
+            className="rounded-lg bg-gray-400 px-4 py-2 font-semibold text-white hover:bg-gray-500"
           >
             Cancel
           </button>
@@ -106,7 +106,7 @@ function InputField({
 }: inputFieldProps) {
   return (
     <div className="col-span-2">
-      <label className="block font-medium">{label}</label>
+      <label className="block font-medium mb-1">{label}</label>
       <input
         name={name}
         value={value}
@@ -126,7 +126,7 @@ function SelectField({
 }: SelectFieldProps) {
   return (
     <div className="col-span-2">
-      <label className="block font-medium">{label}</label>
+      <label className="block font-medium mb-1">{label}</label>
       <select
         name={name}
         value={value}

@@ -52,11 +52,11 @@ export default function dataToText(
     const preOrder = preOrderRaw.map(
       ({ number, from, type, amount }) =>
         `(PO.${number}/${from}) ${type} ${formatNumber(amount)}`,
-    );
+    ).sort();
     const container = containerRaw.map(
       ({ number, from, type, amount }) =>
         `${from} ${number > 9 ? number : `0${number}`} ${type} ${formatNumber(amount)}`,
-    );
+    ).sort();
 
     const footer = reports.length
       ? `\nCONTAINER\n${[...container, ...preOrder].join("\n")}`

@@ -46,7 +46,7 @@ export default function App() {
         report as Report[],
       ),
     );
-  }, [data, file, date]);
+  }, [data, file, date, currentDate, hulaan, report]);
 
   return (
     <main className="relative grid h-screen w-full grid-cols-6 [grid-template-rows:1fr_2fr_2fr_2fr_2fr_2fr] gap-2 bg-slate-200 p-6">
