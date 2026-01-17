@@ -1,11 +1,14 @@
-import { itemToMerge } from "@constant/constant.json";
-import type { Item } from "..";
+import { ITEM_TO_MERGE } from "@/app/constants";
+import type { ParsedItem } from "../xlsx.type";
 
 function escapeRegex(str: string) {
   return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
-function findGroupIndex(groups: Map<number, Item[]>, item: Partial<Item>) {
+function findGroupIndex(
+  groups: Map<number, ParsedItem[]>,
+  item: Partial<ParsedItem>,
+) {
   const regex = item.code
     ? new RegExp(escapeRegex(item.code), "i")
     : item.name
@@ -25,11 +28,11 @@ function findGroupIndex(groups: Map<number, Item[]>, item: Partial<Item>) {
   }
 }
 
-export default function mergeGroup(groups: Item[][]): Item[][] {
-  const groupMap = new Map<number, Item[]>();
+export const mergeGroup = (groups: ParsedItem[][]): ParsedItem[][] => {
+  const groupMap = new Map<number, ParsedItem[]>();
   groups.forEach((group, i) => groupMap.set(i, group));
 
-  for (const [search, ...targets] of itemToMerge) {
+  for (const [search, ...targets] of ITEM_TO_MERGE) {
     const mainIndex = findGroupIndex(groupMap, search);
     if (mainIndex === undefined) continue;
 
@@ -49,4 +52,4 @@ export default function mergeGroup(groups: Item[][]): Item[][] {
   }
 
   return [...groupMap.values()];
-}
+};

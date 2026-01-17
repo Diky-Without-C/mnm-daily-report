@@ -1,27 +1,19 @@
-import { itemTypes } from "@constant/constant.json";
-import type { Item } from "..";
+import { ITEM_TYPES } from "@/app/constants";
+import { CATEGORY_KEYS } from "../xlsx.constant";
+import type { GroupedCategories, ParsedItem } from "../xlsx.type";
 
-export interface GroupedCategories {
-  star_rider: Item[][];
-  fancy: Item[][];
-  snipper: Item[][];
-  roboman: Item[][];
-}
-
-export default function groupByCategory(items: Item[][]): GroupedCategories {
-  const categories: GroupedCategories = {
-    star_rider: [],
-    fancy: [],
-    snipper: [],
-    roboman: [],
-  };
+export const groupByCategory = (items: ParsedItem[][]): GroupedCategories => {
+  const categories: GroupedCategories = CATEGORY_KEYS.reduce((acc, key) => {
+    acc[key] = [];
+    return acc;
+  }, {} as GroupedCategories);
 
   for (const group of items) {
     if (group.length === 0) continue;
 
     const sortedGroup = group.sort((a, b) => {
-      const indexA = Object.values(itemTypes).indexOf(a.type);
-      const indexB = Object.values(itemTypes).indexOf(b.type);
+      const indexA = Object.keys(ITEM_TYPES).indexOf(a.type);
+      const indexB = Object.keys(ITEM_TYPES).indexOf(b.type);
       return indexA - indexB;
     });
 
@@ -44,4 +36,4 @@ export default function groupByCategory(items: Item[][]): GroupedCategories {
   }
 
   return categories;
-}
+};

@@ -1,15 +1,16 @@
 import { useEffect, useState } from "react";
 import InputField from "@components/Input/inputField";
 import InputDate from "@components/Input/inputDate";
-import useExcelParser, { type Item } from "@services/xlsx";
-import createPair from "@services/xlsx/utils/createPair";
-import groupByCategory from "@services/xlsx/utils/groupByCathegory";
-import splitGroup from "@services/xlsx/utils/splitGroup";
-import mergeGroup from "@services/xlsx/utils/mergeGroup";
-import dataToText from "@services/xlsx/utils/dataToText";
-import type { Report } from "@services/supabase/report.type";
-import { useSupabase } from "@services/supabase/useSupabaseStore";
-import Order from "@components/Order";
+import { useExcelParser } from "@/features/xlsx/useExcelParser";
+import type { ParsedItem } from "@/features/xlsx/xlsx.type";
+import { createPair } from "@/features/xlsx/helper/createPair";
+import { groupByCategory } from "@/features/xlsx/helper/groupByCathegory";
+import { splitGroup } from "@/features/xlsx/helper/splitGroup";
+import { mergeGroup } from "@/features/xlsx/helper/mergeGroup";
+import { dataToText } from "@/features/xlsx/helper/dataToText";
+import Order from "@/features/orders/components/OrderPage";
+import type { Report } from "@/app/supabase/report.dto";
+import { useSupabaseQuery } from "@/app/supabase/useSupabaseQuery";
 
 export default function App() {
   const [file, setFile] = useState<File | null>(null);
@@ -17,8 +18,10 @@ export default function App() {
   const [text, setText] = useState<string>("");
 
   const { data, loading, error } = useExcelParser(file, date.getDate());
-  const { data: report } = useSupabase<Report>("report");
-  const { data: hulaan } = useSupabase<{ text: string; id: string }>("hulaan");
+  const { data: report } = useSupabaseQuery<Report>("report");
+  const { data: hulaan } = useSupabaseQuery<{ text: string; id: string }>(
+    "hulaan",
+  );
 
   const currentDate = new Date(date).toLocaleDateString("en-ID", {
     year: "numeric",
@@ -26,7 +29,7 @@ export default function App() {
     day: "numeric",
   });
 
-  const preProcessedData = (data: Item[]) => {
+  const preProcessedData = (data: ParsedItem[]) => {
     const clean = data.filter((item) => item.type !== "");
     const pairs = createPair(clean);
     const split = pairs.flatMap((pair) => splitGroup(pair));

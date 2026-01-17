@@ -1,12 +1,12 @@
-import type { Item } from "..";
-import clearCode from "./clearCode";
+import type { ParsedItem } from "../xlsx.type";
+import { clearCode } from "../utils/clearCode";
 
-export default function createPair(items: Item[]): Item[][] {
-  const result: Item[][] = [];
-  const visited = new Set<Item>();
+export const createPair = (items: ParsedItem[]): ParsedItem[][] => {
+  const result: ParsedItem[][] = [];
+  const visited = new Set<ParsedItem>();
 
-  const nameGroups = new Map<string, Item[]>();
-  const codeGroups = new Map<string, Item[]>();
+  const nameGroups = new Map<string, ParsedItem[]>();
+  const codeGroups = new Map<string, ParsedItem[]>();
 
   for (const item of items) {
     if (visited.has(item)) continue;
@@ -38,4 +38,4 @@ export default function createPair(items: Item[]): Item[][] {
   }
 
   return result;
-}
+};
