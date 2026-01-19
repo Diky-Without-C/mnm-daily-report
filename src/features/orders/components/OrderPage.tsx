@@ -32,16 +32,16 @@ export default function OrderPage({ mode }: OrderPageProps) {
             <span>{getOrderLabel(order)}</span>
 
             {selectedId === order.id && (
-              <div className="mx-1 flex justify-between gap-1">
+              <div className="mx-1 flex justify-end gap-1">
                 <button
                   onClick={() => handlers.handleEdit(order)}
-                  className="w-1/2 rounded-md bg-blue-500 px-2 py-2 font-semibold text-white hover:bg-blue-600"
+                  className="rounded-lg bg-blue-500 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-600"
                 >
                   Edit
                 </button>
                 <button
                   onClick={() => handlers.requestDelete(order.id)}
-                  className="w-1/2 rounded-md bg-red-500 px-2 py-2 font-semibold text-white hover:bg-red-600"
+                  className="rounded-lg bg-red-500 px-4 py-2 text-sm font-semibold text-white hover:bg-red-600"
                 >
                   Delete
                 </button>
