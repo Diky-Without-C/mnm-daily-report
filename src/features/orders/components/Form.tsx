@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import type { Report } from "@services/supabase/report.type";
+import type { Report } from "@/app/supabase/report.dto";
 import { ITEM_TYPES, CONTAINER_TYPES } from "@/app/constants";
 import { OrderCategory } from "../order.constants";
 
