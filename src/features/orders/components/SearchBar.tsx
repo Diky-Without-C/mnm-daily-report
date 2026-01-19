@@ -1,10 +1,10 @@
 import type { ChangeEvent } from "react";
-import { OrderCategory } from "../order.constants";
+import type { OrderCategoryType } from "../order.type";
 import AddIcon from "./Icons/Add";
 import SearchIcon from "./Icons/Search";
 
 interface SearchBarProps {
-  mode: (typeof OrderCategory)[keyof typeof OrderCategory];
+  mode: OrderCategoryType;
   onSearch: (value: string) => void;
   onAdd: () => void;
 }

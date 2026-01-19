@@ -1,6 +1,6 @@
 export const ADD_ORDER_ID = "add";
 
-export const OrderCategory = {
+export const ORDER_CATEGORY = {
   PRE_ORDER: "pre order",
   CONTAINER: "container",
 } as const;

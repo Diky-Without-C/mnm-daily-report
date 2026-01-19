@@ -1,12 +1,12 @@
-import { OrderCategory } from "../order.constants";
 import useOrderPage from "../useOrders";
 import { getOrderLabel } from "../order.helpers";
+import type { OrderCategoryType } from "../order.type";
 import DeleteDialog from "./DeleteDialog";
 import SearchBar from "./SearchBar";
 import Form from "./Form";
 
 interface OrderPageProps {
-  mode: (typeof OrderCategory)[keyof typeof OrderCategory];
+  mode: OrderCategoryType;
 }
 
 export default function OrderPage({ mode }: OrderPageProps) {

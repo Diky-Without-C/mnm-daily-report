@@ -2,11 +2,12 @@ import { useEffect, useMemo, useState } from "react";
 import type { Report } from "@/app/supabase/report.dto";
 import { supabaseService } from "@/app/supabase/service";
 import { ITEM_TYPES, CONTAINER_TYPES } from "@/app/constants";
-import { ADD_ORDER_ID, OrderCategory } from "./order.constants";
+import { ADD_ORDER_ID } from "./order.constants";
 import { filterOrders, sortOrders } from "./order.helpers";
+import type { OrderCategoryType } from "./order.type";
 
 interface UseOrderPageParams {
-  mode: (typeof OrderCategory)[keyof typeof OrderCategory];
+  mode: OrderCategoryType;
 }
 
 export default function useOrderPage({ mode }: UseOrderPageParams) {

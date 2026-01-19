@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 import type { Report } from "@/app/supabase/report.dto";
 import { ITEM_TYPES, CONTAINER_TYPES } from "@/app/constants";
-import { OrderCategory } from "../order.constants";
+import { ORDER_CATEGORY } from "../order.constants";
 
 interface FormProps {
   form: Report;
@@ -53,7 +53,7 @@ export default function Form({ form, onClose, onChange, onSubmit }: FormProps) {
           label="Category"
           value={form.category}
           onChange={onChange}
-          options={Object.values(OrderCategory)}
+          options={Object.values(ORDER_CATEGORY)}
         />
 
         <SelectField
@@ -76,7 +76,7 @@ export default function Form({ form, onClose, onChange, onSubmit }: FormProps) {
           label="Type"
           value={form.type}
           onChange={onChange}
-          options={Object.values(ITEM_TYPES).slice(0, 4)}
+          options={Object.values(ITEM_TYPES)}
         />
 
         <InputField
@@ -192,7 +192,7 @@ function SelectField({
         </label>
 
         {open && (
-          <div className="absolute left-0 z-10 mt-1 w-52 rounded-md bg-white shadow-lg">
+          <div className="absolute left-0 z-10 mt-1 max-h-32 w-52 overflow-auto rounded-md bg-white shadow-lg">
             {options.map((option) => (
               <button
                 key={option}
