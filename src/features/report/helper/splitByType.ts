@@ -1,4 +1,4 @@
-import type { ParsedItem } from "../xlsx.type";
+import type { ParsedItem } from "@/lib/xlsx/xlsx.type";
 
 export const splitByType = (items: ParsedItem[]) => {
   const typeMap = new Map<string, ParsedItem[]>();

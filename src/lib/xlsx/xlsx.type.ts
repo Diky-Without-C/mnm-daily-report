@@ -1,5 +1,5 @@
 import type { ItemTypeCode } from "@/app/constants";
-import { CATEGORY_KEYS } from "./xlsx.constant";
+import type { CATEGORY_KEYS } from "@/features/report/report.constant";
 
 export interface ParsedItem {
   name: string;

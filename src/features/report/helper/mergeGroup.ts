@@ -1,5 +1,5 @@
 import { ITEM_TO_MERGE } from "@/app/constants";
-import type { ParsedItem } from "../xlsx.type";
+import type { ParsedItem } from "@/lib/xlsx/xlsx.type";
 
 function escapeRegex(str: string) {
   return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");

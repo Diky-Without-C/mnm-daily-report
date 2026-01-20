@@ -1,3 +1,5 @@
+export const HEADER = "LAPORAN HARIAN STOCK LAYER PVC";
+
 export const ITEMS_TO_CLEAR = ["LOKAL"];
 
 export const ITEMS_TO_REPLACE = {

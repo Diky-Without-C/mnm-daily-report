@@ -8,7 +8,8 @@ export const ITEM_TYPES = {
   BAG: "Bag",
   LBL: "Label",
   DPY: "Display",
-  STK: "Stiker",
+  BOX: "Box",
+  STC: "Stiker",
   TRY: "Tray",
   KRT: "Kartu",
 } as const;
@@ -87,18 +88,9 @@ export type ExtraInfoKeyword = (typeof EXTRA_INFO)[number];
 /* =========================
  * CUSTOM TITLES
  * ========================= */
-export interface CustomTitle {
-  name: string;
-  to: string;
-}
 
-export const CUSTOM_TITLES: ReadonlyArray<CustomTitle> = [
-  {
-    name: "ROBOMAN MERAH",
-    to: "ROBOMAN BOX (MC.319)",
-  },
-  {
-    name: "MOBIL CARTOON HELI",
-    to: "MOBIL CARTOON (MD3488)",
-  },
-];
+export const CUSTOM_TITLES = {
+  "ROBOMAN MERAH (MC319)": "ROBOMAN BOX (MC319)",
+  "ROBOMAN (RM019)": "ROBOMAN TACTICAL FORCE (RM019)",
+  "MOBIL CARTOON HELI (MD3488)": "MOBIL CARTOON (MD3488)",
+} as const;

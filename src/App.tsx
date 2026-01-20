@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import InputField from "@components/Input/inputField";
 import InputDate from "@components/Input/inputDate";
-import { useExcelParser } from "@/features/xlsx/useExcelParser";
-import type { ParsedItem } from "@/features/xlsx/xlsx.type";
-import { createPair } from "@/features/xlsx/helper/createPair";
-import { groupByCategory } from "@/features/xlsx/helper/groupByCathegory";
-import { splitGroup } from "@/features/xlsx/helper/splitGroup";
-import { mergeGroup } from "@/features/xlsx/helper/mergeGroup";
-import { dataToText } from "@/features/xlsx/helper/dataToText";
+import { useExcelParser } from "@/lib/xlsx/useExcelParser";
+import type { ParsedItem } from "@/lib/xlsx/xlsx.type";
+import { createPair } from "@/features/report/helper/createPair";
+import { groupByCategory } from "@/features/report/helper/groupByCathegory";
+import { splitGroup } from "@/features/report/helper/splitGroup";
+import { mergeGroup } from "@/features/report/helper/mergeGroup";
+import { dataToText } from "@/features/report/helper/dataToText";
 import Order from "@/features/orders/components/OrderPage";
 import type { Report } from "@/app/supabase/report.dto";
 import { useSupabaseQuery } from "@/app/supabase/useSupabaseQuery";
@@ -41,14 +41,7 @@ export default function App() {
   useEffect(() => {
     const cleanData = preProcessedData(data);
 
-    setText(
-      dataToText(
-        cleanData,
-        currentDate,
-        hulaan[0]?.text || "",
-        report as Report[],
-      ),
-    );
+    setText(dataToText(cleanData, currentDate, report as Report[]));
   }, [data, file, date, currentDate, hulaan, report]);
 
   return (

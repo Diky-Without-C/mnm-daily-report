@@ -1,6 +1,6 @@
 import { ITEM_TYPES } from "@/app/constants";
-import { CATEGORY_KEYS } from "../xlsx.constant";
-import type { GroupedCategories, ParsedItem } from "../xlsx.type";
+import type { GroupedCategories, ParsedItem } from "@/lib/xlsx/xlsx.type";
+import { CATEGORY_KEYS } from "../report.constant";
 
 export const groupByCategory = (items: ParsedItem[][]): GroupedCategories => {
   const categories: GroupedCategories = CATEGORY_KEYS.reduce((acc, key) => {

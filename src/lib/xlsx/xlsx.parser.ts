@@ -1,9 +1,12 @@
 import * as XLSX from "xlsx";
 import { ITEM_TYPES, type ItemTypeCode } from "@/app/constants";
-import { clearItem } from "./utils/clearItem";
-import { replaceItem } from "./utils/replaceItem";
 import type { ParsedItem } from "./xlsx.type";
-import { ITEMS_TO_REPLACE, ITEMS_TO_CLEAR } from "./xlsx.constant";
+import {
+  ITEMS_TO_REPLACE,
+  ITEMS_TO_CLEAR,
+} from "@/features/report/report.constant";
+import { clearItem } from "@/features/report/utils/clearItem";
+import { replaceItem } from "@/features/report/utils/replaceItem";
 
 export function parseExcelFile(
   binary: string,
