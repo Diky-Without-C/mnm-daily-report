@@ -46,15 +46,20 @@ export default function App() {
   }, [data, file, date, currentDate, hulaan, report]);
 
   return (
-    <main className="relative grid h-screen w-full grid-cols-6 [grid-template-rows:1fr_2fr_2fr_2fr_2fr_2fr] gap-2 bg-slate-200 p-6">
+    <main className="relative grid h-screen w-full grid-cols-6 grid-rows-[1fr_2fr_2fr_2fr_2fr_2fr] gap-2 bg-slate-200 p-6">
       <header className="col-start-1 col-end-5 row-start-1 row-end-2 mb-4 flex w-full items-end gap-2">
         <h1 className="text-3xl font-bold">Daily Report </h1>
         <span className="text-lg font-semibold">({currentDate})</span>
       </header>
 
-      <div className="relative col-start-1 col-end-3 row-start-2 row-end-3 flex h-full w-full gap-2">
-        <InputField onFileChange={setFile} />
-        <InputDate onDateChange={setDate} />
+      <div className="relative col-start-1 col-end-3 row-start-2 row-end-3 flex h-full w-full">
+        <div className="flex h-full w-full flex-col rounded-lg bg-white p-4">
+          <div className="mb-2 flex items-center justify-between">
+            <h1 className="text-lg font-semibold">Report Source</h1>
+            <InputDate onDateChange={setDate} />
+          </div>
+          <InputField onFileChange={setFile} />
+        </div>
       </div>
 
       <div className="relative col-start-1 col-end-3 row-start-3 row-end-7 flex h-full w-full flex-col rounded-xl bg-white p-4 shadow-lg">
@@ -62,7 +67,7 @@ export default function App() {
           onClick={() => {
             navigator.clipboard.writeText(text);
           }}
-          className="absolute top-2 right-2 flex cursor-pointer items-center rounded-lg bg-red-400 p-2 text-white opacity-85 select-none hover:bg-red-500"
+          className="absolute top-2 right-2 flex cursor-pointer items-center rounded-lg bg-blue-400 p-2 text-white opacity-85 select-none hover:bg-blue-500"
         >
           <Copy />
         </button>
