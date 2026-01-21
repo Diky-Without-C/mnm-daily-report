@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import InputField from "@components/Input/inputField";
 import InputDate from "@components/Input/inputDate";
 import CopyButton from "@components/buttons/CopyButton";
+import ChevronUpDown from "@components/icon/ChevronUpDown";
 import { useExcelParser } from "@/lib/xlsx/useExcelParser";
 import type { ParsedItem } from "@/lib/xlsx/xlsx.type";
 import { createPair } from "@/features/report/helper/createPair";
@@ -17,6 +18,7 @@ export default function App() {
   const [file, setFile] = useState<File | null>(null);
   const [date, setDate] = useState<Date>(new Date());
   const [text, setText] = useState<string>("");
+  const [showSource, setShowSource] = useState(true);
 
   const { data, loading, error } = useExcelParser(file, date.getDate());
   const { data: report } = useSupabaseQuery<Report>("report");
@@ -60,6 +62,10 @@ export default function App() {
     setText(dataToText(cleanData, currentDate, report as Report[]));
   }, [data, file, date, currentDate, hulaan, report]);
 
+  useEffect(() => {
+    if (file) setShowSource(false);
+  }, [file]);
+
   return (
     <main className="relative grid h-screen w-full grid-cols-6 grid-rows-[1fr_2fr_2fr_2fr_2fr_2fr] gap-2 bg-slate-200 p-6">
       <header className="col-start-1 col-end-5 row-start-1 row-end-2 mb-4 flex w-full items-end gap-2">
@@ -67,17 +73,38 @@ export default function App() {
         <span className="text-lg font-semibold">({currentDate})</span>
       </header>
 
-      <div className="relative col-start-1 col-end-3 row-start-2 row-end-3 flex h-full w-full">
-        <div className="flex h-full w-full flex-col rounded-lg bg-white p-4">
-          <div className="mb-2 flex items-center justify-between">
+      <section className="relative col-start-1 col-end-3 row-start-2 row-end-3 flex w-full">
+        <div
+          className={`flex w-full flex-col rounded-lg bg-white shadow transition-all duration-300 ${showSource ? "px-4 pt-4 pb-6" : "px-4 py-2"} `}
+        >
+          <div className="flex cursor-pointer items-center justify-between">
             <h1 className="text-lg font-semibold">Report Source</h1>
-            <InputDate onDateChange={setDate} />
-          </div>
-          <InputField onFileChange={setFile} />
-        </div>
-      </div>
 
-      <div className="relative col-start-1 col-end-3 row-start-3 row-end-7 flex h-full w-full flex-col rounded-xl bg-white p-4 shadow-lg">
+            <div className="flex items-center">
+              {showSource && <InputDate onDateChange={setDate} />}
+            </div>
+          </div>
+
+          <div className="mt-3">
+            <section className={showSource ? "block" : "hidden"}>
+              <InputField onFileChange={setFile} />
+            </section>
+          </div>
+
+          {!showSource && file && (
+            <div className="mt-2 truncate text-sm text-gray-600">
+              {file.name}
+            </div>
+          )}
+        </div>
+
+        <ChevronUpDown
+          onClick={() => file && setShowSource((prev) => !prev)}
+          className="absolute right-0 bottom-0 size-6 -rotate-45 cursor-pointer text-gray-700 hover:scale-110"
+        />
+      </section>
+
+      <section className="relative col-start-1 col-end-3 row-start-3 row-end-7 flex h-full w-full flex-col rounded-xl bg-white p-4 shadow-lg">
         <CopyButton text={text} disabled={viewState !== "ready"} />
 
         <pre
@@ -89,7 +116,7 @@ export default function App() {
         >
           {content[viewState]}
         </pre>
-      </div>
+      </section>
 
       <section className="relative col-start-3 col-end-5 row-start-2 row-end-7 flex h-full w-full flex-col rounded-xl bg-white p-4 shadow-lg">
         <Order mode="pre order" />
