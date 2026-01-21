@@ -1,7 +1,7 @@
 import type { ChangeEvent } from "react";
+import AddIcon from "@components/icon/Add";
+import SearchIcon from "@components/icon/Search";
 import type { OrderCategoryType } from "../order.type";
-import AddIcon from "./Icons/Add";
-import SearchIcon from "./Icons/Search";
 
 interface SearchBarProps {
   mode: OrderCategoryType;
