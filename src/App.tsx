@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import InputField from "@components/Input/inputField";
 import InputDate from "@components/Input/inputDate";
-import Copy from "@components/icon/copy";
+import CopyButton from "@components/buttons/CopyButton";
 import { useExcelParser } from "@/lib/xlsx/useExcelParser";
 import type { ParsedItem } from "@/lib/xlsx/xlsx.type";
 import { createPair } from "@/features/report/helper/createPair";
@@ -39,6 +39,21 @@ export default function App() {
     return categories;
   };
 
+  const viewState = !file
+    ? "idle"
+    : loading
+      ? "loading"
+      : error
+        ? "error"
+        : "ready";
+
+  const content = {
+    idle: "Upload an Excel file to generate today's report",
+    loading: "loading ...",
+    error: error ?? "",
+    ready: text,
+  };
+
   useEffect(() => {
     const cleanData = preProcessedData(data);
 
@@ -63,22 +78,16 @@ export default function App() {
       </div>
 
       <div className="relative col-start-1 col-end-3 row-start-3 row-end-7 flex h-full w-full flex-col rounded-xl bg-white p-4 shadow-lg">
-        <button
-          onClick={() => {
-            navigator.clipboard.writeText(text);
-          }}
-          className="absolute top-2 right-2 flex cursor-pointer items-center rounded-lg bg-blue-400 p-2 text-white opacity-85 select-none hover:bg-blue-500"
+        <CopyButton text={text} disabled={viewState !== "ready"} />
+
+        <pre
+          className={`flex-1 rounded whitespace-pre-wrap ${
+            viewState !== "ready"
+              ? "flex items-center justify-center text-center text-gray-500"
+              : "overflow-y-auto"
+          }`}
         >
-          <Copy />
-        </button>
-        <pre className="overflow-y-auto rounded whitespace-pre-wrap">
-          {!file
-            ? "waiting file ..."
-            : loading
-              ? "loading ..."
-              : error
-                ? error
-                : text}
+          {content[viewState]}
         </pre>
       </div>
 
