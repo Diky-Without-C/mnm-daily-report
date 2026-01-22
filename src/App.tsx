@@ -10,7 +10,7 @@ import { groupByCategory } from "@/features/report/helper/groupByCathegory";
 import { splitGroup } from "@/features/report/helper/splitGroup";
 import { mergeGroup } from "@/features/report/helper/mergeGroup";
 import { dataToText } from "@/features/report/helper/dataToText";
-import Order from "@/features/orders/components/OrderPage";
+import Order from "@/features/orders/components/Order";
 import type { Report } from "@/app/supabase/report.dto";
 import { useSupabaseQuery } from "@/app/supabase/useSupabaseQuery";
 
@@ -118,11 +118,11 @@ export default function App() {
         </pre>
       </section>
 
-      <section className="relative col-start-3 col-end-5 row-start-2 row-end-7 flex h-full w-full flex-col rounded-xl bg-white p-4 shadow-lg">
+      <section className="relative col-start-3 col-end-5 row-start-2 row-end-7 rounded-xl bg-white p-4 shadow-lg">
         <Order mode="pre order" />
       </section>
 
-      <section className="relative col-start-5 col-end-7 row-start-2 row-end-7 flex h-full w-full flex-col rounded-xl bg-white p-4 shadow-lg">
+      <section className="relative col-start-5 col-end-7 row-start-2 row-end-7 bg-white p-4 shadow-lg">
         <Order mode="container" />
       </section>
     </main>

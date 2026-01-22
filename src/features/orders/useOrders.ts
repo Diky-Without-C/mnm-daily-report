@@ -13,7 +13,6 @@ interface UseOrderPageParams {
 export default function useOrderPage({ mode }: UseOrderPageParams) {
   const [data, setData] = useState<Report[]>([]);
   const [search, setSearch] = useState("");
-  const [selectedId, setSelectedId] = useState<string | null>(null);
   const [deleteTargetId, setDeleteTargetId] = useState<string | null>(null);
   const [form, setForm] = useState<Report | null>(null);
 
@@ -29,9 +28,6 @@ export default function useOrderPage({ mode }: UseOrderPageParams) {
   }, [data, mode, search]);
 
   const handleSearch = (value: string) => setSearch(value);
-
-  const handleSelect = (id: string) =>
-    setSelectedId((prev) => (prev === id ? null : id));
 
   const handleEdit = (order: Report) => setForm(order);
 
@@ -95,11 +91,9 @@ export default function useOrderPage({ mode }: UseOrderPageParams) {
   return {
     orders,
     form,
-    selectedId,
     deleteTargetId,
     handlers: {
       handleSearch,
-      handleSelect,
       handleEdit,
       handleAdd,
       handleChange,
