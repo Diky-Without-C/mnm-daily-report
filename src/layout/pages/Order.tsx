@@ -67,17 +67,14 @@ export default function App() {
   }, [file]);
 
   return (
-    <main className="relative grid h-screen w-full grid-cols-6 grid-rows-[1fr_2fr_2fr_2fr_2fr_2fr] gap-2 bg-slate-200 p-6">
-      <header className="col-start-1 col-end-5 row-start-1 row-end-2 mb-4 flex w-full items-end gap-2">
-        <h1 className="text-3xl font-bold">Daily Report </h1>
-        <span className="text-lg font-semibold">({currentDate})</span>
-      </header>
-
-      <section className="relative col-start-1 col-end-3 row-start-2 row-end-3 flex w-full">
+    <main className="relative grid h-[calc(100%-4rem)] w-full grid-cols-6 grid-rows-10 gap-2 p-6">
+      <section
+        className={`${!showSource ? "row-end-3" : "row-end-6"} relative col-start-1 col-end-3 row-start-1 flex w-full`}
+      >
         <div
-          className={`flex w-full flex-col rounded-lg bg-white shadow transition-all duration-300 ${showSource ? "px-4 pt-4 pb-6" : "px-4 py-2"} `}
+          className={`flex w-full flex-col rounded-lg bg-white shadow ${showSource ? "px-4 pt-4 pb-6" : "px-4 py-2"} `}
         >
-          <div className="flex cursor-pointer items-center justify-between">
+          <div className="flex items-center justify-between">
             <h1 className="text-lg font-semibold">Report Source</h1>
 
             <div className="flex items-center">
@@ -104,7 +101,9 @@ export default function App() {
         />
       </section>
 
-      <section className="relative col-start-1 col-end-3 row-start-3 row-end-7 flex h-full w-full flex-col rounded-xl bg-white p-4 shadow-lg">
+      <section
+        className={`${!showSource ? "row-start-3" : "row-start-6"} relative col-start-1 col-end-3 row-end-11 flex h-full w-full flex-col rounded-xl bg-white p-4 shadow-lg`}
+      >
         <CopyButton text={text} disabled={viewState !== "ready"} />
 
         <pre
@@ -118,11 +117,11 @@ export default function App() {
         </pre>
       </section>
 
-      <section className="relative col-start-3 col-end-5 row-start-2 row-end-7 rounded-xl bg-white p-4 shadow-lg">
+      <section className="relative col-start-3 col-end-5 row-start-1 row-end-11 rounded-xl bg-white p-4 shadow-lg">
         <Order mode="pre order" />
       </section>
 
-      <section className="relative col-start-5 col-end-7 row-start-2 row-end-7 bg-white p-4 shadow-lg">
+      <section className="relative col-start-5 col-end-7 row-start-1 row-end-11 bg-white p-4 shadow-lg">
         <Order mode="container" />
       </section>
     </main>
