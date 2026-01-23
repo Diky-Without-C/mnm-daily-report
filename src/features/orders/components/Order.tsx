@@ -34,19 +34,23 @@ export default function OrderPage({ mode }: OrderPageProps) {
       <SearchBar onSearch={handlers.handleSearch} />
 
       <ul className="mt-2 flex flex-col items-center overflow-y-auto">
-        {orders.map((order) => (
-          <li
-            key={order.id}
-            className="relative mt-1 flex w-full items-start justify-between rounded-md bg-gray-200 px-3 py-3 hover:bg-gray-300"
-          >
-            <span className="pr-2">{getOrderLabel(order)}</span>
+        {orders.length ? (
+          orders.map((order) => (
+            <li
+              key={order.id}
+              className="relative mt-1 flex w-full items-start justify-between rounded-md bg-gray-200 px-3 py-3 hover:bg-gray-300"
+            >
+              <span className="pr-2">{getOrderLabel(order)}</span>
 
-            <OrderActionMenu
-              onEdit={() => handlers.handleEdit(order)}
-              onDelete={() => handlers.requestDelete(order.id)}
-            />
-          </li>
-        ))}
+              <OrderActionMenu
+                onEdit={() => handlers.handleEdit(order)}
+                onDelete={() => handlers.requestDelete(order.id)}
+              />
+            </li>
+          ))
+        ) : (
+          <p className="text-gray-500">No matching items</p>
+        )}
       </ul>
 
       {form && (
