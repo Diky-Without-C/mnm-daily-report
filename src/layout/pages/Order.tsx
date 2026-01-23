@@ -75,7 +75,7 @@ export default function App() {
           className={`flex w-full flex-col rounded-lg bg-white shadow ${showSource ? "px-4 pt-4 pb-6" : "px-4 py-2"} `}
         >
           <div className="flex items-center justify-between">
-            <h1 className="text-lg font-semibold">Report Source</h1>
+            <h1 className="text-xl font-semibold">Report Source</h1>
 
             <div className="flex items-center">
               {showSource && <InputDate onDateChange={setDate} />}

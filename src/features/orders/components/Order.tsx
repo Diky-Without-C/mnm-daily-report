@@ -19,7 +19,7 @@ export default function OrderPage({ mode }: OrderPageProps) {
 
   return (
     <div className="flex h-full w-full flex-col">
-      <div className="mb-1 flex w-full items-center justify-between">
+      <div className="mb-4 flex w-full items-center justify-between">
         <h1 className="text-xl font-semibold capitalize">{mode}</h1>
 
         <button
