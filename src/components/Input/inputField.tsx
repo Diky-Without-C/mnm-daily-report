@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
-import Folder from "@components/icon/Folder";
-import FolderOpen from "@components/icon/FolderOpen";
+import DocumentPlus from "@components/icon/documentPlus";
+import DocumentText from "@components/icon/DocumentText";
 
 interface InputFieldProps {
   onFileChange: (file: File | null) => void;
@@ -38,7 +38,7 @@ export default function InputField({ onFileChange }: InputFieldProps) {
       {!fileName ? (
         <div className="flex items-center justify-center gap-2">
           <div className="mb-2 text-3xl">
-            <Folder />
+            <DocumentPlus />
           </div>
           <div>
             <p className="font-semibold text-gray-800">
@@ -53,7 +53,7 @@ export default function InputField({ onFileChange }: InputFieldProps) {
       ) : (
         <div className="flex items-center justify-center gap-2">
           <div className="mb-2 text-3xl">
-            <FolderOpen />
+            <DocumentText />
           </div>
           <div>
             <p className="font-semibold text-gray-800">{fileName}</p>
