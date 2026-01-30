@@ -33,7 +33,7 @@ export default function OrderPage({ mode }: OrderPageProps) {
 
       <SearchBar onSearch={handlers.handleSearch} />
 
-      <ul className="mt-2 flex flex-col items-center overflow-y-auto">
+      <ul className="mt-2 flex h-full flex-col items-center overflow-y-auto">
         {orders.length ? (
           orders.map((order) => (
             <li
