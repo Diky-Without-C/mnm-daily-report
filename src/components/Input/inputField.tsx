@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
-import DocumentPlus from "@components/icon/documentPlus";
 import DocumentText from "@components/icon/DocumentText";
+import DocumentPlus from "@components/icon/DocumentPlus";
 
 interface InputFieldProps {
   onFileChange: (file: File | null) => void;
