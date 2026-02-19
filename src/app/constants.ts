@@ -27,22 +27,31 @@ export type ContainerType = (typeof CONTAINER_TYPES)[number];
  * SPLIT RULES
  * ========================= */
 export const ITEM_SPLIT_BY_NAME = [
-  "\\(S\\)",
-  "ROBOMAN AP",
-  "ROBOMAN SUPER HERO SERIES",
-  "GASING CARTOON PORORO",
-  "MOTOR CROSS METALIC",
+  "MOTO CROSS METALIC",
+  "SEPEDA MOTOR GP3 SABLON",
+  "FANCY GUESSING EGG BOX",
 ] as const;
 
 export const ITEM_SPLIT_BY_CODE = [
   "522A",
-  "MC288AB",
-  "MD3488L",
-  "FC006",
-  "MC568-DB",
-  "MC568-B2",
-  "MC412-S",
-  "MC413-L2",
+  "MD3461",
+  "462S",
+  "373S",
+  "3675-S",
+  "3488L",
+  "551S",
+  "412S",
+  "413S",
+  "523S",
+  "536L",
+  "460L2",
+  "FC009S",
+  "319-D",
+  "521S",
+  "566S",
+  "547S",
+  "549S",
+  "548S",
 ] as const;
 
 /* =========================
@@ -51,20 +60,19 @@ export const ITEM_SPLIT_BY_CODE = [
 export type MergeRule = { code: string } | { name: string };
 
 export const ITEM_TO_MERGE: ReadonlyArray<ReadonlyArray<MergeRule>> = [
-  [{ code: "MD3308-7" }, { name: "ROBOMAN MERAH" }],
+  [{ code: "MD3308" }, { code: "MC319-D" }],
   [{ code: "MC351" }, { code: "MC530" }],
-  [{ name: "ROBOMAN BTM" }, { name: "ROBOMAN IRM" }],
+  [{ code: "MC309" }, { code: "MC336" }],
+  [{ name: "ROBOMAN BLOCK (BATMAN)" }, { name: "ROBOMAN BLOCK (IRONMAN)" }],
 ];
 
 /* =========================
  * EXTRA INFO KEYWORDS
  * ========================= */
 export const EXTRA_INFO = [
-  "Gunung",
-  "Lipat",
   "Heli",
   "Pesawat",
-  "Geep",
+  "Jeep",
   "Vw",
   "SNI",
   "Star Rider",
@@ -78,7 +86,7 @@ export const EXTRA_INFO = [
   "Kotak",
   "Bulat",
   "Hlk",
-  "Irm",
+  "Captain",
   "Bear",
   "Master",
 ];
@@ -90,7 +98,7 @@ export type ExtraInfoKeyword = (typeof EXTRA_INFO)[number];
  * ========================= */
 
 export const CUSTOM_TITLES = {
-  "ROBOMAN MERAH (MC319)": "ROBOMAN BOX (MC319)",
+  "ROBOMAN BLOCK MERAH (MC319-D)": "ROBOMAN BOX (MC319)",
   "ROBOMAN (RM019)": "ROBOMAN TACTICAL FORCE (RM019)",
   "MOBIL CARTOON HELI (MD3488)": "MOBIL CARTOON (MD3488)",
 } as const;

@@ -66,8 +66,17 @@ export function parseExcelFile(
         size = restCopy.pop()!;
       }
 
-      const code = restCopy.pop() || "";
-      const name = restCopy.join(" ").trim();
+      const rawText = restCopy.join(" ").trim();
+
+      const match = rawText.match(/\b(?:MC|MD|SR|FC|RM|MF|TS)\d{3,4}\S*/g);
+      const code = match?.[0] ?? "";
+
+      const name = rawText
+        .replace(code, "")
+        .replace(/-/g, "")
+        .replace(/\s+/gi, " ")
+        .trim();
+
       const type = rawType in ITEM_TYPES ? (rawType as ItemTypeCode) : "";
 
       return {
