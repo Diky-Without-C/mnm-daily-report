@@ -22,12 +22,6 @@ export default function App() {
 
   const { data, loading, error } = useExcelParser(file, date.getDate());
   const { data: report } = useSupabaseQuery<Report>("report");
-<<<<<<< HEAD
-  const { data: hulaan } = useSupabaseQuery<{ text: string; id: string }>(
-    "hulaan",
-  );
-=======
->>>>>>> newfeat
 
   const currentDate = new Date(date).toLocaleDateString("en-ID", {
     year: "numeric",
@@ -41,10 +35,6 @@ export default function App() {
     const split = pairs.flatMap((pair) => splitGroup(pair));
     const merge = mergeGroup(split);
     const categories = groupByCategory(merge);
-<<<<<<< HEAD
-=======
-
->>>>>>> newfeat
     return categories;
   };
 
@@ -67,11 +57,7 @@ export default function App() {
     const cleanData = preProcessedData(data);
 
     setText(dataToText(cleanData, currentDate, report as Report[]));
-<<<<<<< HEAD
-  }, [data, file, date, currentDate, hulaan, report]);
-=======
   }, [data, file, date, currentDate, report]);
->>>>>>> newfeat
 
   useEffect(() => {
     if (file) setShowSource(false);
