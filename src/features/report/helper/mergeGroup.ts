@@ -1,5 +1,5 @@
-import { ITEM_TO_MERGE } from "@/app/constants";
 import type { ParsedItem } from "@/lib/xlsx/xlsx.type";
+import { ITEM_TO_MERGE } from "../report.constant";
 
 function escapeRegex(str: string) {
   return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -18,29 +18,39 @@ function findGroupIndex(
   if (!regex) return;
 
   for (const [index, group] of groups) {
-    const ref = group[0];
-    if (
-      (item.code && regex.test(ref.code)) ||
-      (item.name && regex.test(ref.name))
-    ) {
-      return index;
-    }
+    const isMatch = group.some((ref) => {
+      return (
+        (item.code && regex.test(ref.code)) ||
+        (item.name && regex.test(ref.name))
+      );
+    });
+
+    if (isMatch) return index;
   }
 }
+
+const findFirstIndex = (
+  groupMap: Map<number, ParsedItem[]>,
+  items: Partial<ParsedItem>[],
+) => {
+  return items
+    .map((item) => findGroupIndex(groupMap, item))
+    .find((i) => i !== undefined);
+};
 
 export const mergeGroup = (groups: ParsedItem[][]): ParsedItem[][] => {
   const groupMap = new Map<number, ParsedItem[]>();
   groups.forEach((group, i) => groupMap.set(i, group));
 
-  for (const [search, ...targets] of ITEM_TO_MERGE) {
-    const mainIndex = findGroupIndex(groupMap, search);
+  for (const { parent, child } of ITEM_TO_MERGE) {
+    const mainIndex = findFirstIndex(groupMap, parent);
     if (mainIndex === undefined) continue;
 
-    const targetIndexes = targets
-      .map((target) => findGroupIndex(groupMap, target))
+    const targetIndexes = child
+      .map((c) => findGroupIndex(groupMap, c))
       .filter((i): i is number => i !== undefined && i !== mainIndex);
 
-    if (targetIndexes.length !== targets.length) continue;
+    if (targetIndexes.length !== child.length) continue;
 
     const merged = [
       ...groupMap.get(mainIndex)!,

@@ -35,6 +35,8 @@ export default function App() {
     const split = pairs.flatMap((pair) => splitGroup(pair));
     const merge = mergeGroup(split);
     const categories = groupByCategory(merge);
+    console.log(categories);
+
     return categories;
   };
 
