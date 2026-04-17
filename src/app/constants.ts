@@ -58,7 +58,7 @@ export type ExtraInfoKeyword = (typeof EXTRA_INFO)[number];
  * ========================= */
 
 export const CUSTOM_TITLES = {
-  "ROBOMAN BLOCK MERAH (MC319-D)": "ROBOMAN BOX (MC319)",
+  "ROBOMAN BLOCK MERAH (MC319-D)": "ROBOMAN BOX (MC319-BOX)",
   "ROBOMAN (RM019)": "ROBOMAN TACTICAL FORCE (RM019)",
   "MOBIL CARTOON HELI (MD3488)": "MOBIL CARTOON (MD3488)",
 } as const;

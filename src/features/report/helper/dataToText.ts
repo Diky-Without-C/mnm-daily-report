@@ -65,18 +65,31 @@ const formatPreOrder = ({ number, from, type, amount }: Report) =>
 const formatContainer = ({ number, from, type, amount }: Report) =>
   `${from} ${number.toString().padStart(2, "0")} ${type} ${formatNumber(amount)}`;
 
-const groupReportsByCode = (reports: Report[]) =>
-  reports.reduce<Record<string, ReportGroup>>((acc, r) => {
-    acc[r.code] ??= { container: [], preOrder: [] };
+const groupReportsByCode = (reports: Report[]): Record<string, ReportGroup> => {
+  const result: Record<string, ReportGroup> = {};
 
-    if (r.category === ORDER_CATEGORY.CONTAINER) {
-      acc[r.code].container.push(formatContainer(r));
-    } else if (r.category === ORDER_CATEGORY.PRE_ORDER) {
-      acc[r.code].preOrder.push(formatPreOrder(r));
+  for (const report of reports) {
+    const { code, category } = report;
+
+    if (!result[code]) {
+      result[code] = { container: [], preOrder: [] };
     }
 
-    return acc;
-  }, {});
+    const group = result[code];
+
+    switch (category) {
+      case ORDER_CATEGORY.CONTAINER:
+        group.container.push(formatContainer(report));
+        break;
+
+      case ORDER_CATEGORY.PRE_ORDER:
+        group.preOrder.push(formatPreOrder(report));
+        break;
+    }
+  }
+
+  return result;
+};
 
 type StockGroup = {
   title: string;
@@ -86,15 +99,26 @@ type StockGroup = {
 
 const buildGroup = (
   items: ParsedItem[],
-  reports?: ReportGroup,
+  reports?: Record<string, ReportGroup>,
 ): StockGroup | null => {
   if (!items.length) return null;
-
   const lines = splitByType(items).flatMap(buildStockLines);
-  const footer = [
-    ...(reports?.container ?? []),
-    ...(reports?.preOrder ?? []),
-  ].sort();
+
+  const preOrders: string[] = [];
+  const containers: string[] = [];
+
+  const globalCode = items.map((item) => item.code).join("/");
+
+  for (const code of Object.keys(reports || {})) {
+    if (!reports) break;
+
+    if (globalCode.includes(code)) {
+      preOrders.push(...reports[code].preOrder);
+      containers.push(...reports[code].container);
+    }
+  }
+
+  const footer = [...preOrders, ...containers].sort();
 
   return {
     title: getTitle(items[0]),
@@ -121,8 +145,11 @@ export const dataToText = (
   const isStockGroup = (g: StockGroup | null): g is StockGroup => g !== null;
 
   const body = CATEGORY_KEYS.map((key) => {
-    const content = data[key]
-      .map((group) => buildGroup(group, reportsByCode[group[0]?.code]))
+    const rawContent = data[key].flatMap((group) =>
+      buildGroup(group, reportsByCode),
+    );
+
+    const content = rawContent
       .filter(isStockGroup)
       .map(formatGroup)
       .join("\n\n");

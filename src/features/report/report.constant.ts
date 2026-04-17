@@ -51,6 +51,7 @@ export const ITEM_SPLIT_BY_CODE = [
   "547S",
   "549S",
   "548S",
+  "SR007-L",
 ] as const;
 
 //custom merge rules for items that cannot be automatically grouped by code or name
