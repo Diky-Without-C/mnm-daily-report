@@ -15,6 +15,7 @@ interface InputFieldProps {
   label: string;
   value: string | number;
   onChange(name: keyof Report, value: string | number): void;
+  type?: "text" | "number";
   className?: string;
 }
 
@@ -67,8 +68,9 @@ export default function Form({ form, onClose, onChange, onSubmit }: FormProps) {
         <InputField
           name="number"
           label="Number"
-          value={form.number}
+          value={form.number === 0 ? "" : form.number}
           onChange={onChange}
+          type="number"
         />
 
         <SelectField
@@ -82,8 +84,9 @@ export default function Form({ form, onClose, onChange, onSubmit }: FormProps) {
         <InputField
           name="amount"
           label="Amount"
-          value={form.amount}
+          value={form.amount === 0 ? "" : form.amount}
           onChange={onChange}
+          type="number"
         />
 
         <div className="col-span-4 mt-5 flex justify-end gap-2">
@@ -111,6 +114,7 @@ function InputField({
   name,
   label,
   value,
+  type = "text",
   onChange,
   className = "",
 }: InputFieldProps) {
@@ -120,6 +124,8 @@ function InputField({
         <input
           name={name}
           value={value}
+          type={"text"}
+          inputMode={type === "number" ? "numeric" : "text"}
           onChange={(e) => onChange(name, e.target.value)}
           className={`${className} h-10 w-52 rounded-lg bg-transparent px-4 text-gray-900 placeholder-transparent ring-2 ring-gray-300 transition-all focus:border-sky-600 focus:ring-sky-500 focus:outline-none`}
           required

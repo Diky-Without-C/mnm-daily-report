@@ -43,25 +43,19 @@ export default function useOrderPage({ mode }: UseOrderPageParams) {
     });
 
   const handleChange = (name: keyof Report, value: string | number) => {
-    setForm((prev) =>
-      prev
-        ? {
-            ...prev,
-            [name]:
-              name === "amount" || name === "number"
-                ? Number(value) || 0
-                : name === "code"
-                  ? String(value).toUpperCase()
-                  : value,
-          }
-        : null,
-    );
+    setForm((prev) => (prev ? { ...prev, [name]: value } : null));
   };
 
   const handleSubmit = async () => {
     if (!form) return;
 
-    const { id, ...payload } = form;
+    const { id, ...rawPayload } = form;
+    const payload = {
+      ...rawPayload,
+      code: String(rawPayload.code).toUpperCase(),
+      amount: Number(rawPayload.amount),
+      number: Number(rawPayload.number),
+    };
 
     if (id === ADD_ORDER_ID) {
       const created = await supabaseService.create("report", payload);
