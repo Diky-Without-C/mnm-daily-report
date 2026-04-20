@@ -70,7 +70,7 @@ export default function App() {
         className={`${!showSource ? "row-end-3" : "row-end-6"} relative col-start-1 col-end-3 row-start-1 flex w-full`}
       >
         <div
-          className={`flex w-full flex-col rounded-lg bg-white shadow ${showSource ? "px-4 pt-4 pb-6" : "px-4 py-2"} `}
+          className={`flex w-full flex-col rounded-lg bg-white shadow ${showSource ? "px-4 pt-3 pb-6" : "px-4 pt-4"} `}
         >
           <div className="flex items-center justify-between">
             <h1 className="text-xl font-semibold">Report Source</h1>
@@ -80,8 +80,8 @@ export default function App() {
             </div>
           </div>
 
-          <div className="mt-3">
-            <section className={showSource ? "block" : "hidden"}>
+          <div className={`mt-3 ${showSource ? "flex-1" : ""}`}>
+            <section className={showSource ? "block h-full" : "hidden"}>
               <InputField onFileChange={setFile} />
             </section>
           </div>
@@ -95,7 +95,7 @@ export default function App() {
 
         <ChevronUpDown
           onClick={() => file && setShowSource((prev) => !prev)}
-          className="absolute right-0 bottom-0 size-6 -rotate-45 cursor-pointer text-gray-700 hover:scale-110"
+          className="absolute right-0 bottom-0 size-6 cursor-pointer text-gray-700 hover:scale-110"
         />
       </section>
 

@@ -18,10 +18,7 @@ export default function InputField({ onFileChange }: InputFieldProps) {
 
   return (
     <section
-      className={[
-        "relative flex w-full cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed bg-blue-700/10 px-6 py-8 shadow-lg transition",
-        isDragging ? "border-blue-500 bg-blue-50" : "border-gray-300",
-      ].join(" ")}
+      className={`${isDragging ? "border-blue-500 bg-blue-50" : "border-gray-300"} relative flex h-full w-full cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed bg-blue-700/10 px-6 py-8 shadow-lg transition`}
       onClick={() => inputRef.current?.click()}
       onDragOver={(e) => {
         e.preventDefault();
