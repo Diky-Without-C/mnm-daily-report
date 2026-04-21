@@ -35,7 +35,7 @@ export default function OrderPage({ mode }: OrderPageProps) {
 
       <ul className="mt-2 flex h-full flex-col items-center overflow-y-auto">
         {orders.length ? (
-          orders.map((order) => (
+          orders.map((order, i) => (
             <li
               key={order.id}
               className="relative mt-1 flex w-full items-start justify-between rounded-md bg-gray-200 px-3 py-3 hover:bg-gray-300"
@@ -45,6 +45,7 @@ export default function OrderPage({ mode }: OrderPageProps) {
               <OrderActionMenu
                 onEdit={() => handlers.handleEdit(order)}
                 onDelete={() => handlers.requestDelete(order.id)}
+                position={i === orders.length - 1 ? "Bottom" : "Top"}
               />
             </li>
           ))
@@ -71,13 +72,13 @@ export default function OrderPage({ mode }: OrderPageProps) {
   );
 }
 
-function OrderActionMenu({
-  onEdit,
-  onDelete,
-}: {
+interface OrderActionMenuProps {
   onEdit: () => void;
   onDelete: () => void;
-}) {
+  position: "Top" | "Bottom";
+}
+
+function OrderActionMenu({ onEdit, onDelete, position }: OrderActionMenuProps) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -118,7 +119,7 @@ function OrderActionMenu({
       {open && (
         <div
           onClick={(e) => e.stopPropagation()}
-          className="absolute right-0 z-10 w-28 overflow-hidden rounded-md bg-gray-50 shadow-lg"
+          className={`${position === "Top" ? "top-0" : "bottom-0"} absolute right-0 z-10 w-28 overflow-hidden rounded-md bg-gray-50 shadow-lg`}
         >
           <button
             onClick={() => {
