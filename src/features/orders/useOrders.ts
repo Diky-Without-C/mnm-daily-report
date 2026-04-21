@@ -1,31 +1,29 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import type { Report } from "@/app/supabase/report.dto";
 import { supabaseService } from "@/app/supabase/service";
 import { ITEM_TYPES, CONTAINER_TYPES } from "@/app/constants";
 import { ADD_ORDER_ID } from "./order.constants";
 import { filterOrders, sortOrders } from "./order.helpers";
 import type { OrderCategoryType } from "./order.type";
+import { useOrdersStore } from "@/store/useOrders.store";
 
 interface UseOrderPageParams {
   mode: OrderCategoryType;
 }
 
 export default function useOrderPage({ mode }: UseOrderPageParams) {
-  const [data, setData] = useState<Report[]>([]);
+  const { orders: ordersStore, setOrders } = useOrdersStore();
+
   const [search, setSearch] = useState("");
   const [deleteTargetId, setDeleteTargetId] = useState<string | null>(null);
   const [form, setForm] = useState<Report | null>(null);
 
-  useEffect(() => {
-    supabaseService.fetchAll<Report>("report").then(setData);
-  }, []);
-
   const orders = useMemo(() => {
     return filterOrders(
-      data.filter((item) => item.category === mode).sort(sortOrders),
+      ordersStore.filter((item) => item.category === mode).sort(sortOrders),
       search,
     );
-  }, [data, mode, search]);
+  }, [ordersStore, mode, search]);
 
   const handleSearch = (value: string) => setSearch(value);
 
@@ -59,10 +57,13 @@ export default function useOrderPage({ mode }: UseOrderPageParams) {
 
     if (id === ADD_ORDER_ID) {
       const created = await supabaseService.create("report", payload);
-      if (created) setData((prev) => [...prev, created]);
+      if (created) {
+        setOrders((prev) => [...prev, created]);
+      }
     } else {
       await supabaseService.update("report", id, payload);
-      setData((prev) =>
+
+      setOrders((prev) =>
         prev.map((item) => (item.id === id ? { ...item, ...payload } : item)),
       );
     }
@@ -71,14 +72,15 @@ export default function useOrderPage({ mode }: UseOrderPageParams) {
   };
 
   const requestDelete = (id: string) => setDeleteTargetId(id);
-
   const cancelDelete = () => setDeleteTargetId(null);
 
   const confirmDelete = async () => {
     if (!deleteTargetId) return;
 
     await supabaseService.remove("report", deleteTargetId);
-    setData((prev) => prev.filter((item) => item.id !== deleteTargetId));
+
+    setOrders((prev) => prev.filter((item) => item.id !== deleteTargetId));
+
     setDeleteTargetId(null);
   };
 
