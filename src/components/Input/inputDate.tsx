@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import Calendar from "@components/icon/Calendar";
 
 interface InputDateProps {
+  date: Date;
   onDateChange: (date: Date) => void;
 }
 
@@ -23,8 +24,8 @@ const monthNames = [
 const getDaysInMonth = (year: number, month: number) =>
   new Date(year, month + 1, 0).getDate();
 
-export default function InputDate({ onDateChange }: InputDateProps) {
-  const today = new Date();
+export default function InputDate({ date, onDateChange }: InputDateProps) {
+  const today = new Date(date);
   const year = today.getFullYear();
   const month = today.getMonth();
 

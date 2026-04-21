@@ -13,21 +13,19 @@ import { dataToText } from "@/features/report/helper/dataToText";
 import Order from "@/features/orders/components/Order";
 import type { Report } from "@/app/supabase/report.dto";
 import { useSupabaseQuery } from "@/app/supabase/useSupabaseQuery";
+import { useDateStore } from "@/store/usetDate.store";
+import { formatDate } from "@/utils/formatDate";
 
 export default function App() {
   const [file, setFile] = useState<File | null>(null);
-  const [date, setDate] = useState<Date>(new Date());
   const [text, setText] = useState<string>("");
   const [showSource, setShowSource] = useState(true);
 
+  const { date, setDate } = useDateStore();
   const { data, loading, error } = useExcelParser(file, date.getDate());
   const { data: report } = useSupabaseQuery<Report>("report");
 
-  const currentDate = new Date(date).toLocaleDateString("en-ID", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
+  const currentDate = formatDate(useDateStore((state) => state.date));
 
   const preProcessedData = (data: ParsedItem[]) => {
     const clean = data.filter((item) => item.type !== "");
@@ -76,7 +74,7 @@ export default function App() {
             <h1 className="text-xl font-semibold">Report Source</h1>
 
             <div className="flex items-center">
-              {showSource && <InputDate onDateChange={setDate} />}
+              {showSource && <InputDate onDateChange={setDate} date={date} />}
             </div>
           </div>
 
