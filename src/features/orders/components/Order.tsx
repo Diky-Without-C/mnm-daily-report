@@ -13,9 +13,7 @@ interface OrderPageProps {
 }
 
 export default function OrderPage({ mode }: OrderPageProps) {
-  const { orders, form, deleteTargetId, handlers } = useOrderPage({
-    mode,
-  });
+  const { orders, form, deleteTargetId, handlers } = useOrderPage({ mode });
 
   return (
     <div className="flex h-full w-full flex-col">
@@ -45,7 +43,7 @@ export default function OrderPage({ mode }: OrderPageProps) {
               <OrderActionMenu
                 onEdit={() => handlers.handleEdit(order)}
                 onDelete={() => handlers.requestDelete(order.id)}
-                position={i === orders.length - 1 ? "Bottom" : "Top"}
+                position={i === orders.length - 1 && i > 0 ? "Bottom" : "Top"}
               />
             </li>
           ))
