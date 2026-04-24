@@ -12,6 +12,7 @@ import { useSupabaseQuery } from "@/app/supabase/useSupabaseQuery";
 import { useDateStore } from "@/store/usetDate.store";
 import { useOrdersStore } from "@/store/useOrders.store";
 import { formatDate } from "@/utils/formatDate";
+import { useLocalStorage } from "@/hooks/useLocaleStorage";
 
 export default function App() {
   const [file, setFile] = useState<File | null>(null);
@@ -23,12 +24,22 @@ export default function App() {
   const { data: xlsx, loading, error } = useExcelParser(file, date.getDate());
   const { data: report } = useSupabaseQuery<Report>("report");
 
+  const [codeHint, setCodeHint] = useLocalStorage<string[]>("codeHint", []);
+
   const currentDate = formatDate(date);
 
   useEffect(() => {
     if (!report) return;
+
     setOrders(report);
   }, [report, setOrders]);
+
+  useEffect(() => {
+    if (codeHint.length > 0 || !xlsx) return;
+
+    const codes = [...new Set(xlsx.map((sheet) => sheet.code))];
+    setCodeHint(codes);
+  }, [xlsx, setCodeHint, codeHint]);
 
   const text = useMemo(() => {
     if (!xlsx) return "";
