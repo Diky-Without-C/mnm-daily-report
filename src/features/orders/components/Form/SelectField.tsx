@@ -1,6 +1,6 @@
 import { useRef, useEffect, forwardRef } from "react";
 import type { Report } from "@/app/supabase/report.dto";
-import Carrot from "@components/icon/Carrot";
+import ChevronUp from "@components/icon/ChevronUp";
 import { useSelect } from "./useSelect";
 
 interface SelectFieldProps {
@@ -86,7 +86,7 @@ export default function SelectField({
         >
           <span>{value}</span>
 
-          <Carrot className={open ? "rotate-180" : ""} />
+          <ChevronUp className={open ? "rotate-180" : ""} />
         </button>
 
         <label className="absolute -top-3 left-4 bg-white px-1 text-sm text-gray-600">

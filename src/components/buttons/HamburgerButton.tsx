@@ -14,7 +14,7 @@ export default function MenuButton({ open, onToggle }: MenuButtonProps) {
       aria-pressed={open}
       aria-label="Menu"
       onClick={handleClick}
-      className="group inline-flex h-12 w-12 cursor-pointer items-center justify-center text-slate-800 transition"
+      className="group inline-flex h-12 w-12 cursor-pointer items-center justify-center text-white transition"
     >
       <svg
         viewBox="0 0 16 16"
