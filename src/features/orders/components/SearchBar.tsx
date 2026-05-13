@@ -21,7 +21,7 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
   };
 
   return (
-    <div className="relative flex items-center">
+    <div className="relative flex w-full items-center">
       <input
         ref={searchRef}
         type="text"
