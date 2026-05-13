@@ -6,7 +6,7 @@ import ChevronUpDown from "@components/icon/ChevronUpDown";
 import { useExcelParser } from "@/lib/xlsx/useExcelParser";
 import { processData } from "@/features/report";
 import { dataToText } from "@/features/report/helper/dataToText";
-import Order from "@/features/orders/components/Order";
+import OrderList from "@/features/orders/components/OrderList";
 import type { Report } from "@/app/supabase/report.dto";
 import { useSupabaseQuery } from "@/app/supabase/useSupabaseQuery";
 import { useDateStore } from "@/store/usetDate.store";
@@ -35,7 +35,7 @@ export default function App() {
   }, [report, setOrders]);
 
   useEffect(() => {
-    if (codeHint.length > 0 || !xlsx) return;
+    if (!xlsx) return;
 
     const codes = [...new Set(xlsx.map((sheet) => sheet.code))];
     setCodeHint(codes);
@@ -119,11 +119,11 @@ export default function App() {
       </section>
 
       <section className="relative col-start-3 col-end-5 row-start-1 row-end-11 rounded-xl bg-white p-4 shadow-lg">
-        <Order mode="pre order" />
+        <OrderList mode="pre order" />
       </section>
 
-      <section className="relative col-start-5 col-end-7 row-start-1 row-end-11 bg-white p-4 shadow-lg">
-        <Order mode="container" />
+      <section className="relative col-start-5 col-end-7 row-start-1 row-end-11 rounded-xl bg-white p-4 shadow-lg">
+        <OrderList mode="container" />
       </section>
     </main>
   );
