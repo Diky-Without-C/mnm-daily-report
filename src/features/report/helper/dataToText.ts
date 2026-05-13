@@ -107,12 +107,10 @@ const buildGroup = (
   const preOrders: string[] = [];
   const containers: string[] = [];
 
-  const globalCode = items.map((item) => item.code).join("/");
-
   for (const code of Object.keys(reports || {})) {
     if (!reports) break;
 
-    if (globalCode.includes(code)) {
+    if (items.some((item) => item.code === code)) {
       preOrders.push(...reports[code].preOrder);
       containers.push(...reports[code].container);
     }
