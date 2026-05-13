@@ -9,6 +9,7 @@ interface SelectFieldProps {
   value: string;
   options: readonly string[];
   onChange(name: keyof Report, value: string): void;
+  className?: string;
 }
 
 export default function SelectField({
@@ -17,6 +18,7 @@ export default function SelectField({
   value,
   options,
   onChange,
+  className = "",
 }: SelectFieldProps) {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const itemRefs = useRef<(HTMLButtonElement | null)[]>([]);
@@ -38,7 +40,7 @@ export default function SelectField({
   }, [activeIndex]);
 
   return (
-    <div className="col-span-2 mx-auto rounded-lg bg-white py-2">
+    <div className={`mx-auto rounded-lg bg-white py-2 ${className}`}>
       <div
         ref={wrapperRef}
         tabIndex={0}

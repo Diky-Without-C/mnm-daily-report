@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import Kebab from "@components/icon/Kebab";
 import Add from "@components/icon/Add";
-import useOrderPage from "../useOrders";
+import type { Report } from "@/app/supabase/report.dto";
+import useOrderList from "../useOrders";
 import { getOrderLabel } from "../order.helpers";
 import type { OrderCategoryType } from "../order.type";
 import DeleteDialog from "./DeleteDialog";
@@ -10,10 +11,11 @@ import Form from "./Form";
 
 interface OrderPageProps {
   mode: OrderCategoryType;
+  setSelectedOrder?: (order: Report) => void;
 }
 
-export default function OrderPage({ mode }: OrderPageProps) {
-  const { orders, form, deleteTargetId, handlers } = useOrderPage({ mode });
+export default function OrderList({ mode, setSelectedOrder }: OrderPageProps) {
+  const { orders, form, deleteTargetId, handlers } = useOrderList({ mode });
 
   return (
     <div className="flex h-full w-full flex-col">
@@ -36,7 +38,8 @@ export default function OrderPage({ mode }: OrderPageProps) {
           orders.map((order, i) => (
             <li
               key={order.id}
-              className="relative mt-1 flex w-full items-start justify-between rounded-md bg-gray-200 px-3 py-3 hover:bg-gray-300"
+              onClick={() => setSelectedOrder && setSelectedOrder(order)}
+              className="relative mt-1 flex w-full items-center justify-between rounded-md bg-gray-200 px-3 py-3 hover:bg-gray-300"
             >
               <span className="pr-2">{getOrderLabel(order)}</span>
 

@@ -1,18 +1,18 @@
 import { useRef, useEffect, forwardRef } from "react";
-import type { Report } from "@/app/supabase/report.dto";
 import { useAutocomplete } from "./useAutocomplete";
 
-interface InputFieldProps {
-  name: keyof Report;
-  label: string;
+interface AutocompleteInputProps {
+  name?: string;
+  label?: string;
   value: string | number;
-  onChange(name: keyof Report, value: string | number): void;
+  onChange?: (name: string, value: string | number) => void;
   type?: "text" | "number";
   hints?: string[];
   className?: string;
+  unit?: string;
 }
 
-export default function InputField({
+export default function AutocompleteInput({
   name,
   label,
   value,
@@ -20,7 +20,8 @@ export default function InputField({
   hints = [],
   onChange,
   className = "",
-}: InputFieldProps) {
+  unit,
+}: AutocompleteInputProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const itemRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
@@ -28,6 +29,7 @@ export default function InputField({
     useAutocomplete(hints, String(value));
 
   const handleSelect = (option: string) => {
+    if (!onChange || !name) return;
     onChange(name, option);
     setShow(false);
     reset();
@@ -42,7 +44,7 @@ export default function InputField({
   }, [activeIndex]);
 
   return (
-    <div className="col-span-2 mx-auto rounded-lg bg-white py-2">
+    <div className={`rounded-lg bg-white py-2 ${className}`}>
       <div className="relative">
         <input
           ref={inputRef}
@@ -52,7 +54,13 @@ export default function InputField({
           autoComplete="off"
           inputMode={type === "number" ? "numeric" : "text"}
           onChange={(e) => {
-            onChange(name, e.target.value);
+            if (!onChange || !name) return;
+            let value = e.target.value;
+            if (type === "number") {
+              value = value.replace(/\D/g, "");
+            }
+
+            onChange(name, value);
             reset();
           }}
           onFocus={() => hints.length && setShow(true)}
@@ -87,15 +95,23 @@ export default function InputField({
                 break;
             }
           }}
-          className={`${className} h-10 w-52 rounded-lg bg-transparent px-4 text-gray-900 ring-2 ring-gray-300 focus:ring-sky-500`}
+          className="h-10 w-full rounded-lg bg-transparent px-4 text-gray-900 uppercase ring-2 ring-gray-300 focus:ring-sky-500"
         />
 
-        <label className="absolute -top-3 left-4 bg-white px-1 text-sm text-gray-600">
-          {label}
-        </label>
+        {label && (
+          <label className="absolute -top-3 left-4 bg-white px-1 text-sm text-gray-600 capitalize">
+            {label}
+          </label>
+        )}
+
+        {unit && (
+          <span className="absolute top-1/2 right-3 -translate-y-1/2 bg-white text-sm text-gray-500">
+            {unit}
+          </span>
+        )}
 
         {show && filtered.length > 0 && (
-          <div className="absolute left-0 z-10 mt-1 max-h-32 w-52 overflow-auto rounded-md bg-neutral-800 text-white shadow-lg">
+          <div className="absolute left-0 z-10 mt-1 max-h-32 w-full overflow-auto rounded-md bg-neutral-800 text-white shadow-lg">
             {filtered.map((option, index) => (
               <AutocompleteItem
                 key={option}

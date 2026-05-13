@@ -11,7 +11,7 @@ interface UseOrderPageParams {
   mode: OrderCategoryType;
 }
 
-export default function useOrderPage({ mode }: UseOrderPageParams) {
+export default function useOrderList({ mode }: UseOrderPageParams) {
   const { orders: ordersStore, setOrders } = useOrdersStore();
 
   const [search, setSearch] = useState("");
