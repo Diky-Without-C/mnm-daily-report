@@ -62,7 +62,6 @@ export default function Form({ form, onClose, onChange, onSubmit }: FormProps) {
           onChange={onChange}
           type="number"
           className="col-span-2 w-52"
-          unit="PCS"
         />
 
         <SelectField
