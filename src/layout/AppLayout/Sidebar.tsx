@@ -54,7 +54,7 @@ export default function Sidebar({ expanded, onToggle }: SidebarProps) {
   return (
     <aside
       ref={sidebarRef}
-      className={`fixed top-0 left-0 z-10 flex h-full flex-col border-r border-slate-400 bg-gray-800 p-2 shadow transition-[width] duration-300 ${
+      className={`fixed top-0 left-0 z-10 flex h-full flex-col bg-gray-800 p-2 shadow-lg transition-[width] duration-300 ${
         expanded ? "w-64 overflow-x-hidden" : "w-16"
       }`}
     >
@@ -80,10 +80,10 @@ export default function Sidebar({ expanded, onToggle }: SidebarProps) {
               >
                 {item.icon}
 
-                {expanded && <span className="ml-2 text-xl">{item.label}</span>}
+                {expanded && <span className="ml-2 text-lg">{item.label}</span>}
 
                 {!expanded && (
-                  <span className="absolute left-0 ml-2 hidden translate-x-12 items-center rounded-lg bg-white p-2 text-slate-800 drop-shadow-lg group-hover:flex after:absolute after:left-0 after:size-2 after:-translate-x-1/2 after:rotate-45 after:bg-inherit after:content-['']">
+                  <span className="absolute left-0 ml-2 hidden translate-x-13 items-center rounded-lg bg-black px-2 py-1.5 text-white drop-shadow-lg group-hover:flex after:absolute after:left-0 after:size-2 after:-translate-x-1/2 after:rotate-45 after:bg-inherit after:content-['']">
                     {item.label}
                   </span>
                 )}
