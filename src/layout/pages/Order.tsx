@@ -66,7 +66,7 @@ export default function App() {
         className={`${sourceRow} relative col-start-1 col-end-3 row-start-1 flex w-full`}
       >
         <div
-          className={`flex w-full flex-col rounded-lg bg-white shadow ${
+          className={`flex w-full flex-col rounded-xl bg-white shadow ${
             showSource ? "px-4 pt-3 pb-6" : "px-4 pt-4"
           }`}
         >
