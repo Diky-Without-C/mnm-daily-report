@@ -24,7 +24,7 @@ export default function App() {
   const { data: xlsx, loading, error } = useExcelParser(file, date.getDate());
   const { data: report } = useSupabaseQuery<Report>("report");
 
-  const [codeHint, setCodeHint] = useLocalStorage<string[]>("codeHint", []);
+  const [, setCodeHint] = useLocalStorage<string[]>("codeHint", []);
 
   const currentDate = formatDate(date);
 
@@ -35,11 +35,11 @@ export default function App() {
   }, [report, setOrders]);
 
   useEffect(() => {
-    if (!xlsx) return;
+    if (!xlsx || !xlsx.length) return;
 
     const codes = [...new Set(xlsx.map((sheet) => sheet.code))];
     setCodeHint(codes);
-  }, [xlsx, setCodeHint, codeHint]);
+  }, [xlsx, setCodeHint]);
 
   const text = useMemo(() => {
     if (!xlsx) return "";
