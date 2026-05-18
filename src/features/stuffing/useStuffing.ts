@@ -29,7 +29,7 @@ export default function useStuffing() {
       return {
         item,
         stuffingQty: item.amount,
-        containerNumber: "",
+        containerNumber: prev.containerNumber,
       };
     });
   };
