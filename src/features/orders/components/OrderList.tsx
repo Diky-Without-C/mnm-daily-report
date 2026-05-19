@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from "react";
 import Kebab from "@components/icon/Kebab";
 import Add from "@components/icon/Add";
 import Filter from "@components/icon/Filter";
-import type { Report } from "@/app/supabase/report.dto";
 import useOrderList from "../useOrders";
 import { getOrderLabel } from "../order.helpers";
 import type { OrderCategoryType } from "../order.type";
@@ -12,10 +11,9 @@ import Form from "./Form";
 
 interface OrderPageProps {
   mode: OrderCategoryType;
-  setSelectedOrder?: (order: Report) => void;
 }
 
-export default function OrderList({ mode, setSelectedOrder }: OrderPageProps) {
+export default function OrderList({ mode }: OrderPageProps) {
   const { orders, form, deleteTargetId, handlers } = useOrderList({ mode });
 
   return (
@@ -44,7 +42,6 @@ export default function OrderList({ mode, setSelectedOrder }: OrderPageProps) {
           orders.map((order, i) => (
             <li
               key={order.id}
-              onClick={() => setSelectedOrder && setSelectedOrder(order)}
               className="relative mt-1 flex w-full items-center justify-between rounded-md bg-gray-200 px-3 py-3 hover:bg-gray-300"
             >
               <span className="pr-2">{getOrderLabel(order)}</span>
