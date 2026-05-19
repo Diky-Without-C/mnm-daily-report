@@ -24,6 +24,7 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
     <div className="relative flex w-full items-center">
       <input
         ref={searchRef}
+        name="search"
         type="text"
         placeholder="Search"
         onChange={handleSearch}
