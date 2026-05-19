@@ -1,11 +1,11 @@
 import { useMemo, useState } from "react";
 import type { Report } from "@/app/supabase/report.dto";
 import { supabaseService } from "@/app/supabase/service";
+import { useOrdersStore } from "@/store/useOrders.store";
 import { ITEM_TYPES, CONTAINER_TYPES } from "@/app/constants";
 import { ADD_ORDER_ID } from "./order.constants";
 import { filterOrders, sortOrders } from "./order.helpers";
 import type { OrderCategoryType } from "./order.type";
-import { useOrdersStore } from "@/store/useOrders.store";
 
 interface UseOrderPageParams {
   mode: OrderCategoryType;

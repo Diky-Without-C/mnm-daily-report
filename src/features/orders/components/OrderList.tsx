@@ -58,20 +58,23 @@ export default function OrderList({ mode }: OrderPageProps) {
         )}
       </ul>
 
-      {form && (
-        <Form
-          form={form}
-          onClose={handlers.closeForm}
-          onChange={handlers.handleChange}
-          onSubmit={handlers.handleSubmit}
-        />
+      {(form || Boolean(deleteTargetId)) && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          {form ? (
+            <Form
+              form={form}
+              onClose={handlers.closeForm}
+              onChange={handlers.handleChange}
+              onSubmit={handlers.handleSubmit}
+            />
+          ) : (
+            <DeleteDialog
+              onConfirm={handlers.confirmDelete}
+              onCancel={handlers.cancelDelete}
+            />
+          )}
+        </div>
       )}
-
-      <DeleteDialog
-        open={Boolean(deleteTargetId)}
-        onConfirm={handlers.confirmDelete}
-        onCancel={handlers.cancelDelete}
-      />
     </div>
   );
 }
