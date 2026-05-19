@@ -7,12 +7,14 @@ export interface StuffingForm {
   item: Report | null;
   stuffingQty: number;
   containerNumber: number | string;
+  clearOrder: boolean;
 }
 
 const initialForm: StuffingForm = {
   item: null,
   stuffingQty: 0,
   containerNumber: "",
+  clearOrder: false,
 };
 
 export default function useStuffing() {
@@ -30,14 +32,15 @@ export default function useStuffing() {
         item,
         stuffingQty: item.amount,
         containerNumber: prev.containerNumber,
+        clearOrder: prev.clearOrder,
       };
     });
   };
 
-  const handleChange = (name: string, value: string | number) => {
+  const handleChange = (name: string, value: string | number | boolean) => {
     setForm((prev) => ({
       ...prev,
-      [name]: String(value),
+      [name]: value,
     }));
   };
 
@@ -89,7 +92,7 @@ export default function useStuffing() {
       );
     };
 
-    if (remainingQty > 0) {
+    if (remainingQty > 0 && !form.clearOrder) {
       await createData();
       await updateData({ amount: remainingQty });
     } else {
