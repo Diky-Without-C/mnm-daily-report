@@ -1,8 +1,7 @@
 import { useEffect, useRef, useState } from "react";
+import type { Report } from "@/app/supabase/report.dto";
 import Kebab from "@components/icon/Kebab";
 import Add from "@components/icon/Add";
-import Filter from "@components/icon/Filter";
-import type { Report } from "@/app/supabase/report.dto";
 import useOrderList from "../useOrders";
 import { getOrderLabel } from "../order.helpers";
 import type { OrderCategoryType } from "../order.type";
@@ -34,9 +33,6 @@ export default function OrderList({ mode, setSelectedOrder }: OrderPageProps) {
 
       <div className="flex w-full gap-1">
         <SearchBar onSearch={handlers.handleSearch} />
-        <button className="cursor-pointer rounded-lg border bg-gray-100 p-1 text-gray-700 hover:bg-gray-200">
-          <Filter />
-        </button>
       </div>
 
       <ul className="mt-2 flex h-full flex-col items-center overflow-y-auto">

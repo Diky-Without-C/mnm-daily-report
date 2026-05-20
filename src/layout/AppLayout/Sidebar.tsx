@@ -1,9 +1,10 @@
 import { useEffect, useRef, type ReactNode } from "react";
 import { NavLink } from "react-router-dom";
-
 import HamburgerButton from "@components/buttons/HamburgerButton";
 import ClipboardDocument from "@components/icon/ClipboardDocument";
 import Cube from "@components/icon/Cube";
+import Ranking from "@components/icon/Ranking";
+import Archive from "@components/icon/Archive";
 
 interface SidebarProps {
   expanded: boolean;
@@ -26,6 +27,16 @@ const menuItems: MenuItem[] = [
     label: "Stuffing",
     icon: <Cube />,
     path: "/stuffing",
+  },
+  {
+    label: "MPO",
+    icon: <Ranking />,
+    path: "/ranking",
+  },
+  {
+    label: "Archive",
+    icon: <Archive />,
+    path: "/archive",
   },
 ];
 

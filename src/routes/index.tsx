@@ -10,6 +10,8 @@ export default function AppRoutes() {
         <Route path="/" element={<Navigate to="/order" replace />} />
         <Route path="/order" element={<Order />} />
         <Route path="/stuffing" element={<Stuffing />} />
+        <Route path="/ranking" element={<></>} />
+        <Route path="/archive" element={<></>} />
       </Route>
     </Routes>
   );
