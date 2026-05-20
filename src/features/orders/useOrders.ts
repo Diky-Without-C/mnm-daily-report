@@ -1,9 +1,8 @@
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import type { Report } from "@/app/supabase/report.dto";
 import { supabaseService } from "@/app/supabase/service";
 import { useOrdersStore } from "@/store/useOrders.store";
 import { ITEM_TYPES, CONTAINER_TYPES } from "@/app/constants";
-import { ADD_ORDER_ID } from "./order.constants";
 import { filterOrders, sortOrders } from "./order.helpers";
 import type { OrderCategoryType } from "./order.type";
 
@@ -18,6 +17,8 @@ export default function useOrderList({ mode }: UseOrderPageParams) {
   const [deleteTargetId, setDeleteTargetId] = useState<string | null>(null);
   const [form, setForm] = useState<Report | null>(null);
 
+  const initialFormRef = useRef<Report | null>(null);
+
   const orders = useMemo(() => {
     return filterOrders(
       ordersStore.filter((item) => item.category === mode).sort(sortOrders),
@@ -27,18 +28,26 @@ export default function useOrderList({ mode }: UseOrderPageParams) {
 
   const handleSearch = (value: string) => setSearch(value);
 
-  const handleEdit = (order: Report) => setForm(order);
+  const handleEdit = (order: Report) => {
+    setForm(order);
 
-  const handleAdd = () =>
-    setForm({
-      id: ADD_ORDER_ID,
+    initialFormRef.current = structuredClone(order);
+  };
+
+  const handleAdd = () => {
+    const newForm: Report = {
+      id: "add",
       code: "",
       category: mode,
       from: CONTAINER_TYPES[0],
       number: 0,
       amount: 0,
       type: Object.values(ITEM_TYPES)[0],
-    });
+    };
+
+    setForm(newForm);
+    initialFormRef.current = structuredClone(newForm);
+  };
 
   const handleChange = (name: keyof Report, value: string | number) => {
     setForm((prev) => (prev ? { ...prev, [name]: value } : null));
@@ -48,6 +57,7 @@ export default function useOrderList({ mode }: UseOrderPageParams) {
     if (!form) return;
 
     const { id, ...rawPayload } = form;
+
     const payload = {
       ...rawPayload,
       code: String(rawPayload.code).toUpperCase(),
@@ -55,8 +65,29 @@ export default function useOrderList({ mode }: UseOrderPageParams) {
       number: Number(rawPayload.number),
     };
 
-    if (id === ADD_ORDER_ID) {
+    const initial = initialFormRef.current;
+
+    if (initial && id !== "add") {
+      const normalizedInitial = {
+        ...initial,
+        code: String(initial.code).toUpperCase(),
+        amount: Number(initial.amount),
+        number: Number(initial.number),
+      };
+
+      const hasChanged =
+        JSON.stringify(normalizedInitial) !==
+        JSON.stringify({ id, ...payload });
+
+      if (!hasChanged) {
+        setForm(null);
+        return;
+      }
+    }
+
+    if (id === "add") {
       const created = await supabaseService.create("report", payload);
+
       if (created) {
         setOrders((prev) => [...prev, created]);
       }
@@ -72,6 +103,7 @@ export default function useOrderList({ mode }: UseOrderPageParams) {
   };
 
   const requestDelete = (id: string) => setDeleteTargetId(id);
+
   const cancelDelete = () => setDeleteTargetId(null);
 
   const confirmDelete = async () => {
