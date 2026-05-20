@@ -15,3 +15,5 @@ export type GroupedCategories = Record<
   (typeof CATEGORY_KEYS)[number],
   ParsedItem[][]
 >;
+
+export type Contents = "report";
