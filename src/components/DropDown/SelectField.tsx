@@ -91,9 +91,11 @@ export default function SelectField({
           <ChevronUp className={open ? "rotate-180" : ""} />
         </button>
 
-        <label className="absolute -top-3 left-4 bg-white px-1 text-sm text-gray-600">
-          {label}
-        </label>
+        {label && (
+          <span className="absolute -top-3 left-4 bg-white px-1 text-sm text-gray-600">
+            {label}
+          </span>
+        )}
 
         {open && (
           <div

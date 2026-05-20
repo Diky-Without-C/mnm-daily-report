@@ -50,6 +50,7 @@ export default function AutocompleteInput({
           ref={inputRef}
           name={name}
           value={value}
+          id={name}
           type="text"
           autoComplete="off"
           inputMode={type === "number" ? "numeric" : "text"}
@@ -99,7 +100,10 @@ export default function AutocompleteInput({
         />
 
         {label && (
-          <label className="absolute -top-3 left-4 bg-white px-1 text-sm text-gray-600 capitalize">
+          <label
+            htmlFor={name}
+            className="absolute -top-3 left-4 bg-white px-1 text-sm text-gray-600 capitalize"
+          >
             {label}
           </label>
         )}
