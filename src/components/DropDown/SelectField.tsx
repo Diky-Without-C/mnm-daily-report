@@ -96,7 +96,10 @@ export default function SelectField({
         </label>
 
         {open && (
-          <div className="absolute left-0 z-10 mt-1 max-h-32 w-52 overflow-auto rounded-md bg-neutral-800 text-white shadow-lg">
+          <div
+            data-ignore-click-outside
+            className="absolute left-0 z-10 mt-1 max-h-32 w-52 overflow-auto rounded-md bg-neutral-800 text-white shadow-lg"
+          >
             {options.map((option, index) => (
               <SelectItem
                 key={option}

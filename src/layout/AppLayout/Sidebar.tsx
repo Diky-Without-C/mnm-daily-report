@@ -1,10 +1,11 @@
-import { useEffect, useRef, type ReactNode } from "react";
+import { type ReactNode } from "react";
 import { NavLink } from "react-router-dom";
 import HamburgerButton from "@components/buttons/HamburgerButton";
 import ClipboardDocument from "@components/icon/ClipboardDocument";
 import Cube from "@components/icon/Cube";
 import Ranking from "@components/icon/Ranking";
 import Archive from "@components/icon/Archive";
+import { useClickOutside } from "@/hooks/useClickOutside";
 
 interface SidebarProps {
   expanded: boolean;
@@ -41,30 +42,14 @@ const menuItems: MenuItem[] = [
 ];
 
 export default function Sidebar({ expanded, onToggle }: SidebarProps) {
-  const sidebarRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (!expanded) return;
-
-    function handleClickOutside(e: MouseEvent) {
-      if (
-        sidebarRef.current &&
-        !sidebarRef.current.contains(e.target as Node)
-      ) {
-        onToggle(false);
-      }
-    }
-
-    document.addEventListener("mousedown", handleClickOutside);
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [expanded, onToggle]);
+  const { ref } = useClickOutside<HTMLDivElement>({
+    enabled: expanded,
+    onClickOutside: () => onToggle(false),
+  });
 
   return (
     <aside
-      ref={sidebarRef}
+      ref={ref}
       className={`fixed top-0 left-0 z-10 flex h-full flex-col bg-gray-800 p-2 shadow-lg transition-[width] duration-300 ${
         expanded ? "w-64 overflow-x-hidden" : "w-16"
       }`}

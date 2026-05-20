@@ -111,19 +111,24 @@ export default function AutocompleteInput({
         )}
 
         {show && filtered.length > 0 && (
-          <div className="absolute left-0 z-10 mt-1 max-h-32 w-full overflow-auto rounded-md bg-neutral-800 text-white shadow-lg">
+          <ul
+            data-ignore-click-outside
+            className="absolute left-0 z-10 mt-1 max-h-32 w-full overflow-auto rounded-md bg-neutral-800 text-white shadow-lg"
+          >
             {filtered.map((option, index) => (
-              <AutocompleteItem
-                key={option}
-                option={option}
-                isActive={index === activeIndex}
-                onSelect={handleSelect}
-                ref={(el) => {
-                  itemRefs.current[index] = el;
-                }}
-              />
+              <li>
+                <AutocompleteItem
+                  key={option}
+                  option={option}
+                  isActive={index === activeIndex}
+                  onSelect={handleSelect}
+                  ref={(el) => {
+                    itemRefs.current[index] = el;
+                  }}
+                />
+              </li>
             ))}
-          </div>
+          </ul>
         )}
       </div>
     </div>

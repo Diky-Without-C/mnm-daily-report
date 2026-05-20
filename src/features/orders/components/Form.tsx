@@ -1,8 +1,9 @@
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import type { Report } from "@/app/supabase/report.dto";
 import { ITEM_TYPES, CONTAINER_TYPES } from "@/app/constants";
 import { useLocalStorage } from "@/hooks/useLocaleStorage";
 import { useDarkOverlay } from "@/hooks/useDarkOverlay";
+import { useClickOutside } from "@/hooks/useClickOutside";
 import InputText from "@components/Input/InputText";
 import SelectField from "@components/DropDown/SelectField";
 import { ORDER_CATEGORY } from "../order.constants";
@@ -18,29 +19,22 @@ export default function Form({ form, onClose, onChange, onSubmit }: FormProps) {
   const [codeHint] = useLocalStorage<string[]>("codeHint", []);
   const { showOverlay, hideOverlay } = useDarkOverlay();
 
-  const ref = useRef<HTMLFormElement>(null);
+  const { ref } = useClickOutside<HTMLFormElement>({
+    onClickOutside: () => {
+      hideOverlay();
+      onClose();
+    },
+    ignoreSelector: "[data-ignore-click-outside]",
+  });
 
   useEffect(() => {
     showOverlay();
-
-    function handleClickOutside(e: MouseEvent) {
-      if (!ref.current?.contains(e.target as Node)) {
-        onClose();
-        hideOverlay();
-      }
-    }
-
-    document.addEventListener("mousedown", handleClickOutside);
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-      hideOverlay();
-    };
-  }, [onClose, showOverlay, hideOverlay]);
+  }, [showOverlay]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onSubmit();
+    hideOverlay();
   };
 
   return (
@@ -114,7 +108,10 @@ export default function Form({ form, onClose, onChange, onSubmit }: FormProps) {
 
         <button
           type="button"
-          onClick={onClose}
+          onClick={() => {
+            hideOverlay();
+            onClose();
+          }}
           className="rounded-lg bg-gray-400 px-4 py-2 font-semibold text-white hover:bg-gray-500"
         >
           Cancel

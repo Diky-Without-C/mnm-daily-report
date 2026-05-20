@@ -1,5 +1,6 @@
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import Calendar from "@components/icon/Calendar";
+import { useClickOutside } from "@/hooks/useClickOutside";
 
 interface InputDateProps {
   date: Date;
@@ -32,7 +33,10 @@ export default function InputDate({ date, onDateChange }: InputDateProps) {
   const [selectedDay, setSelectedDay] = useState(today.getDate());
   const [isOpen, setIsOpen] = useState(false);
 
-  const wrapperRef = useRef<HTMLDivElement>(null);
+  const { ref } = useClickOutside<HTMLDivElement>({
+    enabled: isOpen,
+    onClickOutside: () => setIsOpen(false),
+  });
 
   const days = Array.from(
     { length: getDaysInMonth(year, month) },
@@ -47,27 +51,8 @@ export default function InputDate({ date, onDateChange }: InputDateProps) {
     onDateChange(new Date(year, month, day));
   };
 
-  useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
-      if (
-        wrapperRef.current &&
-        !wrapperRef.current.contains(e.target as Node)
-      ) {
-        setIsOpen(false);
-      }
-    };
-
-    if (isOpen) {
-      document.addEventListener("mousedown", handleClickOutside);
-    }
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [isOpen]);
-
   return (
-    <div ref={wrapperRef} className="relative">
+    <div ref={ref} className="relative">
       <button
         onClick={() => setIsOpen((prev) => !prev)}
         className="flex h-10 w-10 items-center justify-center rounded-lg border border-gray-300 bg-gray-100 shadow-sm hover:bg-gray-200"
