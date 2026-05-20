@@ -100,6 +100,8 @@ export default function InputDate({ date, onDateChange }: InputDateProps) {
                   selectedDay === day
                     ? "bg-blue-500 text-white"
                     : "hover:bg-blue-100"
+                } ${
+                  day === new Date().getDate() ? "border border-blue-500" : ""
                 }`}
               >
                 {day}
