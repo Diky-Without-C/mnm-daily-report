@@ -1,4 +1,4 @@
-import type { ParsedItem } from "@/lib/xlsx/xlsx.type";
+import type { ParsedReport } from "@/lib/xlsx/xlsx.type";
 import { ITEM_TO_MERGE } from "../report.constant";
 
 function escapeRegex(str: string) {
@@ -6,8 +6,8 @@ function escapeRegex(str: string) {
 }
 
 function findGroupIndex(
-  groups: Map<number, ParsedItem[]>,
-  item: Partial<ParsedItem>,
+  groups: Map<number, ParsedReport[]>,
+  item: Partial<ParsedReport>,
 ) {
   const regex = item.code
     ? new RegExp(escapeRegex(item.code), "i")
@@ -30,16 +30,16 @@ function findGroupIndex(
 }
 
 const findFirstIndex = (
-  groupMap: Map<number, ParsedItem[]>,
-  items: Partial<ParsedItem>[],
+  groupMap: Map<number, ParsedReport[]>,
+  items: Partial<ParsedReport>[],
 ) => {
   return items
     .map((item) => findGroupIndex(groupMap, item))
     .find((i) => i !== undefined);
 };
 
-export const mergeGroup = (groups: ParsedItem[][]): ParsedItem[][] => {
-  const groupMap = new Map<number, ParsedItem[]>();
+export const mergeGroup = (groups: ParsedReport[][]): ParsedReport[][] => {
+  const groupMap = new Map<number, ParsedReport[]>();
   groups.forEach((group, i) => groupMap.set(i, group));
 
   for (const { parent, child } of ITEM_TO_MERGE) {

@@ -21,8 +21,15 @@ export default function App() {
   const { date, setDate } = useDateStore();
   const { orders, setOrders } = useOrdersStore();
 
-  const today = date.getDate();
-  const { data: xlsx, loading, error } = useExcelParser(file, today, "report");
+  const {
+    data: [xlsx],
+    loading,
+    error,
+  } = useExcelParser({
+    file,
+    sheetIndex: useMemo(() => [date.getDate()], [date]),
+    content: "report",
+  });
   const { data: report } = useSupabaseQuery<Report>("report");
 
   const [, setCodeHint] = useLocalStorage<string[]>("codeHint", []);

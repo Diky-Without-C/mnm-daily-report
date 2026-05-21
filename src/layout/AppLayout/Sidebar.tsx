@@ -32,7 +32,7 @@ const menuItems: MenuItem[] = [
   {
     label: "MPO",
     icon: <Ranking />,
-    path: "/ranking",
+    path: "/sales",
   },
   {
     label: "Archive",

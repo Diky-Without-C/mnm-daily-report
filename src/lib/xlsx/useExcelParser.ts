@@ -1,17 +1,30 @@
 import { useEffect, useState } from "react";
-import type { Contents, ParsedItem } from "./xlsx.type";
-import reportParser from "./report.parser";
+import type { Contents, ParsedReport, ParsedSales } from "./xlsx.type";
+import reportParser from "./parser/report.parser";
+import salesParser from "./parser/sales.parser";
 
-const contentsToParser: Record<Contents, typeof reportParser> = {
-  report: reportParser,
+type ParserMap = {
+  report: ParsedReport;
+  sales: ParsedSales;
 };
 
-export function useExcelParser(
-  file: File | null,
-  sheetIndex: number,
-  content: Contents,
-) {
-  const [data, setData] = useState<ParsedItem[]>([]);
+interface UseExcelParserProps<T extends Contents> {
+  file: File | null;
+  sheetIndex: number[];
+  content: T;
+}
+
+const contentsToParser = {
+  report: reportParser,
+  sales: salesParser,
+};
+
+export function useExcelParser<T extends Contents>({
+  file,
+  sheetIndex,
+  content,
+}: UseExcelParserProps<T>) {
+  const [data, setData] = useState<ParserMap[T][][]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -33,7 +46,11 @@ export function useExcelParser(
 
         const bytes = new Uint8Array(buffer);
 
-        setData(contentsToParser[content](bytes, sheetIndex));
+        const parsedData = sheetIndex.map((idx) =>
+          contentsToParser[content](bytes, idx),
+        ) as ParserMap[T][][];
+
+        setData(parsedData);
       } catch (err) {
         setError(err instanceof Error ? err.message : "Unknown error");
       } finally {

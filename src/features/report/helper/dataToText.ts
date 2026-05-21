@@ -1,6 +1,6 @@
 import { EXTRA_INFO, CUSTOM_TITLES } from "@/app/constants";
 import type { Report } from "@/app/supabase/report.dto";
-import type { GroupedCategories, ParsedItem } from "@/lib/xlsx/xlsx.type";
+import type { GroupedCategories, ParsedReport } from "@/lib/xlsx/xlsx.type";
 import { ORDER_CATEGORY } from "@/features/orders/order.constants";
 import { formatNumber } from "@/utils/formatNumber";
 import { capitalize } from "@/utils/capitalize";
@@ -9,14 +9,14 @@ import { splitByType } from "./splitByType";
 import { cleanName } from "./cleanName";
 import { getExtraInfo } from "./getExtraInfo";
 
-const normalize = (item: ParsedItem) => ({
+const normalize = (item: ParsedReport) => ({
   ...item,
   stock: Math.max(Number(item.stock) || 0, 0),
   name: cleanName(item.name),
   extra: getExtraInfo(item.name),
 });
 
-const getTitle = ({ name, code }: ParsedItem): string => {
+const getTitle = ({ name, code }: ParsedReport): string => {
   const title = `${name} (${code.replace(/ -/g, "")})`;
 
   if (Object.keys(CUSTOM_TITLES).includes(title)) {
@@ -32,7 +32,7 @@ type StockLine = {
   suffix?: string;
 };
 
-const buildStockLines = (items: ParsedItem[]): StockLine[] => {
+const buildStockLines = (items: ParsedReport[]): StockLine[] => {
   const multiple = items.length > 1;
 
   return items.map((item, index) => {
@@ -98,7 +98,7 @@ type StockGroup = {
 };
 
 const buildGroup = (
-  items: ParsedItem[],
+  items: ParsedReport[],
   reports?: Record<string, ReportGroup>,
 ): StockGroup | null => {
   if (!items.length) return null;

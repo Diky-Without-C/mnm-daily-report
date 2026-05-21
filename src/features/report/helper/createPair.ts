@@ -1,12 +1,12 @@
-import type { ParsedItem } from "@/lib/xlsx/xlsx.type";
+import type { ParsedReport } from "@/lib/xlsx/xlsx.type";
 import { clearCode } from "../utils/clearCode";
 
-export const createPair = (items: ParsedItem[]): ParsedItem[][] => {
-  const result: ParsedItem[][] = [];
-  const visited = new Set<ParsedItem>();
+export const createPair = (items: ParsedReport[]): ParsedReport[][] => {
+  const result: ParsedReport[][] = [];
+  const visited = new Set<ParsedReport>();
 
-  const nameGroups = new Map<string, ParsedItem[]>();
-  const codeGroups = new Map<string, ParsedItem[]>();
+  const nameGroups = new Map<string, ParsedReport[]>();
+  const codeGroups = new Map<string, ParsedReport[]>();
 
   for (const item of items) {
     if (visited.has(item)) continue;

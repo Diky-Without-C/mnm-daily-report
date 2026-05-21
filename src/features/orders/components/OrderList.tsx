@@ -7,7 +7,7 @@ import useOrderList from "../useOrders";
 import { getOrderLabel } from "../order.helpers";
 import type { OrderCategoryType } from "../order.type";
 import DeleteDialog from "./DeleteDialog";
-import SearchBar from "./SearchBar";
+import SearchBar from "@/components/SearchBar";
 import Form from "./Form";
 
 interface OrderPageProps {

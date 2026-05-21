@@ -5,11 +5,14 @@ import {
 } from "@/features/report/report.constant";
 import { clearItem } from "@/features/report/utils/clearItem";
 import { replaceItem } from "@/features/report/utils/replaceItem";
-import type { ParsedItem } from "./xlsx.type";
-import { parseExcelFile } from "./xlsx.parser";
+import type { ParsedReport } from "../xlsx.type";
+import { parseExcelFile } from "../xlsx.parser";
 
 export default function reportParser(bytes: Uint8Array, sheetIndex: number) {
-  const { headerRow, contentRows } = parseExcelFile(bytes, sheetIndex);
+  const { headerRow, contentRows } = parseExcelFile(bytes, sheetIndex, {
+    row: 4,
+    col: 6,
+  });
 
   const getIndex = (key: string) =>
     headerRow.findIndex(
@@ -78,5 +81,5 @@ export default function reportParser(bytes: Uint8Array, sheetIndex: number) {
         stock,
       };
     })
-    .filter(Boolean) as ParsedItem[];
+    .filter(Boolean) as ParsedReport[];
 }
