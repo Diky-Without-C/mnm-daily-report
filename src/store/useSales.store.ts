@@ -1,9 +1,11 @@
 import { create } from "zustand";
-import type { Report } from "@/app/supabase/report.dto";
+import type { ParsedSales } from "@/lib/xlsx/xlsx.type";
 
 type salesState = {
-  sales: Report[];
-  setSales: (value: Report[] | ((prev: Report[]) => Report[])) => void;
+  sales: ParsedSales[][];
+  setSales: (
+    value: ParsedSales[][] | ((prev: ParsedSales[][]) => ParsedSales[][]),
+  ) => void;
 };
 
 export const useSalesStore = create<salesState>((set) => ({
