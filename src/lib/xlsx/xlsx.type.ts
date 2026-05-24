@@ -17,7 +17,7 @@ export interface ParsedSales {
   packing: string | undefined;
   code: string;
   category: string;
-  monthlyItem: number[];
+  monthlySale: number[];
 }
 
 export type GroupedCategories = Record<

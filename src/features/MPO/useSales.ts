@@ -1,7 +1,7 @@
 import { useMemo, useState, useCallback, useEffect } from "react";
 import { useSalesStore } from "@/store/useSales.store";
-import { ITEMS_PER_PAGE, LAST_3_MONTHS } from "./constant";
-import { categoryToKey, paginate } from "./helper";
+import { ITEMS_PER_PAGE, LAST_3_MONTHS } from "./sales.constant";
+import { categoryToKey, paginate } from "./sales.helper";
 
 export default function useSalesList() {
   const { sales } = useSalesStore();
@@ -40,18 +40,18 @@ export default function useSalesList() {
   const processedSales = useMemo(() => {
     return selectedSales
       .map((item) => {
-        const monthlyValues = LAST_3_MONTHS.map(
-          (month) => item.monthlyItem[month.index] || 0,
+        const last3MonthSales = LAST_3_MONTHS.map(
+          (month) => item.monthlySale[month.index],
         );
 
         return {
           ...item,
-          monthlyValues,
-          total: monthlyValues.reduce((a, b) => a + b, 0),
+          last3MonthSales,
+          total3MonthSales: last3MonthSales.reduce((a, b) => a + b, 0),
         };
       })
-      .filter((item) => item.total > 0)
-      .sort((a, b) => b.total - a.total);
+      .filter((item) => item.total3MonthSales > 0)
+      .sort((a, b) => b.total3MonthSales - a.total3MonthSales);
   }, [selectedSales]);
 
   const totalPages = Math.max(
@@ -66,8 +66,8 @@ export default function useSalesList() {
       length: Math.max(0, ITEMS_PER_PAGE - currentItems.length),
     }).map((_, index) => ({
       item: String(index),
-      isPlaceholder: true,
-      monthlyValues: LAST_3_MONTHS.map(() => 0),
+      last3MonthSales: LAST_3_MONTHS.map(() => 0),
+      total3MonthSales: 0,
     }));
 
     return [...currentItems, ...emptyRows];

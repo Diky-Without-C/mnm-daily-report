@@ -38,12 +38,12 @@ export default function salesParser(bytes: Uint8Array, sheetIndex: number) {
       const match = item.match(/\b(?:MC|MD|SR|FC|RM|MF|TS)\s\d{3,4}\S*/g);
       const code = match?.[0]?.replace(/\s/g, "") ?? "";
 
-      const monthlyItem = Array.from(
+      const monthlySale = Array.from(
         { length: 12 },
         (_, i) => Number(row[monthStartIdx + i]) || 0,
       );
 
-      return { item, total, packing, code, category, monthlyItem };
+      return { item, total, packing, code, category, monthlySale };
     });
 
   return salesData.filter((data) => data.category) as ParsedSales[];

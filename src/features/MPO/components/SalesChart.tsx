@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { BarChart } from "@mui/x-charts/BarChart";
 import { formatNumber } from "@/utils/formatNumber";
-import { LAST_3_MONTHS } from "../constant";
+import { LAST_3_MONTHS } from "../sales.constant";
 import useSalesList from "../useSales";
 
 interface SalesChartProps {
@@ -15,7 +15,7 @@ export default function SalesChart({ displayedSales }: SalesChartProps) {
   const chartSeries = useMemo(() => {
     return LAST_3_MONTHS.map((month, index) => ({
       label: month.label,
-      data: displayedSales.map(({ monthlyValues }) => monthlyValues[index]),
+      data: displayedSales.map(({ last3MonthSales }) => last3MonthSales[index]),
       stack: "total",
     }));
   }, [displayedSales]);
@@ -27,19 +27,20 @@ export default function SalesChart({ displayedSales }: SalesChartProps) {
     const elements = series && series.children;
     if (!elements || elements.length === 0) return;
 
+    const positions: number[] = [];
+
     for (let i = 0; i < elements.length; i++) {
       const element = elements[i] as HTMLElement;
       const rect = element.getBoundingClientRect();
-      setSeriesPositions((prev) => {
-        const newPositions = [...prev];
-        newPositions[i] =
-          rect.top -
-          (ref.current?.getBoundingClientRect().top ?? 0) +
-          rect.height / 2 -
-          41;
-        return newPositions;
-      });
+
+      positions[i] =
+        rect.top -
+        (ref.current?.getBoundingClientRect().top ?? 0) +
+        rect.height / 2 -
+        41;
     }
+
+    setSeriesPositions(positions);
   }, [displayedSales]);
 
   return (
@@ -47,13 +48,13 @@ export default function SalesChart({ displayedSales }: SalesChartProps) {
       <div className="pointer-events-none absolute inset-0 z-10">
         {displayedSales.map((sale, index) => (
           <span
-            key={sale.item}
+            key={index}
             className="absolute left-3 truncate"
             style={{ top: seriesPositions[index] ?? 0 }}
           >
-            {"isPlaceholder" in sale && sale.isPlaceholder
+            {sale.total3MonthSales === 0
               ? ""
-              : `${sale.item} - total ${formatNumber("total" in sale ? sale.total : 0)} ctn`}
+              : `${sale.item} - total ${formatNumber(sale.total3MonthSales)} ctn`}
           </span>
         ))}
       </div>
@@ -70,7 +71,9 @@ export default function SalesChart({ displayedSales }: SalesChartProps) {
         yAxis={[
           {
             scaleType: "band",
-            data: displayedSales.map(({ item }) => item),
+            data: displayedSales.map(({ item, total3MonthSales }) =>
+              total3MonthSales === 0 ? " ".repeat(Number(item)) : item,
+            ),
             disableTicks: true,
             categoryGapRatio: 0.4,
           },

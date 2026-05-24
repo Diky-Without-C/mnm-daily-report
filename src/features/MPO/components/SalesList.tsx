@@ -1,7 +1,7 @@
 import ChevronLeft from "@components/icon/ChevronLeft";
 import ChevronRight from "@components/icon/ChevronRight";
 import useSalesList from "../useSales";
-import { keyToLabel } from "../helper";
+import { keyToLabel } from "../sales.helper";
 import SalesChart from "./SalesChart";
 
 export default function SalesList() {
@@ -36,7 +36,7 @@ export default function SalesList() {
 
       <section className="flex h-full flex-col overflow-hidden p-4">
         <div className="flex-1 overflow-y-scroll">
-          <SalesChart displayedSales={displayedSales} />
+          {<SalesChart displayedSales={displayedSales} />}
         </div>
 
         <footer className="mt-4 flex items-center justify-between">
