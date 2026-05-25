@@ -1,29 +1,23 @@
 import { useMemo, useState, useCallback, useEffect } from "react";
 import { useSalesStore } from "@/store/useSales.store";
 import { ITEMS_PER_PAGE, LAST_3_MONTHS } from "./sales.constant";
-import { categoryToKey, paginate } from "./sales.helper";
+import { groupingSales, paginate, processingSales } from "./sales.helper";
 
 export default function useSalesList() {
+  const [search, setSearch] = useState("");
   const { sales } = useSalesStore();
 
-  const groupedSales = useMemo(() => {
-    return sales.reduce(
-      (acc, sale) => {
-        const key = categoryToKey(sale[0].category);
-        acc[key] ??= [];
-        acc[key].push(...sale);
-
-        return acc;
-      },
-      {} as Record<string, (typeof sales)[number]>,
-    );
-  }, [sales]);
+  const groupedSales = useMemo(() => groupingSales(sales), [sales]);
 
   const categories = useMemo(() => Object.keys(groupedSales), [groupedSales]);
 
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const activeCategory = selectedCategory ?? categories[0];
   const [page, setPage] = useState(1);
+
+  useEffect(() => {
+    setPage(1);
+  }, [search, activeCategory]);
 
   useEffect(() => {
     if (!activeCategory && categories.length > 0) {
@@ -38,21 +32,11 @@ export default function useSalesList() {
   }, [groupedSales, activeCategory]);
 
   const processedSales = useMemo(() => {
-    return selectedSales
-      .map((item) => {
-        const last3MonthSales = LAST_3_MONTHS.map(
-          (month) => item.monthlySale[month.index],
-        );
-
-        return {
-          ...item,
-          last3MonthSales,
-          total3MonthSales: last3MonthSales.reduce((a, b) => a + b, 0),
-        };
-      })
-      .filter((item) => item.total3MonthSales > 0)
-      .sort((a, b) => b.total3MonthSales - a.total3MonthSales);
-  }, [selectedSales]);
+    const filteredSales = processingSales(selectedSales).filter((item) =>
+      item.item.toLowerCase().includes(search.toLowerCase()),
+    );
+    return filteredSales;
+  }, [selectedSales, search]);
 
   const totalPages = Math.max(
     1,
@@ -62,15 +46,20 @@ export default function useSalesList() {
   const displayedSales = useMemo(() => {
     const currentItems = paginate(processedSales, page, ITEMS_PER_PAGE);
 
+    const uniqueItems = currentItems.filter(
+      (item, index, self) =>
+        index === self.findIndex((sale) => sale.item === item.item),
+    );
+
     const emptyRows = Array.from({
-      length: Math.max(0, ITEMS_PER_PAGE - currentItems.length),
+      length: Math.max(0, ITEMS_PER_PAGE - uniqueItems.length),
     }).map((_, index) => ({
       item: String(index),
       last3MonthSales: LAST_3_MONTHS.map(() => 0),
       total3MonthSales: 0,
     }));
 
-    return [...currentItems, ...emptyRows];
+    return [...uniqueItems, ...emptyRows];
   }, [page, processedSales]);
 
   const setCategory = useCallback((category: string) => {
@@ -84,6 +73,10 @@ export default function useSalesList() {
 
   const prevPage = useCallback(() => {
     setPage((prev) => Math.max(prev - 1, 1));
+  }, []);
+
+  const handleSearch = useCallback((value: string) => {
+    setSearch(value);
   }, []);
 
   return {
@@ -100,6 +93,7 @@ export default function useSalesList() {
       category: activeCategory,
     },
     handlers: {
+      handleSearch,
       setCategory,
       nextPage,
       prevPage,

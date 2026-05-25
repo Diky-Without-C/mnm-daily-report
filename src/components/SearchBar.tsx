@@ -28,6 +28,7 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
         type="text"
         placeholder="Search"
         onChange={handleSearch}
+        autoComplete="off"
         className="h-9 w-full rounded-lg border border-gray-900 bg-gray-50 pl-2 focus:border-blue-500 focus:outline-none"
       />
       <SearchIcon />

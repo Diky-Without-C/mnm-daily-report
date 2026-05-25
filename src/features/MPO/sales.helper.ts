@@ -1,6 +1,6 @@
 import type { ParsedSales } from "@/lib/xlsx/xlsx.type";
 import { capitalize } from "@/utils/capitalize";
-import { ITEMS_PER_PAGE, LAST_3_MONTHS } from "./sales.constant";
+import { LAST_3_MONTHS } from "./sales.constant";
 
 export interface ProcessedSale extends ParsedSales {
   last3MonthSales: number[];
@@ -17,7 +17,6 @@ export type DisplayedSale = ProcessedSale | PlaceholderSale;
 
 export const processingSales = (
   selectedSales: ParsedSales[],
-  page: number,
 ): DisplayedSale[] => {
   const processedSales: ProcessedSale[] = selectedSales
     .map((item) => {
@@ -37,17 +36,27 @@ export const processingSales = (
     .filter((item) => item.total3MonthSales > 0)
     .sort((a, b) => b.total3MonthSales - a.total3MonthSales);
 
-  const currentItems = paginate(processedSales, page, ITEMS_PER_PAGE);
+  return processedSales;
+};
 
-  const emptyRows: PlaceholderSale[] = Array.from({
-    length: Math.max(0, ITEMS_PER_PAGE - currentItems.length),
-  }).map((_, index) => ({
-    item: `placeholder-${index}`,
-    last3MonthSales: LAST_3_MONTHS.map(() => 0),
-    total3MonthSales: 0,
-  }));
+export const groupingSales = (sales: ParsedSales[][]) => {
+  const grouped = sales.reduce(
+    (acc, sale) => {
+      const key = categoryToKey(sale[0].category);
+      acc[key] ??= [];
+      acc[key].push(...sale);
 
-  return [...currentItems, ...emptyRows];
+      return acc;
+    },
+    {} as Record<string, (typeof sales)[number]>,
+  );
+
+  const mergedGroup: Record<string, (typeof sales)[number]> = {
+    all: sales.flat(),
+    ...grouped,
+  };
+
+  return mergedGroup;
 };
 
 export const paginate = <T>(items: T[], page: number, perPage: number) => {

@@ -22,25 +22,38 @@ export default function SalesChart({ displayedSales }: SalesChartProps) {
 
   useEffect(() => {
     if (!ref.current) return;
-    const [series] = ref.current.querySelectorAll(".MuiBarChart-series");
 
-    const elements = series && series.children;
-    if (!elements || elements.length === 0) return;
+    const calculatePositions = () => {
+      if (!ref.current) return;
 
-    const positions: number[] = [];
+      const [series] = ref.current.querySelectorAll(".MuiBarChart-series");
+      const elements = series?.children;
 
-    for (let i = 0; i < elements.length; i++) {
-      const element = elements[i] as HTMLElement;
-      const rect = element.getBoundingClientRect();
+      if (!elements || elements.length === 0) return;
 
-      positions[i] =
-        rect.top -
-        (ref.current?.getBoundingClientRect().top ?? 0) +
-        rect.height / 2 -
-        41;
-    }
+      const containerTop = ref.current.getBoundingClientRect().top;
+      const positions: number[] = [];
 
-    setSeriesPositions(positions);
+      for (let i = 0; i < elements.length; i++) {
+        const element = elements[i] as HTMLElement;
+        const rect = element.getBoundingClientRect();
+
+        positions[i] = rect.top - containerTop - 22;
+      }
+
+      setSeriesPositions(positions);
+    };
+
+    const frame = requestAnimationFrame(() => {
+      calculatePositions();
+    });
+
+    window.addEventListener("resize", calculatePositions);
+
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener("resize", calculatePositions);
+    };
   }, [displayedSales]);
 
   return (
@@ -49,7 +62,7 @@ export default function SalesChart({ displayedSales }: SalesChartProps) {
         {displayedSales.map((sale, index) => (
           <span
             key={index}
-            className="absolute left-3 truncate"
+            className="absolute left-2 truncate"
             style={{ top: seriesPositions[index] ?? 0 }}
           >
             {sale.total3MonthSales === 0
@@ -60,7 +73,7 @@ export default function SalesChart({ displayedSales }: SalesChartProps) {
       </div>
       <BarChart
         layout="horizontal"
-        height={500}
+        className="h-full w-full"
         hideLegend
         margin={{
           top: 20,

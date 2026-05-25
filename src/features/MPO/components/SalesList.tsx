@@ -1,5 +1,6 @@
 import ChevronLeft from "@components/icon/ChevronLeft";
 import ChevronRight from "@components/icon/ChevronRight";
+import SearchBar from "@components/SearchBar";
 import useSalesList from "../useSales";
 import { keyToLabel } from "../sales.helper";
 import SalesChart from "./SalesChart";
@@ -10,8 +11,8 @@ export default function SalesList() {
 
   return (
     <div className="flex h-full w-full flex-col">
-      <section className="w-full">
-        <ul className="flex h-12 w-full gap-1.5 overflow-x-auto border-b-2 border-gray-200 pb-2">
+      <section className="flex w-full items-center justify-between border-b-2 border-gray-200 pb-2">
+        <ul className="flex h-9 w-full gap-1 overflow-x-auto">
           {categories.map((category) => {
             const isActive = selected.category === category;
 
@@ -20,10 +21,10 @@ export default function SalesList() {
                 <button
                   type="button"
                   onClick={() => handlers.setCategory(category)}
-                  className={`flex h-10 items-center rounded-lg px-3 text-lg transition-colors ${
+                  className={`flex h-full items-center rounded-lg px-3 transition-colors ${
                     isActive
                       ? "bg-blue-500 text-white hover:bg-blue-600"
-                      : "hover:bg-gray-200"
+                      : "bg-gray-200 hover:bg-gray-300"
                   }`}
                 >
                   {keyToLabel(category)}
@@ -32,11 +33,12 @@ export default function SalesList() {
             );
           })}
         </ul>
+        <SearchBar onSearch={handlers.handleSearch} />
       </section>
 
       <section className="flex h-full flex-col overflow-hidden p-4">
-        <div className="flex-1 overflow-y-scroll">
-          {<SalesChart displayedSales={displayedSales} />}
+        <div className="h-full w-full overflow-y-scroll">
+          <SalesChart displayedSales={displayedSales} />
         </div>
 
         <footer className="mt-4 flex items-center justify-between">
