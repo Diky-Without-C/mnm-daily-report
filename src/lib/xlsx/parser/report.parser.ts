@@ -9,13 +9,12 @@ import type { ParsedReport } from "../xlsx.type";
 import { parseExcelFile } from "../xlsx.parser";
 
 export default function reportParser(bytes: Uint8Array, sheetIndex: number) {
-  const { headerRow, contentRows } = parseExcelFile(bytes, sheetIndex, {
-    row: 4,
-    col: 6,
-  });
+  const { headerRows, contentRows } = parseExcelFile(bytes, sheetIndex, [
+    "item",
+  ]);
 
   const getIndex = (key: string) =>
-    headerRow.findIndex(
+    headerRows.findIndex(
       (cell) => String(cell).trim().toLowerCase() === key.toLowerCase(),
     );
 

@@ -1,61 +1,65 @@
 import { parseExcelFile } from "../xlsx.parser";
 import type { ParsedSales } from "../xlsx.type";
+import { schemas } from "./sales.schema";
 
 export default function salesParser(bytes: Uint8Array, sheetIndex: number) {
-  const { headerRow, contentRows } = parseExcelFile(bytes, sheetIndex, {
-    row: 3,
-    col: 5,
-  });
+  const { headerRows, contentRows } = parseExcelFile(bytes, sheetIndex, [
+    "nama barang",
+    "merk",
+  ]);
 
-  const getIndex = (key: string) =>
-    headerRow.findIndex(
-      (cell) => String(cell).trim().toLowerCase() === key.toLowerCase(),
+  const getIndex = (key: string | string[]) => {
+    const keys = Array.isArray(key) ? key : [key];
+
+    return headerRows.findIndex((cell) =>
+      keys.includes(String(cell).trim().toLowerCase()),
     );
+  };
 
-  const itemIdx = getIndex("nama barang");
-  const totalIdx = getIndex("ttl");
-  const packingIdx = getIndex("kemasan");
-  const categoryIdx = getIndex("merk");
-  const monthStartIdx = getIndex("bulan");
+  const schema = schemas.find((schema) =>
+    Object.values(schema.columns).every((column) => {
+      if (!column) return true;
+      return getIndex(column) !== -1;
+    }),
+  );
 
-  if (
-    itemIdx === -1 ||
-    totalIdx === -1 ||
-    packingIdx === -1 ||
-    categoryIdx === -1
-  ) {
-    throw new Error("Required columns not found");
+  if (!schema) {
+    throw new Error("Unknown file schema");
   }
+
+  const indexes = Object.entries(schema.columns).reduce(
+    (acc, [key, value]) => {
+      acc[key] = value ? getIndex(value) : -1;
+      return acc;
+    },
+    {} as Record<string, number>,
+  );
 
   const salesData = contentRows
     .filter((row) => row.some((cell) => cell))
     .map((row) => {
-      const item = row[itemIdx];
-      const total = Number(row[totalIdx]);
-      const packing = row[packingIdx] || item.match(/[([]].+[)]]/)?.[1];
-      const category = row[categoryIdx];
+      const item = String(row[indexes.item] || "");
+      const packing = row[indexes.packing] || item.match(/[([](.+?)[)\]]/)?.[1];
+      const category = row[indexes.category];
 
       const match = item.match(/\b(?:MC|MD|SR|FC|RM|MF|TS)\s\d{3,4}\S*/g);
       const code = match?.[0] || "";
-
       const clearCode = code.replace(/\s/g, "");
+
       const clearName = item
         .match(/[a-z]{3,}/gi)
         ?.join(" ")
         .trim();
 
-      const monthlySale = Array.from(
-        { length: 12 },
-        (_, i) => Number(row[monthStartIdx + i]) || 0,
-      );
+      const transformed = schema.transform(row, indexes);
 
       return {
-        item: `${clearName} ${clearCode} ${packing ? `(${packing})` : ""}`.trim(),
-        total,
+        item: `${clearName} ${clearCode} ${packing ? `(${packing})` : ""}`,
         packing,
         code: clearCode,
         category,
-        monthlySale,
+        total: transformed.total,
+        monthlySale: transformed.monthlySale,
       };
     });
 
