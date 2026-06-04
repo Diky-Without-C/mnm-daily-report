@@ -4,13 +4,13 @@ import { LAST_3_MONTHS } from "./sales.constant";
 
 export interface ProcessedSale extends ParsedSales {
   last3MonthSales: number[];
-  total3MonthSales: number;
+  total: number;
 }
 
 export interface PlaceholderSale {
   item: string;
   last3MonthSales: number[];
-  total3MonthSales: number;
+  total: number;
 }
 
 export type DisplayedSale = ProcessedSale | PlaceholderSale;
@@ -27,14 +27,10 @@ export const processingSales = (
       return {
         ...item,
         last3MonthSales,
-        total3MonthSales: last3MonthSales.reduce(
-          (sum, value) => sum + value,
-          0,
-        ),
       };
     })
-    .filter((item) => item.total3MonthSales > 0)
-    .sort((a, b) => b.total3MonthSales - a.total3MonthSales);
+    .filter((item) => item.total > 0)
+    .sort((a, b) => b.total - a.total);
 
   return processedSales;
 };
@@ -42,21 +38,24 @@ export const processingSales = (
 export const groupingSales = (sales: ParsedSales[][]) => {
   const grouped = sales.reduce(
     (acc, sale) => {
-      const key = categoryToKey(sale[0].category);
+      const firstItem = sale?.[0];
+
+      if (!firstItem) return acc;
+
+      const key = categoryToKey(firstItem.category);
+
       acc[key] ??= [];
       acc[key].push(...sale);
 
       return acc;
     },
-    {} as Record<string, (typeof sales)[number]>,
+    {} as Record<string, ParsedSales[]>,
   );
 
-  const mergedGroup: Record<string, (typeof sales)[number]> = {
-    all: sales.flat(),
+  return {
+    all: sales.flat().filter(Boolean),
     ...grouped,
-  };
-
-  return mergedGroup;
+  } as Record<string, ParsedSales[]>;
 };
 
 export const paginate = <T>(items: T[], page: number, perPage: number) => {

@@ -1,7 +1,12 @@
 import { EXTRA_INFO, CUSTOM_TITLES } from "@/app/constants";
 import type { Report } from "@/app/supabase/report.dto";
-import type { GroupedCategories, ParsedReport } from "@/lib/xlsx/xlsx.type";
+import type {
+  GroupedCategories,
+  ParsedReport,
+  ParsedSales,
+} from "@/lib/xlsx/xlsx.type";
 import { ORDER_CATEGORY } from "@/features/orders/order.constants";
+import { CODE_GROUPS } from "@/features/MPO/sales.constant";
 import { formatNumber } from "@/utils/formatNumber";
 import { capitalize } from "@/utils/capitalize";
 import { CATEGORY_KEYS, HEADER } from "../report.constant";
@@ -9,21 +14,15 @@ import { splitByType } from "./splitByType";
 import { cleanName } from "./cleanName";
 import { getExtraInfo } from "./getExtraInfo";
 
-const normalize = (item: ParsedReport) => ({
-  ...item,
-  stock: Math.max(Number(item.stock) || 0, 0),
-  name: cleanName(item.name),
-  extra: getExtraInfo(item.name),
-});
+type NormalizedReport = Omit<ParsedReport, "stock"> & {
+  stock: number;
+  name: string;
+  extra: string;
+};
 
-const getTitle = ({ name, code }: ParsedReport): string => {
-  const title = `${name} (${code.replace(/ -/g, "")})`;
-
-  if (Object.keys(CUSTOM_TITLES).includes(title)) {
-    return CUSTOM_TITLES[title as keyof typeof CUSTOM_TITLES];
-  }
-
-  return `${cleanName(name)} (${code.replace(/ -/g, "")})`;
+type OrdersGroup = {
+  container: string[];
+  preOrder: string[];
 };
 
 type StockLine = {
@@ -32,31 +31,51 @@ type StockLine = {
   suffix?: string;
 };
 
-const buildStockLines = (items: ParsedReport[]): StockLine[] => {
-  const multiple = items.length > 1;
-
-  return items.map((item, index) => {
-    const { stock, extra } = normalize(item);
-    const needsSuffix = multiple || EXTRA_INFO.includes(extra);
-
-    return {
-      type: index === 0 ? item.type : "",
-      stock,
-      suffix: needsSuffix
-        ? extra
-          ? capitalize(extra)
-          : `(${index + 1})`
-        : undefined,
-    };
-  });
+type StockGroup = {
+  title: string;
+  lines: StockLine[];
+  footer: string[];
 };
 
-const formatStockLine = ({ type, stock, suffix }: StockLine, pad: number) =>
-  `${type.padEnd(pad)}${suffix ? ` ${suffix}` : ""}: ${formatNumber(stock)}`;
+const normalizeItem = (item: ParsedReport): NormalizedReport => ({
+  ...item,
+  stock: Math.max(Number(item.stock) || 0, 0),
+  name: cleanName(item.name),
+  extra: getExtraInfo(item.name),
+});
 
-type ReportGroup = {
-  container: string[];
-  preOrder: string[];
+const normalizeCode = (code: string) =>
+  String(code).trim().replace(/\s+/g, "").toUpperCase();
+
+const normalizeData = (
+  data: GroupedCategories,
+): Record<string, NormalizedReport[][]> => {
+  return Object.fromEntries(
+    Object.entries(data).map(([key, groups]) => [
+      key,
+      groups.map((group) => group.map(normalizeItem)),
+    ]),
+  ) as unknown as Record<string, NormalizedReport[][]>;
+};
+
+const getSalesGroupKey = (code: string) =>
+  CODE_GROUPS[normalizeCode(code) as keyof typeof CODE_GROUPS] ??
+  normalizeCode(code);
+
+const buildSalesMap = (sales: ParsedSales[]) => {
+  const map: Record<string, number> = {};
+
+  for (const sale of sales) {
+    const key = getSalesGroupKey(sale.code);
+
+    const packing = sale.packing
+      ? Number(String(sale.packing).split(/x/gi)[0])
+      : 1;
+
+    map[key] = (map[key] ?? 0) + sale.total * packing;
+  }
+
+  return map;
 };
 
 const formatPreOrder = ({ number, from, type, amount }: Report) =>
@@ -65,25 +84,26 @@ const formatPreOrder = ({ number, from, type, amount }: Report) =>
 const formatContainer = ({ number, from, type, amount }: Report) =>
   `${from} ${number.toString().padStart(2, "0")} ${type} ${formatNumber(amount)}`;
 
-const groupReportsByCode = (reports: Report[]): Record<string, ReportGroup> => {
-  const result: Record<string, ReportGroup> = {};
+const groupReportsByCode = (reports: Report[]): Record<string, OrdersGroup> => {
+  const result: Record<string, OrdersGroup> = {};
 
   for (const report of reports) {
-    const { code, category } = report;
+    const { category } = report;
+    const code = normalizeCode(report.code);
 
     if (!result[code]) {
-      result[code] = { container: [], preOrder: [] };
+      result[code] = {
+        container: [],
+        preOrder: [],
+      };
     }
-
-    const group = result[code];
 
     switch (category) {
       case ORDER_CATEGORY.CONTAINER:
-        group.container.push(formatContainer(report));
+        result[code].container.push(formatContainer(report));
         break;
-
       case ORDER_CATEGORY.PRE_ORDER:
-        group.preOrder.push(formatPreOrder(report));
+        result[code].preOrder.push(formatPreOrder(report));
         break;
     }
   }
@@ -91,45 +111,101 @@ const groupReportsByCode = (reports: Report[]): Record<string, ReportGroup> => {
   return result;
 };
 
-type StockGroup = {
-  title: string;
-  lines: StockLine[];
-  footer: string[];
+const getTitle = ({
+  name,
+  code,
+  sale,
+}: NormalizedReport & { sale: number }) => {
+  const formattedCode = code.replace(/ -/g, "");
+  const title = `${name} (${formattedCode})`;
+  const saleText = sale > 0 ? `- ${formatNumber(sale)} pcs` : "";
+
+  if (title in CUSTOM_TITLES) {
+    return `${CUSTOM_TITLES[title as keyof typeof CUSTOM_TITLES]} ${saleText}`;
+  }
+
+  return `${name} (${formattedCode}) ${saleText}`;
+};
+
+const buildStockLines = (items: NormalizedReport[]): StockLine[] => {
+  const multiple = items.length > 1;
+
+  return items.map((item, index) => {
+    const needsSuffix = multiple || EXTRA_INFO.includes(item.extra);
+
+    return {
+      type: index === 0 ? item.type : "",
+      stock: item.stock,
+      suffix: needsSuffix
+        ? item.extra
+          ? capitalize(item.extra)
+          : `(${index + 1})`
+        : undefined,
+    };
+  });
+};
+
+const resolveGroupLines = (items: NormalizedReport[]): StockLine[] => {
+  return splitByType(items).flatMap(buildStockLines);
+};
+
+const resolveGroupOrders = (
+  itemCodes: Set<string>,
+  orders: Record<string, OrdersGroup>,
+): string[] => {
+  const containers: string[] = [];
+
+  for (const code of itemCodes) {
+    const order = orders[code];
+    if (!order) continue;
+
+    containers.push(...order.preOrder);
+    containers.push(...order.container);
+  }
+
+  return containers.sort();
+};
+
+const resolveGroupSales = (
+  itemCodes: Set<string>,
+  salesMap: Record<string, number>,
+) => {
+  const groupKeys = new Set([...itemCodes].map(getSalesGroupKey));
+
+  let total = 0;
+
+  for (const key of groupKeys) {
+    total += salesMap[key] ?? 0;
+  }
+
+  return total;
 };
 
 const buildGroup = (
-  items: ParsedReport[],
-  reports?: Record<string, ReportGroup>,
+  items: NormalizedReport[],
+  salesMap: Record<string, number>,
+  orders: Record<string, OrdersGroup>,
 ): StockGroup | null => {
   if (!items.length) return null;
-  const lines = splitByType(items).flatMap(buildStockLines);
 
-  const preOrders: string[] = [];
-  const containers: string[] = [];
-
-  for (const code of Object.keys(reports || {})) {
-    if (!reports) break;
-
-    if (items.some((item) => item.code === code)) {
-      preOrders.push(...reports[code].preOrder);
-      containers.push(...reports[code].container);
-    }
-  }
-
-  const footer = [...preOrders, ...containers].sort();
+  const itemCodes = new Set(items.map((item) => normalizeCode(item.code)));
+  const totalSales = resolveGroupSales(itemCodes, salesMap);
 
   return {
-    title: getTitle(items[0]),
-    lines,
-    footer,
+    title: getTitle({ ...items[0], sale: totalSales }),
+    lines: resolveGroupLines(items),
+    footer: resolveGroupOrders(itemCodes, orders),
   };
 };
 
-const formatGroup = ({ title, lines, footer }: StockGroup) => {
-  const pad = Math.max(...lines.map((l) => l.type.length));
-  const body = lines.map((l) => formatStockLine(l, pad)).join("\n");
+const formatStockLine = ({ type, stock, suffix }: StockLine, pad: number) =>
+  `${type.padEnd(pad)}${suffix ? ` ${suffix}` : ""}: ${formatNumber(stock)}`;
 
-  return [title, body, footer.length && `CONTAINER\n${footer.join("\n")}`]
+const formatGroup = ({ title, lines, footer }: StockGroup) => {
+  const pad = Math.max(...lines.map((line) => line.type.length));
+  const body = lines.map((line) => formatStockLine(line, pad)).join("\n");
+
+  return [title, body, footer.length ? `CONTAINER\n${footer.join("\n")}` : ""]
     .filter(Boolean)
     .join("\n");
 };
@@ -138,18 +214,17 @@ export const dataToText = (
   data: GroupedCategories,
   date: string,
   reports: Report[],
+  sales: ParsedSales[] = [],
 ): string => {
+  const normalizedData = normalizeData(data);
+  const salesMap = buildSalesMap(sales);
   const reportsByCode = groupReportsByCode(reports);
-  const isStockGroup = (g: StockGroup | null): g is StockGroup => g !== null;
 
   const body = CATEGORY_KEYS.map((key) => {
-    const rawContent = data[key].flatMap((group) =>
-      buildGroup(group, reportsByCode),
-    );
-
-    const content = rawContent
-      .filter(isStockGroup)
-      .map(formatGroup)
+    const content = normalizedData[key]
+      .map((group) => buildGroup(group, salesMap, reportsByCode))
+      .filter(Boolean)
+      .map((item) => item && formatGroup(item))
       .join("\n\n");
 
     return content ? `*${key.replace(/_/g, " ")}\n\n${content}` : "";

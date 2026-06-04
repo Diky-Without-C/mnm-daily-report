@@ -2,12 +2,17 @@ import { useMemo, useState, useCallback, useEffect } from "react";
 import { useSalesStore } from "@/store/useSales.store";
 import { ITEMS_PER_PAGE, LAST_3_MONTHS } from "./sales.constant";
 import { groupingSales, paginate, processingSales } from "./sales.helper";
+import { useLocalStorage } from "@/hooks/useLocaleStorage";
+import type { ParsedSales } from "@/lib/xlsx/xlsx.type";
 
 export default function useSalesList() {
   const [search, setSearch] = useState("");
   const { sales } = useSalesStore();
+  const [cachedXlsx] = useLocalStorage<ParsedSales[][]>("xlsx-data-sales", []);
 
-  const groupedSales = useMemo(() => groupingSales(sales), [sales]);
+  const groupedSales = useMemo(() => {
+    return groupingSales(sales.length > 0 ? sales : cachedXlsx);
+  }, [sales, cachedXlsx]);
 
   const categories = useMemo(() => Object.keys(groupedSales), [groupedSales]);
 
@@ -56,7 +61,7 @@ export default function useSalesList() {
     }).map((_, index) => ({
       item: String(index),
       last3MonthSales: LAST_3_MONTHS.map(() => 0),
-      total3MonthSales: 0,
+      total: 0,
     }));
 
     return [...uniqueItems, ...emptyRows];

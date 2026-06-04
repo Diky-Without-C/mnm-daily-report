@@ -1,3 +1,6 @@
+import { replaceItem } from "@/features/report/utils/replaceItem";
+import { ITEMS_TO_REPLACE } from "@/features/MPO/sales.constant";
+import { clearWhiteSpace } from "@/utils/clearWhiteSpace";
 import { parseExcelFile } from "../xlsx.parser";
 import type { ParsedSales } from "../xlsx.type";
 import { schemas } from "./sales.schema";
@@ -11,9 +14,11 @@ export default function salesParser(bytes: Uint8Array, sheetIndex: number) {
   const getIndex = (key: string | string[]) => {
     const keys = Array.isArray(key) ? key : [key];
 
-    return headerRows.findIndex((cell) =>
-      keys.includes(String(cell).trim().toLowerCase()),
-    );
+    return headerRows.findIndex((cell) => {
+      const header = String(cell).trim().toLowerCase();
+
+      return keys.some((key) => header.includes(key.toLowerCase()));
+    });
   };
 
   const schema = schemas.find((schema) =>
@@ -38,23 +43,26 @@ export default function salesParser(bytes: Uint8Array, sheetIndex: number) {
   const salesData = contentRows
     .filter((row) => row.some((cell) => cell))
     .map((row) => {
-      const item = String(row[indexes.item] || "");
-      const packing = row[indexes.packing] || item.match(/[([](.+?)[)\]]/)?.[1];
+      const item = `${row[indexes.item]} (${row[indexes.packing] || row[indexes.item].match(/[([](.+?)[)\]]/)?.[1]})`;
+      const clearItem = replaceItem(clearWhiteSpace(item), ITEMS_TO_REPLACE);
       const category = row[indexes.category];
 
-      const match = item.match(/\b(?:MC|MD|SR|FC|RM|MF|TS)\s\d{3,4}\S*/g);
-      const code = match?.[0] || "";
+      const matchPacking = clearItem.match(/[([](.+?)[)\]]/);
+      const packing = matchPacking?.[1];
+
+      const matchCode = clearItem.match(
+        /\b(?:MC|MD|SR|FC|RM|MF|TS)\s\d{3,4}\S*/g,
+      );
+      const code = matchCode?.[0] || "";
       const clearCode = code.replace(/\s/g, "");
 
-      const clearName = item
-        .match(/[a-z]{3,}/gi)
-        ?.join(" ")
-        .trim();
+      const clearName = clearItem.replace(code, "").replace(`(${packing})`, "");
 
       const transformed = schema.transform(row, indexes);
+      const propperName = `${clearName} - ${clearCode} ${packing ? `(${packing})` : ""}`;
 
       return {
-        item: `${clearName} ${clearCode} ${packing ? `(${packing})` : ""}`,
+        item: propperName,
         packing,
         code: clearCode,
         category,
@@ -63,5 +71,7 @@ export default function salesParser(bytes: Uint8Array, sheetIndex: number) {
       };
     });
 
-  return salesData.filter((data) => data.category) as ParsedSales[];
+  return salesData.filter(
+    ({ code, total, category }) => category && code !== "" && total > 0,
+  ) as ParsedSales[];
 }

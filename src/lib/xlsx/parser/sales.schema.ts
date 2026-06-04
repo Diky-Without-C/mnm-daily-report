@@ -1,3 +1,5 @@
+import { LAST_3_MONTHS } from "@/features/MPO/sales.constant";
+
 interface Schema {
   name: string;
   columns: {
@@ -22,18 +24,24 @@ export const schemas: Schema[] = [
     name: "realization",
     columns: {
       item: "nama barang",
-      total: "ttl",
       packing: "kemasan",
       category: "merk",
       monthStart: "bulan",
     },
-    transform: (row, indexes) => ({
-      total: Number(row[indexes.total]) || 0,
-      monthlySale: Array.from(
+    transform: (row, indexes) => {
+      const monthlySale = Array.from(
         { length: 12 },
         (_, i) => Number(row[indexes.monthStart + i]) || 0,
-      ),
-    }),
+      );
+
+      return {
+        monthlySale,
+        total: LAST_3_MONTHS.reduce(
+          (sum, { index }) => sum + (monthlySale[index] || 0),
+          0,
+        ),
+      };
+    },
   },
 
   {
@@ -42,7 +50,7 @@ export const schemas: Schema[] = [
       item: "nama barang",
       packing: "packing",
       category: "merk",
-      request: "mpo mei",
+      request: "mpo",
     },
     transform: (row, indexes) => {
       const request = Number(row[indexes.request]) || 0;

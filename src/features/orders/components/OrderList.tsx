@@ -26,7 +26,7 @@ export default function OrderList({ mode, setSelectedOrder }: OrderPageProps) {
         <button
           type="button"
           onClick={handlers.handleAdd}
-          className="rounded-lg bg-blue-400 p-2 text-white hover:bg-blue-500"
+          className="size-9 cursor-pointer rounded-lg bg-blue-400 p-2 text-white hover:bg-blue-500"
         >
           <Add />
         </button>

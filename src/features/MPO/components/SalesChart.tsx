@@ -65,15 +65,16 @@ export default function SalesChart({ displayedSales }: SalesChartProps) {
             className="absolute left-2 truncate"
             style={{ top: seriesPositions[index] ?? 0 }}
           >
-            {sale.total3MonthSales === 0
+            {sale.total === 0
               ? ""
-              : `${sale.item} - total ${formatNumber(sale.total3MonthSales)} ctn`}
+              : `${sale.item} - total ${formatNumber(sale.total)} ctn`}
           </span>
         ))}
       </div>
       <BarChart
         layout="horizontal"
         className="h-full w-full"
+        skipAnimation
         hideLegend
         margin={{
           top: 20,
@@ -84,8 +85,8 @@ export default function SalesChart({ displayedSales }: SalesChartProps) {
         yAxis={[
           {
             scaleType: "band",
-            data: displayedSales.map(({ item, total3MonthSales }) =>
-              total3MonthSales === 0 ? " ".repeat(Number(item)) : item,
+            data: displayedSales.map(({ item, total }) =>
+              total === 0 ? " ".repeat(Number(item)) : item,
             ),
             disableTicks: true,
             categoryGapRatio: 0.4,

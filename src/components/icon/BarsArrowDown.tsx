@@ -1,6 +1,4 @@
-import type { ComponentProps } from "react";
-
-export default function ChevronUpDown({ ...rest }: ComponentProps<"svg">) {
+export default function BarsArrowDown() {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -8,12 +6,12 @@ export default function ChevronUpDown({ ...rest }: ComponentProps<"svg">) {
       viewBox="0 0 24 24"
       strokeWidth={1.5}
       stroke="currentColor"
-      {...rest}
+      className="size-6"
     >
       <path
         strokeLinecap="round"
         strokeLinejoin="round"
-        d="M8.25 15 12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9"
+        d="M3 4.5h14.25M3 9h9.75M3 13.5h9.75m4.5-4.5v12m0 0-3.75-3.75M17.25 21 21 17.25"
       />
     </svg>
   );
