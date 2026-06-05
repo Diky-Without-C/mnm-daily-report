@@ -13,7 +13,7 @@ import { formatDate } from "@/utils/formatDate";
 export default function useSalesPage() {
   const [file, setFile] = useState<File | null>(null);
 
-  const { date } = useDateStore();
+  const { date, setDate } = useDateStore();
   const { orders } = useOrdersStore();
   const { setSales } = useSalesStore();
 
@@ -71,5 +71,7 @@ export default function useSalesPage() {
     error,
     previewText,
     isReady,
+    date,
+    setDate,
   };
 }

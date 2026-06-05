@@ -20,7 +20,7 @@ export const processingSales = (
 ): DisplayedSale[] => {
   const processedSales: ProcessedSale[] = selectedSales
     .map((item) => {
-      const last3MonthSales = LAST_3_MONTHS.map(
+      const last3MonthSales = LAST_3_MONTHS().map(
         (month) => item.monthlySale[month.index] || 0,
       );
 

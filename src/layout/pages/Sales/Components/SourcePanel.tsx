@@ -1,17 +1,22 @@
 import BarsArrowDown from "@components/icon/BarsArrowDown";
 import BarsArrowUp from "@components/icon/BarsArrowUp";
+import InputDate from "@components/Input/inputDate";
 import InputField from "@components/Input/inputField";
 
 interface SourcePanelProps {
   file: File | null;
+  date: Date;
   showSource: boolean;
+  setDate: (date: Date) => void;
   onToggle: () => void;
   onFileChange: (file: File | null) => void;
 }
 
 export default function SourcePanel({
   file,
+  date,
   showSource,
+  setDate,
   onToggle,
   onFileChange,
 }: SourcePanelProps) {
@@ -30,6 +35,8 @@ export default function SourcePanel({
             >
               {showSource ? <BarsArrowUp /> : <BarsArrowDown />}
             </button>
+
+            <InputDate onDateChange={setDate} date={date} />
           </div>
         </header>
 

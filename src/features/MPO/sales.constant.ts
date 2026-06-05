@@ -1,3 +1,5 @@
+import { useDateStore } from "@/store/usetDate.store";
+
 export const MONTHS = [
   "Jan",
   "Feb",
@@ -15,15 +17,18 @@ export const MONTHS = [
 
 export const ITEMS_PER_PAGE = 7;
 
-export const LAST_3_MONTHS = Array.from({ length: 3 }, (_, i) => {
-  const currentMonth = new Date().getMonth() - 1;
-  const monthIndex = (currentMonth - 2 + i + 12) % 12;
+export const LAST_3_MONTHS = () => {
+  const currentMonth = useDateStore.getState().date.getMonth() - 1;
 
-  return {
-    label: MONTHS[monthIndex],
-    index: monthIndex,
-  };
-});
+  return Array.from({ length: 3 }, (_, i) => {
+    const monthIndex = (currentMonth - 2 + i + 12) % 12;
+
+    return {
+      label: MONTHS[monthIndex],
+      index: monthIndex,
+    };
+  });
+};
 
 export const SALES_SHEET_INDEX = [3, 2, 1, 4];
 

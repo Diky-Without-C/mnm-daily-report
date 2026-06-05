@@ -13,7 +13,7 @@ export default function SalesChart({ displayedSales }: SalesChartProps) {
   const ref = useRef<HTMLDivElement>(null);
 
   const chartSeries = useMemo(() => {
-    return LAST_3_MONTHS.map((month, index) => ({
+    return LAST_3_MONTHS().map((month, index) => ({
       label: month.label,
       data: displayedSales.map(({ last3MonthSales }) => last3MonthSales[index]),
       stack: "total",

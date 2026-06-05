@@ -60,7 +60,7 @@ export default function useSalesList() {
       length: Math.max(0, ITEMS_PER_PAGE - uniqueItems.length),
     }).map((_, index) => ({
       item: String(index),
-      last3MonthSales: LAST_3_MONTHS.map(() => 0),
+      last3MonthSales: LAST_3_MONTHS().map(() => 0),
       total: 0,
     }));
 

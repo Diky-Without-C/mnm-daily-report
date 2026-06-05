@@ -36,7 +36,7 @@ export const schemas: Schema[] = [
 
       return {
         monthlySale,
-        total: LAST_3_MONTHS.reduce(
+        total: LAST_3_MONTHS().reduce(
           (sum, { index }) => sum + (monthlySale[index] || 0),
           0,
         ),

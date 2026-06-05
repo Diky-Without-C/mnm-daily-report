@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Calendar from "@components/icon/Calendar";
+import ChevronUp from "@components/icon/ChevronUp";
 import { useClickOutside } from "@/hooks/useClickOutside";
 
 interface InputDateProps {
@@ -28,7 +29,7 @@ const getDaysInMonth = (year: number, month: number) =>
 export default function InputDate({ date, onDateChange }: InputDateProps) {
   const today = new Date(date);
   const year = today.getFullYear();
-  const month = today.getMonth();
+  const [month, setMonth] = useState(today.getMonth());
 
   const [selectedDay, setSelectedDay] = useState(today.getDate());
   const [isOpen, setIsOpen] = useState(false);
@@ -51,6 +52,11 @@ export default function InputDate({ date, onDateChange }: InputDateProps) {
     onDateChange(new Date(year, month, day));
   };
 
+  const handleMonthChange = (newMonth: number) => {
+    setMonth(newMonth);
+    onDateChange(new Date(year, newMonth, selectedDay));
+  };
+
   return (
     <div ref={ref} className="relative">
       <button
@@ -62,9 +68,25 @@ export default function InputDate({ date, onDateChange }: InputDateProps) {
 
       {isOpen && (
         <div className="absolute right-0 z-20 mt-2 w-64 rounded-xl border border-gray-200 bg-white p-3 shadow-xl">
-          <h2 className="mb-3 text-center text-sm font-semibold text-gray-800">
-            {monthNames[month]} {year}
-          </h2>
+          <div className="relative mb-3 flex items-center justify-between">
+            <h2 className="text-center text-sm font-semibold text-gray-800">
+              {monthNames[month]} {year}
+            </h2>
+            <div className="flex gap-1">
+              <button
+                onClick={() => handleMonthChange(month === 0 ? 11 : month - 1)}
+                className="cursor-pointer rounded-lg border border-gray-200 bg-gray-100 p-1 hover:bg-gray-200"
+              >
+                <ChevronUp />
+              </button>
+              <button
+                onClick={() => handleMonthChange(month === 11 ? 0 : month + 1)}
+                className="cursor-pointer rounded-lg border border-gray-200 bg-gray-100 p-1 hover:bg-gray-200"
+              >
+                <ChevronUp className="rotate-180" />
+              </button>
+            </div>
+          </div>
 
           <div className="mb-2 grid grid-cols-7 text-center text-xs text-gray-400">
             {["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"].map((d) => (
