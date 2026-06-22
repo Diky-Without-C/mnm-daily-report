@@ -4,11 +4,10 @@ import type { Report } from "@/app/supabase/report.dto";
 import { useExcelParser } from "@/lib/xlsx/useExcelParser";
 import type { ParsedReport } from "@/lib/xlsx/xlsx.type";
 import { processData } from "@/features/report";
-import { dataToText } from "@/features/report/helper/dataToText";
+import { reportToText } from "@/features/report/dataToText/report.text";
 import { useLocalStorage } from "@/hooks/useLocaleStorage";
 import { useDateStore } from "@/store/usetDate.store";
 import { useOrdersStore } from "@/store/useOrders.store";
-import { formatDate } from "@/utils/formatDate";
 
 export default function useOrderPage() {
   const [file, setFile] = useState<File | null>(null);
@@ -56,7 +55,7 @@ export default function useOrderPage() {
   const text = useMemo(() => {
     if (!parsedData?.length) return "";
 
-    return dataToText(processData(parsedData), formatDate(date), orders);
+    return reportToText(processData(parsedData), date, orders);
   }, [parsedData, date, orders]);
 
   const isReady = (!!file && !loading && !error) || cachedXlsx.length > 0;

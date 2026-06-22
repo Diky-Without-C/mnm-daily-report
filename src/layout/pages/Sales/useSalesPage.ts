@@ -6,9 +6,8 @@ import { useDateStore } from "@/store/usetDate.store";
 import { useOrdersStore } from "@/store/useOrders.store";
 import { useLocalStorage } from "@/hooks/useLocaleStorage";
 import { processData } from "@/features/report";
-import { dataToText } from "@/features/report/helper/dataToText";
+import { reportToText } from "@/features/report/dataToText/report.text";
 import { SALES_SHEET_INDEX } from "@/features/MPO/sales.constant";
-import { formatDate } from "@/utils/formatDate";
 
 export default function useSalesPage() {
   const [file, setFile] = useState<File | null>(null);
@@ -53,9 +52,9 @@ export default function useSalesPage() {
     if (loading) return "loading ...";
     if (error) return error;
 
-    return dataToText(
+    return reportToText(
       processData(cachedReportXlsx),
-      formatDate(date),
+      date,
       orders,
       currentSales,
     );

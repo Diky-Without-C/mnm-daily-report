@@ -76,3 +76,36 @@ export const ITEM_TO_MERGE: ReadonlyArray<{
     child: [{ name: "ROBOMAN BLOCK (IRONMAN)" }],
   },
 ];
+
+export const CUSTOM_TITLES = {
+  "ROBOMAN BLOCK MERAH (MC319-D)": "ROBOMAN BOX (MC319-BOX)",
+  "ROBOMAN (RM019)": "ROBOMAN TACTICAL FORCE (RM019)",
+  "MOBIL CARTOON HELI (MD3488)": "MOBIL CARTOON (MD3488)",
+} as const;
+
+export const EXTRA_INFO = [
+  "Heli",
+  "Pesawat",
+  "Jeep",
+  "Vw",
+  "SNI",
+  "Star Rider",
+  "Merah",
+  "Kuning",
+  "Hijau",
+  "Biru",
+  "Hitam",
+  "Putih",
+  "Bening",
+  "Kotak",
+  "Bulat",
+  "Hlk",
+  "Captain",
+  "BearBrick",
+  "Master",
+  "Shinobi",
+  "Attack",
+  "Dragon",
+];
+
+export type ExtraInfoKeyword = (typeof EXTRA_INFO)[number];
