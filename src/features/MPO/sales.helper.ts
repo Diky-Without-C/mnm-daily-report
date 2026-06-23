@@ -42,7 +42,7 @@ export const groupingSales = (sales: ParsedSales[][]) => {
 
       if (!firstItem) return acc;
 
-      const key = categoryToKey(firstItem.category);
+      const key = categoryToKey(String(firstItem.category));
 
       acc[key] ??= [];
       acc[key].push(...sale);
