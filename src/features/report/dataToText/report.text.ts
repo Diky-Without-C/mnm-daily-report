@@ -1,6 +1,7 @@
 import { ITEM_TYPES } from "@/app/constants";
 import type { Report } from "@/app/supabase/report.dto";
 import { ORDER_CATEGORY } from "@/features/orders/order.constants";
+import { LAST_3_MONTHS } from "@/features/MPO/sales.constant";
 import type {
   GroupedCategories,
   ParsedReport,
@@ -99,7 +100,9 @@ const buildTotalLine = (content: ParsedReport[], orders: Report[]) => {
 
 const buildSalesLine = (sales: ParsedSales[]) => {
   const totalSales = sales
-    .flatMap((sale) => sale.monthlySale.slice(0, 3))
+    .flatMap((sale) =>
+      LAST_3_MONTHS().map((month) => sale.monthlySale[month.index] || 0),
+    )
     .reduce((acc, curr) => acc + curr, 0);
 
   const packing = Number(sales[0]?.packing?.match(/\d+/)?.[0] ?? 0);
