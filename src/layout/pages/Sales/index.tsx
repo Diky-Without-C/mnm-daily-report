@@ -6,7 +6,7 @@ import SalesList from "@/features/MPO/components/SalesList";
 
 export default function Sales() {
   const [showSource, setShowSource] = useState(false);
-  const { file, setFile, date, setDate, previewText, isReady } = useSalesPage();
+  const { file, setFile, date, setDate, content, isReady } = useSalesPage();
 
   return (
     <main className="grid h-[calc(100%-4rem)] grid-cols-6 grid-rows-10 gap-2 p-6">
@@ -23,8 +23,8 @@ export default function Sales() {
       />
 
       <PreviewPanel
-        text={previewText}
-        content={previewText}
+        text={content}
+        content={content}
         isReady={isReady}
         expanded={showSource}
       />

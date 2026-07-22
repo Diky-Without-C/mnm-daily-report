@@ -42,12 +42,14 @@ export default function useSalesPage() {
     setSales(sales);
   }, [sales, setSales]);
 
-  const previewText = useMemo(() => {
+  const content = useMemo(() => {
     if (!parsedData?.length) return "No cached report data";
     if (reportLoading) return "loading ...";
     if (reportError) return reportError;
 
-    return reportToText(processData(parsedData), date, orders, sales.flat());
+    return sales[0]
+      ? reportToText(processData(parsedData), date, orders, sales.flat())
+      : "No sales data available";
   }, [parsedData, reportLoading, reportError, date, orders, sales]);
 
   const isReady =
@@ -63,7 +65,7 @@ export default function useSalesPage() {
     sales,
     loading: salesloading,
     error: salesError,
-    previewText,
+    content,
     isReady,
     date,
     setDate,
