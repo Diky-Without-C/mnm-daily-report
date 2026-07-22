@@ -1,73 +1,68 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo } from "react";
 import { useExcelParser } from "@/lib/xlsx/useExcelParser";
-import type { ParsedReport, ParsedSales } from "@/lib/xlsx/xlsx.type";
 import { useSalesStore } from "@/store/useSales.store";
 import { useDateStore } from "@/store/usetDate.store";
 import { useOrdersStore } from "@/store/useOrders.store";
-import { useLocalStorage } from "@/hooks/useLocaleStorage";
+import usePersistedFile from "@/hooks/usePersistedFile";
 import { processData } from "@/features/report";
 import { reportToText } from "@/features/report/dataToText/report.text";
 import { SALES_SHEET_INDEX } from "@/features/MPO/sales.constant";
 
 export default function useSalesPage() {
-  const [file, setFile] = useState<File | null>(null);
+  const [file, setFile] = usePersistedFile("mnm-xlsx-sales-storage");
+  const [reportFile] = usePersistedFile("mnm-xlsx-report-storage");
 
   const { date, setDate } = useDateStore();
   const { orders } = useOrdersStore();
   const { setSales } = useSalesStore();
 
-  const [cachedSalesXlsx, setCachedSales] = useLocalStorage<ParsedSales[][]>(
-    "xlsx-data-sales",
-    [],
-  );
-  const [cachedReportXlsx] = useLocalStorage<ParsedReport[]>(
-    "xlsx-data-report",
-    [],
-  );
-
   const {
     data: sales,
-    loading,
-    error,
+    loading: salesloading,
+    error: salesError,
   } = useExcelParser({
     file,
     sheetIndex: SALES_SHEET_INDEX,
     content: "sales",
   });
 
+  const {
+    data: [parsedData],
+    loading: reportLoading,
+    error: reportError,
+  } = useExcelParser({
+    file: reportFile,
+    sheetIndex: useMemo(() => [date.getDate()], [date]),
+    content: "report",
+  });
+
   useEffect(() => {
     if (!sales.length) return;
 
     setSales(sales);
-    setCachedSales(sales);
-  }, [sales, setSales, setCachedSales]);
-
-  const currentSales = useMemo(
-    () => (sales.length ? sales.flat() : cachedSalesXlsx.flat()),
-    [sales, cachedSalesXlsx],
-  );
+  }, [sales, setSales]);
 
   const previewText = useMemo(() => {
-    if (!cachedReportXlsx.length) return "No cached report data";
-    if (loading) return "loading ...";
-    if (error) return error;
+    if (!parsedData?.length) return "No cached report data";
+    if (reportLoading) return "loading ...";
+    if (reportError) return reportError;
 
-    return reportToText(
-      processData(cachedReportXlsx),
-      date,
-      orders,
-      currentSales,
-    );
-  }, [cachedReportXlsx, date, orders, currentSales, loading, error]);
+    return reportToText(processData(parsedData), date, orders, sales.flat());
+  }, [parsedData, reportLoading, reportError, date, orders, sales]);
 
-  const isReady = cachedReportXlsx.length > 0 && !loading && !error;
+  const isReady =
+    !salesloading &&
+    !salesError &&
+    !reportLoading &&
+    !reportError &&
+    !!sales.length;
 
   return {
     file,
     setFile,
     sales,
-    loading,
-    error,
+    loading: salesloading,
+    error: salesError,
     previewText,
     isReady,
     date,

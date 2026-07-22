@@ -1,29 +1,24 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo } from "react";
 import { useSupabaseQuery } from "@/app/supabase/useSupabaseQuery";
 import type { Report } from "@/app/supabase/report.dto";
 import { useExcelParser } from "@/lib/xlsx/useExcelParser";
-import type { ParsedReport } from "@/lib/xlsx/xlsx.type";
 import { processData } from "@/features/report";
 import { reportToText } from "@/features/report/dataToText/report.text";
+import usePersistedFile from "@/hooks/usePersistedFile";
 import { useLocalStorage } from "@/hooks/useLocaleStorage";
 import { useDateStore } from "@/store/usetDate.store";
 import { useOrdersStore } from "@/store/useOrders.store";
 
 export default function useOrderPage() {
-  const [file, setFile] = useState<File | null>(null);
+  const [file, setFile] = usePersistedFile("mnm-xlsx-report-storage");
 
   const { date, setDate } = useDateStore();
   const { orders, setOrders } = useOrdersStore();
 
   const [, setCodeHint] = useLocalStorage<string[]>("codeHint", []);
-  const [cachedXlsx, setCachedXlsx] = useLocalStorage<ParsedReport[]>(
-    "xlsx-data-report",
-    [],
-  );
-
   const { data: report } = useSupabaseQuery<Report>("report");
   const {
-    data: [xlsx],
+    data: [parsedData],
     loading,
     error,
   } = useExcelParser({
@@ -32,19 +27,11 @@ export default function useOrderPage() {
     content: "report",
   });
 
-  const parsedData = xlsx?.length ? xlsx : cachedXlsx;
-
   useEffect(() => {
     if (report) {
       setOrders(report);
     }
   }, [report, setOrders]);
-
-  useEffect(() => {
-    if (xlsx?.length) {
-      setCachedXlsx(xlsx);
-    }
-  }, [xlsx, setCachedXlsx]);
 
   useEffect(() => {
     if (!parsedData?.length) return;
@@ -58,18 +45,18 @@ export default function useOrderPage() {
     return reportToText(processData(parsedData), date, orders);
   }, [parsedData, date, orders]);
 
-  const isReady = (!!file && !loading && !error) || cachedXlsx.length > 0;
+  const isReady = !!file && !loading && !error;
 
   const content = useMemo(() => {
     if (!file) {
-      return cachedXlsx.length
+      return parsedData?.length
         ? text
         : "Upload an Excel file to generate today's report";
     }
     if (loading) return "loading ...";
     if (error) return error;
     return text;
-  }, [file, cachedXlsx.length, text, loading, error]);
+  }, [file, parsedData?.length, text, loading, error]);
 
   return {
     file,
