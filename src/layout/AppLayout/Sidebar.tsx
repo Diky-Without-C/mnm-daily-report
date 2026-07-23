@@ -54,7 +54,7 @@ export default function Sidebar({ expanded, onToggle }: SidebarProps) {
         expanded ? "w-64 overflow-x-hidden" : "w-16"
       }`}
     >
-      <div className="flex w-64 items-center">
+      <div className={`${expanded ? "w-60" : "w-12"} flex items-center`}>
         <HamburgerButton open={expanded} onToggle={onToggle} />
       </div>
 

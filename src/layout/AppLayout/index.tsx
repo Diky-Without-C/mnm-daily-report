@@ -9,7 +9,7 @@ export default function AppLayout() {
   const { active } = useDarkOverlay();
 
   return (
-    <div className="relative h-screen w-full bg-slate-200">
+    <div className="custom-background relative h-screen w-full bg-slate-200">
       {active && <div className="fixed inset-0 z-40 bg-black/20"></div>}
       <Sidebar
         expanded={expanded}
