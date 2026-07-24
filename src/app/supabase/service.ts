@@ -1,32 +1,73 @@
 import { supabase } from "./supabase";
+import { isNetworkError, setOffline, setOnline } from "@/store/useOnline.store";
+
+async function execute<T>(query: Promise<T>) {
+  try {
+    const result = await query;
+
+    setOnline();
+
+    return result;
+  } catch (error) {
+    if (isNetworkError(error)) {
+      setOffline();
+    }
+
+    throw error;
+  }
+}
 
 export const supabaseService = {
-  async fetchAll<T>(table: string): Promise<T[]> {
-    const { data, error } = await supabase
-      .from(table)
-      .select("*")
-      .order("id", { ascending: true });
+  fetchAll<T>(table: string) {
+    return execute(
+      (async () => {
+        const { data, error } = await supabase
+          .from(table)
+          .select("*")
+          .order("id");
 
-    if (error) throw new Error(error.message);
-    return data as T[];
+        if (error) throw error;
+
+        return data as T[];
+      })(),
+    );
   },
 
-  async create<T>(table: string, item: T) {
-    const { data, error } = await supabase.from(table).insert(item).select();
+  create<T>(table: string, item: T) {
+    return execute(
+      (async () => {
+        const { data, error } = await supabase
+          .from(table)
+          .insert(item)
+          .select();
 
-    if (error) throw new Error(error.message);
-    return data?.[0];
+        if (error) throw error;
+
+        return data?.[0];
+      })(),
+    );
   },
 
-  async update<T>(table: string, id: string, payload: Partial<T>) {
-    const { error } = await supabase.from(table).update(payload).eq("id", id);
+  update<T>(table: string, id: string, payload: Partial<T>) {
+    return execute(
+      (async () => {
+        const { error } = await supabase
+          .from(table)
+          .update(payload)
+          .eq("id", id);
 
-    if (error) throw new Error(error.message);
+        if (error) throw error;
+      })(),
+    );
   },
 
-  async remove(table: string, id: string) {
-    const { error } = await supabase.from(table).delete().eq("id", id);
+  remove(table: string, id: string) {
+    return execute(
+      (async () => {
+        const { error } = await supabase.from(table).delete().eq("id", id);
 
-    if (error) throw new Error(error.message);
+        if (error) throw error;
+      })(),
+    );
   },
 };

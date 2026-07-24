@@ -1,12 +1,14 @@
 import { useState } from "react";
 import { Outlet } from "react-router-dom";
 import { useDarkOverlay } from "@/hooks/useDarkOverlay";
+import { useOnlineStatus } from "@/hooks/useOnlineStatus";
 import Header from "./Header";
 import Sidebar from "./Sidebar";
 
 export default function AppLayout() {
   const [expanded, setExpanded] = useState(false);
   const { active } = useDarkOverlay();
+  useOnlineStatus();
 
   return (
     <div className="custom-background relative h-screen w-full bg-slate-200">

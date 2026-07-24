@@ -14,8 +14,8 @@ export function useSupabaseQuery<T>(table: string) {
         setLoading(true);
         const result = await supabaseService.fetchAll<T>(table);
         if (mounted) setData(result);
-      } catch (err: any) {
-        if (mounted) setError(err.message);
+      } catch (err: unknown) {
+        if (mounted) setError((err as Error).message);
       } finally {
         if (mounted) setLoading(false);
       }
