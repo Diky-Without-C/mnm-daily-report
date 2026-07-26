@@ -1,13 +1,14 @@
 import { useState } from "react";
-import type { Report } from "@/app/supabase/report.dto";
-import Kebab from "@components/icon/Kebab";
-import Add from "@components/icon/Add";
+import type { Report } from "@apps/supabase/report.dto";
+import Kebab from "@components/Icons/Kebab";
+import Add from "@components/Icons/Add";
+import SearchBar from "@components/SearchBar";
+import Button from "@components/Buttons";
 import { useClickOutside } from "@/hooks/useClickOutside";
 import useOrderList from "../useOrders";
 import { getOrderLabel } from "../order.helpers";
 import type { OrderCategoryType } from "../order.type";
 import DeleteDialog from "./DeleteDialog";
-import SearchBar from "@/components/SearchBar";
 import Form from "./Form";
 
 interface OrderPageProps {
@@ -23,19 +24,13 @@ export default function OrderList({ mode, setSelectedOrder }: OrderPageProps) {
       <div className="mb-4 flex w-full items-center justify-between">
         <h1 className="text-xl font-semibold capitalize">{mode}</h1>
 
-        <button
-          type="button"
-          onClick={handlers.handleAdd}
-          className="size-9 cursor-pointer rounded-lg bg-blue-400 p-2 text-white hover:bg-blue-500"
-        >
+        <Button variant="info" onClick={handlers.handleAdd} className="p-2">
           <Add />
-        </button>
+        </Button>
       </div>
-
       <div className="flex w-full gap-1">
         <SearchBar onSearch={handlers.handleSearch} />
       </div>
-
       <ul className="mt-2 flex h-full flex-col items-center overflow-y-auto">
         {orders.length ? (
           orders.map((order, i) => (
@@ -45,7 +40,6 @@ export default function OrderList({ mode, setSelectedOrder }: OrderPageProps) {
               className="relative mt-1 flex w-full items-center justify-between rounded-md bg-gray-200 px-3 py-3 hover:bg-gray-300"
             >
               <span className="pr-2">{getOrderLabel(order)}</span>
-
               <OrderActionMenu
                 onEdit={() => handlers.handleEdit(order)}
                 onDelete={() => handlers.requestDelete(order.id)}

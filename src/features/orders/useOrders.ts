@@ -1,8 +1,8 @@
 import { useMemo, useRef, useState } from "react";
-import type { Report } from "@/app/supabase/report.dto";
-import { supabaseService } from "@/app/supabase/service";
-import { useOrdersStore } from "@/store/useOrders.store";
-import { ITEM_TYPES, CONTAINER_TYPES } from "@/app/constants";
+import type { Report } from "@apps/supabase/report.dto";
+import { supabaseService } from "@apps/supabase/service";
+import { ITEM_TYPES, CONTAINER_TYPES } from "@apps/constants";
+import { useOrdersStore } from "@stores/useOrders.store";
 import { filterOrders, sortOrders } from "./order.helpers";
 import type { OrderCategoryType } from "./order.type";
 

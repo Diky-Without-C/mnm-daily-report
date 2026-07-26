@@ -1,5 +1,5 @@
+import type { ParsedReport } from "@libs/xlsx/xlsx.type";
 import { ITEM_SPLIT_BY_CODE, ITEM_SPLIT_BY_NAME } from "../report.constant";
-import type { ParsedReport } from "@/lib/xlsx/xlsx.type";
 
 export const splitGroup = (items: ParsedReport[]) => {
   const grouped = {

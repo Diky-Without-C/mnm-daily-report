@@ -1,10 +1,10 @@
-import type { Report } from "@/app/supabase/report.dto";
+import type { Report } from "@apps/supabase/report.dto";
+import { CODE_GROUPS } from "@features/sales/sales.constant";
 import type {
   GroupedCategories,
   ParsedReport,
   ParsedSales,
-} from "@/lib/xlsx/xlsx.type";
-import { CODE_GROUPS } from "@/features/MPO/sales.constant";
+} from "@libs/xlsx/xlsx.type";
 import type { ProcessedGroups } from "./report.type";
 
 const normalizeCode = (code: string) => {

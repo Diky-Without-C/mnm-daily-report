@@ -1,11 +1,11 @@
 import { useEffect } from "react";
-import type { Report } from "@/app/supabase/report.dto";
-import { ITEM_TYPES, CONTAINER_TYPES } from "@/app/constants";
-import { useLocalStorage } from "@/hooks/useLocaleStorage";
-import { useDarkOverlay } from "@/hooks/useDarkOverlay";
-import { useClickOutside } from "@/hooks/useClickOutside";
+import type { Report } from "@apps/supabase/report.dto";
+import { ITEM_TYPES, CONTAINER_TYPES } from "@apps/constants";
 import InputText from "@components/Input/InputText";
 import SelectField from "@components/DropDown/SelectField";
+import { useLocalStorage } from "@hooks/useLocaleStorage";
+import { useDarkOverlay } from "@hooks/useDarkOverlay";
+import { useClickOutside } from "@hooks/useClickOutside";
 import { ORDER_CATEGORY } from "../order.constants";
 
 interface FormProps {
@@ -44,55 +44,49 @@ export default function Form({ form, onClose, onChange, onSubmit }: FormProps) {
       className="relative grid grid-cols-4 gap-2 rounded-lg bg-white p-5 shadow-lg"
     >
       <InputText
-        name="code"
         label="Code"
         value={form.code}
-        onChange={onChange}
+        onChange={(value) => onChange("code", value)}
         hints={codeHint}
         className="col-span-2 w-52"
       />
 
       <SelectField
-        name="category"
         label="Category"
         value={form.category}
-        onChange={onChange}
+        onChange={(value) => onChange("category", value)}
         options={Object.values(ORDER_CATEGORY)}
         className="col-span-2"
       />
 
       <SelectField
-        name="from"
         label="From"
         value={form.from}
-        onChange={onChange}
+        onChange={(value) => onChange("from", value)}
         options={CONTAINER_TYPES}
         className="col-span-2"
       />
 
       <InputText
-        name="number"
         label="Number"
         value={form.number === 0 ? "" : form.number.toString()}
-        onChange={onChange}
+        onChange={(value) => onChange("number", value)}
         type="number"
         className="col-span-2 w-52"
       />
 
       <SelectField
-        name="type"
         label="Type"
         value={form.type}
-        onChange={onChange}
+        onChange={(value) => onChange("type", value)}
         options={Object.values(ITEM_TYPES)}
         className="col-span-2"
       />
 
       <InputText
-        name="amount"
         label="Amount"
         value={form.amount === 0 ? "" : form.amount.toString()}
-        onChange={onChange}
+        onChange={(value) => onChange("amount", value)}
         type="number"
         className="col-span-2 w-52"
         unit="PCS"
@@ -105,7 +99,6 @@ export default function Form({ form, onClose, onChange, onSubmit }: FormProps) {
         >
           Submit
         </button>
-
         <button
           type="button"
           onClick={() => {

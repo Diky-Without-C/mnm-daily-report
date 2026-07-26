@@ -1,8 +1,8 @@
-import type { ParsedReport } from "@/lib/xlsx/xlsx.type";
-import { createPair } from "@/features/report/helper/createPair";
-import { groupByCategory } from "@/features/report/helper/groupByCathegory";
-import { splitGroup } from "@/features/report/helper/splitGroup";
-import { mergeGroup } from "@/features/report/helper/mergeGroup";
+import { createPair } from "@features/report/helper/createPair";
+import { groupByCategory } from "@features/report/helper/groupByCathegory";
+import { splitGroup } from "@features/report/helper/splitGroup";
+import { mergeGroup } from "@features/report/helper/mergeGroup";
+import type { ParsedReport } from "@libs/xlsx/xlsx.type";
 
 export const processData = (data: ParsedReport[]) => {
   const clean = data.filter((item) => item.type !== "");

@@ -1,5 +1,5 @@
-import type { Report } from "@/app/supabase/report.dto";
-import type { ParsedReport, ParsedSales } from "@/lib/xlsx/xlsx.type";
+import type { Report } from "@apps/supabase/report.dto";
+import type { ParsedReport, ParsedSales } from "@libs/xlsx/xlsx.type";
 import { CATEGORY_KEYS } from "../report.constant";
 
 export type ProcessedGroup = {

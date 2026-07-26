@@ -1,8 +1,8 @@
 import { Routes, Route, Navigate } from "react-router-dom";
-import AppLayout from "@/layout/AppLayout";
-import Order from "@/layout/pages/Order";
-import Stuffing from "@/layout/pages/Stuffing";
-import Sales from "@/layout/pages/Sales";
+import AppLayout from "@layouts/index";
+import Order from "@pages/Order";
+import Stuffing from "@pages/Stuffing";
+import Sales from "@pages/Sales";
 
 export default function AppRoutes() {
   return (

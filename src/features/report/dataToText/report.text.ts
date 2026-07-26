@@ -1,15 +1,15 @@
-import { ITEM_TYPES } from "@/app/constants";
-import type { Report } from "@/app/supabase/report.dto";
-import { ORDER_CATEGORY } from "@/features/orders/order.constants";
-import { LAST_3_MONTHS } from "@/features/MPO/sales.constant";
+import { ITEM_TYPES } from "@apps/constants";
+import type { Report } from "@apps/supabase/report.dto";
+import { ORDER_CATEGORY } from "@features/orders/order.constants";
+import { LAST_3_MONTHS } from "@features/sales/sales.constant";
 import type {
   GroupedCategories,
   ParsedReport,
   ParsedSales,
-} from "@/lib/xlsx/xlsx.type";
-import { capitalize } from "@/utils/capitalize";
-import { formatDate } from "@/utils/formatDate";
-import { formatNumber } from "@/utils/formatNumber";
+} from "@libs/xlsx/xlsx.type";
+import { capitalize } from "@utils/capitalize";
+import { formatDate } from "@utils/formatDate";
+import { formatNumber } from "@utils/formatNumber";
 import {
   CATEGORY_KEYS,
   CUSTOM_TITLES,

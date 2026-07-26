@@ -1,7 +1,7 @@
 import { useState } from "react";
-import type { Report } from "@/app/supabase/report.dto";
-import { supabaseService } from "@/app/supabase/service";
-import { useOrdersStore } from "@/store/useOrders.store";
+import type { Report } from "@apps/supabase/report.dto";
+import { supabaseService } from "@apps/supabase/service";
+import { useOrdersStore } from "@stores/useOrders.store";
 
 export interface StuffingForm {
   item: Report | null;

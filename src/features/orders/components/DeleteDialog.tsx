@@ -1,6 +1,6 @@
 import { useEffect } from "react";
-import { useDarkOverlay } from "@/hooks/useDarkOverlay";
-import { useClickOutside } from "@/hooks/useClickOutside";
+import { useDarkOverlay } from "@hooks/useDarkOverlay";
+import { useClickOutside } from "@hooks/useClickOutside";
 
 interface DeleteConfirmProps {
   onConfirm(): void;
@@ -29,7 +29,6 @@ export default function DeleteConfirm({
       <p className="text-center text-lg">
         Are you sure you want to delete this order?
       </p>
-
       <div className="mt-4 flex justify-end gap-2">
         <button
           onClick={() => {

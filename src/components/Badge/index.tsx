@@ -1,4 +1,5 @@
 import type { HTMLAttributes } from "react";
+import { cn } from "@utils/cn";
 
 type BadgeVariant = "success" | "error" | "warning" | "info" | "default";
 
@@ -32,10 +33,14 @@ export default function Badge({
 }: BadgeProps) {
   return (
     <div
-      className={`inline-flex items-center gap-2 rounded-full border p-1 text-sm font-medium ${variants[variant]} ${className}`}
+      className={cn(
+        "inline-flex items-center gap-2 rounded-full border p-1 text-sm font-medium",
+        variants[variant],
+        className,
+      )}
       {...props}
     >
-      {dot && <span className={`size-2 rounded-full ${dots[variant]}`} />}
+      {dot && <span className={cn("h-2 w-2 rounded-full", dots[variant])} />}
       {children}
     </div>
   );

@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
-import { useOnlineStore } from "@/store/useOnline.store";
-import { supabase } from "@/app/supabase/supabase";
+import { supabase } from "@apps/supabase/supabase";
+import { useOnlineStore } from "@stores/useOnline.store";
 
 const INTERVAL = 30000;
 

@@ -1,5 +1,5 @@
-import type { Report } from "@/app/supabase/report.dto";
-import { formatNumber } from "@/utils/formatNumber";
+import type { Report } from "@apps/supabase/report.dto";
+import { formatNumber } from "@utils/formatNumber";
 import { DEFAULT_NUMBER_PADDING, ORDER_CATEGORY } from "./order.constants";
 
 const orderLabelMap = {

@@ -1,0 +1,26 @@
+import { useState } from "react";
+import { Outlet } from "react-router-dom";
+import { useDarkOverlay } from "@hooks/useDarkOverlay";
+import { useOnlineStatus } from "@hooks/useOnlineStatus";
+import Header from "./Header";
+import Sidebar from "./Sidebar";
+
+export default function AppLayout() {
+  const [expanded, setExpanded] = useState(false);
+  const { active } = useDarkOverlay();
+  useOnlineStatus();
+
+  return (
+    <div className="custom-background relative h-screen w-full bg-slate-200">
+      {active && <div className="fixed inset-0 z-40 bg-black/20"></div>}
+      <Sidebar
+        expanded={expanded}
+        onToggle={() => setExpanded((prev) => !prev)}
+      />
+      <section className="h-full pl-16 transition-[padding] duration-300">
+        <Header />
+        <Outlet />
+      </section>
+    </div>
+  );
+}

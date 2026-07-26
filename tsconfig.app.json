@@ -8,11 +8,21 @@
     "skipLibCheck": true,
 
     /* Absolute path */
+    "ignoreDeprecations": "6.0",
     "baseUrl": ".",
     "paths": {
+      "@apps/*": ["src/apps/*"],
+      "@assets/*": ["src/assets/*"],
       "@components/*": ["src/components/*"],
-      "@constant/*": ["src/constant/*"],
-      "@services/*": ["src/services/*"],
+      "@features/*": ["src/features/*"],
+      "@hooks/*": ["src/hooks/*"],
+      "@layouts/*": ["src/layouts/*"],
+      "@pages/*": ["src/pages/*"],
+      "@libs/*": ["src/libs/*"],
+      "@routes/*": ["src/routes/*"],
+      "@stores/*": ["src/stores/*"],
+      "@styles/*": ["src/styles/*"],
+      "@utils/*": ["src/utils/*"],
       "@/*": ["src/*"]
     },
 

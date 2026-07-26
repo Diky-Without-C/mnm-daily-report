@@ -1,4 +1,4 @@
-import type { ParsedReport } from "@/lib/xlsx/xlsx.type";
+import type { ParsedReport } from "@libs/xlsx/xlsx.type";
 import { clearCode } from "../utils/clearCode";
 
 export const createPair = (items: ParsedReport[]): ParsedReport[][] => {
