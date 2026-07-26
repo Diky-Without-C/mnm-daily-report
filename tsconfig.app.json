@@ -8,7 +8,6 @@
     "skipLibCheck": true,
 
     /* Absolute path */
-    "ignoreDeprecations": "6.0",
     "baseUrl": ".",
     "paths": {
       "@apps/*": ["src/apps/*"],
