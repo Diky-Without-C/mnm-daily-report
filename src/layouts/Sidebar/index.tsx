@@ -1,6 +1,6 @@
 import { type ReactNode } from "react";
 import { NavLink } from "react-router-dom";
-import HamburgerButton from "@components/Buttons/HamburgerButton";
+import HamburgerButton from "@components/Button/HamburgerButton";
 import ClipboardDocument from "@components/Icons/ClipboardDocument";
 import Cube from "@components/Icons/Cube";
 import Ranking from "@components/Icons/Ranking";

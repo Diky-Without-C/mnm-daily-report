@@ -1,4 +1,4 @@
-import Button from "@components/Buttons";
+import Button from "@components/Button";
 import BarsArrowDown from "@components/Icons/BarsArrowDown";
 import BarsArrowUp from "@components/Icons/BarsArrowUp";
 import InputDate from "@components/Input/InputDate";

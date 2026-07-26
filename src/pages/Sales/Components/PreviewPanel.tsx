@@ -1,4 +1,4 @@
-import CopyButton from "@components/Buttons/CopyButton";
+import CopyButton from "@components/Button/CopyButton";
 
 interface PreviewPanelProps {
   text: string;

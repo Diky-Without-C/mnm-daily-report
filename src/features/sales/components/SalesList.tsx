@@ -1,6 +1,6 @@
 import ChevronLeft from "@components/Icons/ChevronLeft";
 import ChevronRight from "@components/Icons/ChevronRight";
-import Button from "@components/Buttons";
+import Button from "@components/Button";
 import SearchBar from "@components/SearchBar";
 import useSalesList from "../useSales";
 import { keyToLabel } from "../sales.helper";

@@ -3,7 +3,7 @@ import type { Report } from "@apps/supabase/report.dto";
 import Kebab from "@components/Icons/Kebab";
 import Add from "@components/Icons/Add";
 import SearchBar from "@components/SearchBar";
-import Button from "@components/Buttons";
+import Button from "@components/Button";
 import { useClickOutside } from "@/hooks/useClickOutside";
 import useOrderList from "../useOrders";
 import { getOrderLabel } from "../order.helpers";

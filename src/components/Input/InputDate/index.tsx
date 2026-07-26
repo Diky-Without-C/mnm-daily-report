@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Calendar from "@components/Icons/Calendar";
 import ChevronUp from "@components/Icons/ChevronUp";
-import Button from "@components/Buttons";
+import Button from "@components/Button";
 import { useClickOutside } from "@hooks/useClickOutside";
 import { cn } from "@utils/cn";
 
