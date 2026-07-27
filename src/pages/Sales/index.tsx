@@ -1,5 +1,5 @@
 import { useState } from "react";
-import SalesList from "@features/sales/components/SalesList";
+import SalesCard from "@features/sales/components/SalesCard";
 import SourcePanel from "./Components/SourcePanel";
 import PreviewPanel from "./Components/PreviewPanel";
 import useSalesPage from "./useSalesPage";
@@ -28,7 +28,7 @@ export default function Sales() {
         expanded={showSource}
       />
       <section className="col-start-3 col-end-7 row-start-1 row-end-11 rounded-xl bg-white p-4 shadow-lg">
-        <SalesList />
+        <SalesCard />
       </section>
     </main>
   );

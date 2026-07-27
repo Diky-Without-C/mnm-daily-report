@@ -1,23 +1,9 @@
 import type { ParsedSales } from "@libs/xlsx/xlsx.type";
 import { capitalize } from "@utils/capitalize";
 import { LAST_3_MONTHS } from "./sales.constant";
+import type { ProcessedSale } from "./sales.type";
 
-export interface ProcessedSale extends ParsedSales {
-  last3MonthSales: number[];
-  total: number;
-}
-
-export interface PlaceholderSale {
-  item: string;
-  last3MonthSales: number[];
-  total: number;
-}
-
-export type DisplayedSale = ProcessedSale | PlaceholderSale;
-
-export const processingSales = (
-  selectedSales: ParsedSales[],
-): DisplayedSale[] => {
+export const processingSales = (selectedSales: ParsedSales[]) => {
   const processedSales: ProcessedSale[] = selectedSales
     .map((item) => {
       const last3MonthSales = LAST_3_MONTHS().map(
@@ -58,10 +44,16 @@ export const groupingSales = (sales: ParsedSales[][]) => {
   } as Record<string, ParsedSales[]>;
 };
 
-export const paginate = <T>(items: T[], page: number, perPage: number) => {
-  const start = (page - 1) * perPage;
-
-  return items.slice(start, start + perPage);
+export const createEmptySales = (count: number): ProcessedSale[] => {
+  return Array.from({ length: count }).map((_, index) => ({
+    item: String(index),
+    packing: undefined,
+    category: "",
+    code: "",
+    monthlySale: [],
+    last3MonthSales: LAST_3_MONTHS().map(() => 0),
+    total: 0,
+  }));
 };
 
 export const categoryToKey = (value: string) =>

@@ -1,10 +1,9 @@
-import { useEffect, useMemo } from "react";
+import { useMemo } from "react";
 import { processData } from "@features/report";
 import { reportToText } from "@features/report/dataToText/report.text";
 import { SALES_SHEET_INDEX } from "@features/sales/sales.constant";
-import usePersistedFile from "@hooks/usePersistedFile";
+import { usePersistedFile } from "@hooks/usePersistedFile";
 import { useExcelParser } from "@libs/xlsx/useExcelParser";
-import { useSalesStore } from "@stores/useSales.store";
 import { useDateStore } from "@stores/usetDate.store";
 import { useOrdersStore } from "@stores/useOrders.store";
 
@@ -14,7 +13,6 @@ export default function useSalesPage() {
 
   const { date, setDate } = useDateStore();
   const { orders } = useOrdersStore();
-  const { setSales } = useSalesStore();
 
   const {
     data: sales,
@@ -35,12 +33,6 @@ export default function useSalesPage() {
     sheetIndex: useMemo(() => [date.getDate()], [date]),
     content: "report",
   });
-
-  useEffect(() => {
-    if (!sales.length) return;
-
-    setSales(sales);
-  }, [sales, setSales]);
 
   const content = useMemo(() => {
     if (!parsedData?.length) return "No cached report data";

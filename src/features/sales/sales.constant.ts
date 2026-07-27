@@ -52,6 +52,8 @@ export const ITEMS_TO_REPLACE = {
   "SR 021": "SR 021-L",
   "GO PLUS KARTU MC 297": "GO PLUS KARTU MC 297-K",
   "MD 3385": "MC 319-BOX",
+  "MC 550-A": "MC 550A",
+  "MC 550-B": "MC 550B",
 } as const;
 
 export const CODE_GROUPS = {
@@ -59,4 +61,6 @@ export const CODE_GROUPS = {
   MC379: "MC297/MC379",
   MC521A: "MC521A",
   MC521B: "MC521A",
+  MC550A: "MC550A",
+  MC550B: "MC550A",
 } as const;

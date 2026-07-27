@@ -1,11 +1,11 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { BarChart } from "@mui/x-charts/BarChart";
 import { formatNumber } from "@utils/formatNumber";
-import { LAST_3_MONTHS } from "../sales.constant";
-import useSalesList from "../useSales";
+import { LAST_3_MONTHS } from "../../sales.constant";
+import type { ProcessedSale } from "../../sales.type";
 
 interface SalesChartProps {
-  displayedSales: ReturnType<typeof useSalesList>["displayedSales"];
+  displayedSales: ProcessedSale[];
 }
 
 export default function SalesChart({ displayedSales }: SalesChartProps) {
@@ -20,56 +20,56 @@ export default function SalesChart({ displayedSales }: SalesChartProps) {
     }));
   }, [displayedSales]);
 
+  const calculatePositions = () => {
+    if (!ref.current) return;
+    const series = ref.current.querySelectorAll<HTMLElement>(
+      ".MuiBarChart-series",
+    );
+    const [{ children: elements }] = series;
+
+    series.forEach((element) => {
+      element.style.transform = "translateY(12px)";
+    });
+
+    if (!elements || elements.length === 0) return;
+    const positions: number[] = [...elements].map(({ attributes }) => {
+      const yPosition = attributes.getNamedItem("y")?.value;
+
+      return yPosition ? parseFloat(yPosition) - 12 : 0;
+    });
+
+    setSeriesPositions(positions);
+  };
+
   useEffect(() => {
     if (!ref.current) return;
 
-    const calculatePositions = () => {
-      if (!ref.current) return;
-
-      const [series] = ref.current.querySelectorAll(".MuiBarChart-series");
-      const elements = series?.children;
-
-      if (!elements || elements.length === 0) return;
-
-      const containerTop = ref.current.getBoundingClientRect().top;
-      const positions: number[] = [];
-
-      for (let i = 0; i < elements.length; i++) {
-        const element = elements[i] as HTMLElement;
-        const rect = element.getBoundingClientRect();
-
-        positions[i] = rect.top - containerTop - 22;
-      }
-
-      setSeriesPositions(positions);
-    };
-
-    const frame = requestAnimationFrame(() => {
-      calculatePositions();
+    const observer = new ResizeObserver(() => {
+      requestAnimationFrame(() => {
+        requestAnimationFrame(calculatePositions);
+      });
     });
 
-    window.addEventListener("resize", calculatePositions);
+    observer.observe(ref.current);
 
-    return () => {
-      cancelAnimationFrame(frame);
-      window.removeEventListener("resize", calculatePositions);
-    };
+    return () => observer.disconnect();
   }, [displayedSales]);
 
   return (
     <section ref={ref} className="relative flex h-full w-full flex-col">
       <div className="pointer-events-none absolute inset-0 z-10">
-        {displayedSales.map((sale, index) => (
-          <span
-            key={index}
-            className="absolute left-2 truncate"
-            style={{ top: seriesPositions[index] ?? 0 }}
-          >
-            {sale.total === 0
-              ? ""
-              : `${sale.item} - total ${formatNumber(sale.total)} ctn`}
-          </span>
-        ))}
+        {displayedSales.map(
+          (sale, index) =>
+            sale.total > 0 && (
+              <span
+                key={index}
+                className="absolute left-2 truncate"
+                style={{ top: seriesPositions[index] }}
+              >
+                {`${sale.item} - total ${formatNumber(sale.total)} ctn`}
+              </span>
+            ),
+        )}
       </div>
       <BarChart
         layout="horizontal"

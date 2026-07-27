@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { getFile, removeFile, saveFile } from "@libs/indexedDB";
 
-export default function usePersistedFile(key: string) {
+export function usePersistedFile(key: string) {
   const [file, setFileState] = useState<File | null>(null);
   const [loading, setLoading] = useState(true);
 

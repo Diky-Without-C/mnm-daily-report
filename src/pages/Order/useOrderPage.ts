@@ -3,7 +3,7 @@ import { useSupabaseQuery } from "@apps/supabase/useSupabaseQuery";
 import type { Report } from "@apps/supabase/report.dto";
 import { processData } from "@features/report";
 import { reportToText } from "@features/report/dataToText/report.text";
-import usePersistedFile from "@hooks/usePersistedFile";
+import { usePersistedFile } from "@hooks/usePersistedFile";
 import { useLocalStorage } from "@hooks/useLocaleStorage";
 import { useExcelParser } from "@libs/xlsx/useExcelParser";
 import { useDateStore } from "@stores/usetDate.store";

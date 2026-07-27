@@ -2,11 +2,11 @@ import ChevronLeft from "@components/Icons/ChevronLeft";
 import ChevronRight from "@components/Icons/ChevronRight";
 import Button from "@components/Button";
 import SearchBar from "@components/SearchBar";
-import useSalesList from "../useSales";
-import { keyToLabel } from "../sales.helper";
-import SalesChart from "./SalesChart";
+import useSalesList from "../../hooks/useSales";
+import { keyToLabel } from "../../sales.helper";
+import SalesChart from "../SalesChart";
 
-export default function SalesList() {
+export default function SalesCard() {
   const { categories, displayedSales, selected, pagination, handlers } =
     useSalesList();
 
