@@ -52,10 +52,6 @@ export default function useSalesList() {
     items: processedSales,
   });
 
-  useEffect(() => {
-    pagination.resetPage();
-  }, [search, activeCategory, pagination]);
-
   const displayedSales = useMemo(() => {
     return [
       ...pagination.displayedItems,

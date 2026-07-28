@@ -1,25 +1,23 @@
 import { useCallback, useEffect, useState } from "react";
-import { getFile, removeFile, saveFile } from "@libs/indexedDB";
+import { getFile, saveFile, removeFile } from "@libs/indexedDB";
+import { useFileStore } from "@stores/useFileStore";
 
 export function usePersistedFile(key: string) {
-  const [file, setFileState] = useState<File | null>(null);
+  const file = useFileStore((state) => state.files[key] ?? null);
+  const setStoreFile = useFileStore((state) => state.setFile);
+
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     let mounted = true;
 
     async function load() {
-      try {
-        const saved = await getFile(key);
+      const saved = await getFile(key);
 
-        if (mounted) {
-          setFileState(saved ?? null);
-        }
-      } finally {
-        if (mounted) {
-          setLoading(false);
-        }
-      }
+      if (!mounted) return;
+
+      setStoreFile(key, saved ?? null);
+      setLoading(false);
     }
 
     load();
@@ -27,11 +25,11 @@ export function usePersistedFile(key: string) {
     return () => {
       mounted = false;
     };
-  }, [key]);
+  }, [key, setStoreFile]);
 
   const setFile = useCallback(
     async (value: File | null) => {
-      setFileState(value);
+      setStoreFile(key, value);
 
       if (value) {
         await saveFile(key, value);
@@ -39,12 +37,8 @@ export function usePersistedFile(key: string) {
         await removeFile(key);
       }
     },
-    [key],
+    [key, setStoreFile],
   );
 
-  return [file, setFile, loading] satisfies readonly [
-    File | null,
-    (value: File | null) => Promise<void>,
-    boolean,
-  ];
+  return [file, setFile, loading] as const;
 }

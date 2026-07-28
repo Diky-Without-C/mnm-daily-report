@@ -36,13 +36,23 @@ export default function useSalesPage() {
 
   const content = useMemo(() => {
     if (!parsedData?.length) return "No cached report data";
-    if (reportLoading) return "loading ...";
-    if (reportError) return reportError;
+    if (reportLoading || salesloading) return "loading ...";
+    if (reportError || salesError)
+      return salesError || reportError || "Error loading data";
 
     return sales[0]
       ? reportToText(processData(parsedData), date, orders, sales.flat())
       : "No sales data available";
-  }, [parsedData, reportLoading, reportError, date, orders, sales]);
+  }, [
+    parsedData,
+    reportLoading,
+    salesloading,
+    reportError,
+    salesError,
+    sales,
+    date,
+    orders,
+  ]);
 
   const isReady =
     !salesloading &&

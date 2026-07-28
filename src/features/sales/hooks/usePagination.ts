@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ITEMS_PER_PAGE } from "../sales.constant";
 
 interface UsePaginationOptions<T> {
@@ -7,6 +7,15 @@ interface UsePaginationOptions<T> {
 
 export function usePagination<T>({ items }: UsePaginationOptions<T>) {
   const [page, setPage] = useState(1);
+
+  const previousItems = useRef(items);
+
+  useEffect(() => {
+    if (previousItems.current !== items) {
+      setPage(1);
+      previousItems.current = items;
+    }
+  }, [items]);
 
   const totalPages = useMemo(
     () => Math.max(1, Math.ceil(items.length / ITEMS_PER_PAGE)),
