@@ -1,6 +1,6 @@
 import { ITEM_TYPES } from "@apps/constants";
 import type { Report } from "@apps/supabase/report.dto";
-import { ORDER_CATEGORY } from "@features/orders/order.constants";
+import { getOrderLabel } from "@features/orders/order.helpers";
 import { LAST_3_MONTHS } from "@features/sales/sales.constant";
 import type {
   GroupedCategories,
@@ -60,16 +60,7 @@ const buildStockLine = (items: ParsedReport[]) => {
 };
 
 const buildContainerLine = (orders: Report[]) => {
-  const lines = orders.map((order) => {
-    const { category, type, amount, code, from, number } = order;
-
-    const categoryLine =
-      category === ORDER_CATEGORY.CONTAINER
-        ? `(${from} ${number})`
-        : `(PO.${number}/${from})`;
-
-    return [categoryLine, code, type, formatNumber(amount)].join(" ");
-  });
+  const lines = orders.map(getOrderLabel);
 
   return ["CONTAINER", ...lines];
 };

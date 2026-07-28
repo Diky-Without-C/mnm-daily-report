@@ -1,12 +1,12 @@
 import type { Report } from "@apps/supabase/report.dto";
 import { formatNumber } from "@utils/formatNumber";
-import { DEFAULT_NUMBER_PADDING, ORDER_CATEGORY } from "./order.constants";
+import { ORDER_CATEGORY } from "./order.constants";
 
 const orderLabelMap = {
   [ORDER_CATEGORY.PRE_ORDER]: (order: Report) =>
     `(PO.${order.number}/${order.from}) ${order.code} ${order.type} ${formatNumber(order.amount)}`,
   [ORDER_CATEGORY.CONTAINER]: (order: Report) =>
-    `(${order.from} ${order.number.toString().padStart(DEFAULT_NUMBER_PADDING, "0")}) ${order.code} ${order.type} ${formatNumber(order.amount)}`,
+    `(${order.from} ${order.number.toString().padStart(2, "0")}) ${order.code} ${order.type} ${formatNumber(order.amount)}`,
 };
 
 export const getOrderLabel = (order: Report) =>
