@@ -15,11 +15,11 @@ export default function useSalesPage() {
 
   const {
     data: sales,
-    loading: salesloading,
+    loading: salesLoading,
     error: salesError,
   } = useExcelParser({
     file,
-    sheetIndex: [1, 2, 3, 4],
+    sheetIndex: useMemo(() => [1, 2, 3, 4], []),
     content: "sales",
   });
 
@@ -35,7 +35,7 @@ export default function useSalesPage() {
 
   const content = useMemo(() => {
     if (!parsedData?.length) return "No cached report data";
-    if (reportLoading || salesloading) return "loading ...";
+    if (reportLoading || salesLoading) return "loading ...";
     if (reportError || salesError)
       return salesError || reportError || "Error loading data";
 
@@ -45,7 +45,7 @@ export default function useSalesPage() {
   }, [
     parsedData,
     reportLoading,
-    salesloading,
+    salesLoading,
     reportError,
     salesError,
     sales,
@@ -54,7 +54,7 @@ export default function useSalesPage() {
   ]);
 
   const isReady =
-    !salesloading &&
+    !salesLoading &&
     !salesError &&
     !reportLoading &&
     !reportError &&
@@ -64,8 +64,8 @@ export default function useSalesPage() {
     file,
     setFile,
     sales,
-    loading: salesloading,
-    error: salesError,
+    loading: salesLoading || reportLoading,
+    error: salesError || reportError,
     content,
     isReady,
     date,

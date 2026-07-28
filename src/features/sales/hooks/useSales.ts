@@ -15,7 +15,7 @@ export default function useSalesList() {
 
   const { data: sales } = useExcelParser({
     file,
-    sheetIndex: [1, 2, 3, 4],
+    sheetIndex: useMemo(() => [1, 2, 3, 4], []),
     content: "sales",
   });
 
