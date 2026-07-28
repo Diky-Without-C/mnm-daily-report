@@ -1,20 +1,21 @@
 import { useMemo, useState, useCallback, useEffect } from "react";
+import { CATEGORY_KEYS } from "@features/report/report.constant";
 import { useExcelParser } from "@libs/xlsx/useExcelParser";
 import { usePersistedFile } from "@hooks/usePersistedFile";
-import { usePagination } from "./usePagination";
-import { ITEMS_PER_PAGE, SALES_SHEET_INDEX } from "../sales.constant";
+import { ITEMS_PER_PAGE } from "../sales.constant";
 import {
   groupingSales,
   processingSales,
   createEmptySales,
 } from "../sales.helper";
+import { usePagination } from "./usePagination";
 
 export default function useSalesList() {
   const [file] = usePersistedFile("mnm-xlsx-sales-storage");
 
   const { data: sales } = useExcelParser({
     file,
-    sheetIndex: SALES_SHEET_INDEX,
+    sheetIndex: [1, 2, 3, 4],
     content: "sales",
   });
 
@@ -22,7 +23,21 @@ export default function useSalesList() {
   const [selectedCategory, setSelectedCategory] = useState("");
 
   const groupedSales = useMemo(() => groupingSales(sales), [sales]);
-  const categories = useMemo(() => Object.keys(groupedSales), [groupedSales]);
+  const categories = useMemo(() => {
+    return Object.keys(groupedSales).sort((a, b) => {
+      if (a === "all") return -1;
+      if (b === "all") return 1;
+
+      const orderA = CATEGORY_KEYS.indexOf(a as (typeof CATEGORY_KEYS)[number]);
+      const orderB = CATEGORY_KEYS.indexOf(b as (typeof CATEGORY_KEYS)[number]);
+
+      return (
+        (orderA === -1 ? Infinity : orderA) -
+        (orderB === -1 ? Infinity : orderB)
+      );
+    });
+  }, [groupedSales]);
+
   const activeCategory = useMemo(() => {
     if (categories.includes(selectedCategory)) {
       return selectedCategory;

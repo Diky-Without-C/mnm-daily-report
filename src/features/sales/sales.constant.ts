@@ -30,8 +30,6 @@ export const LAST_3_MONTHS = () => {
   });
 };
 
-export const SALES_SHEET_INDEX = [3, 2, 1, 4];
-
 export const ITEMS_TO_REPLACE = {
   "METALIC MC 522": "METALIC MC 522M",
   "BIKE SE MC 204": "BIKE SE MC 241",

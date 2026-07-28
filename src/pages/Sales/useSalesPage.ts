@@ -1,7 +1,6 @@
 import { useMemo } from "react";
 import { processData } from "@features/report";
 import { reportToText } from "@features/report/dataToText/report.text";
-import { SALES_SHEET_INDEX } from "@features/sales/sales.constant";
 import { usePersistedFile } from "@hooks/usePersistedFile";
 import { useExcelParser } from "@libs/xlsx/useExcelParser";
 import { useDateStore } from "@stores/usetDate.store";
@@ -20,7 +19,7 @@ export default function useSalesPage() {
     error: salesError,
   } = useExcelParser({
     file,
-    sheetIndex: SALES_SHEET_INDEX,
+    sheetIndex: [1, 2, 3, 4],
     content: "sales",
   });
 
