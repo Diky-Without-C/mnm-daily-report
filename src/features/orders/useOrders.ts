@@ -119,7 +119,7 @@ export default function useOrderList({ mode }: UseOrderPageParams) {
   return {
     orders,
     form,
-    deleteTargetId,
+    deleteBoxTrigger: Boolean(deleteTargetId),
     handlers: {
       handleSearch,
       handleEdit,

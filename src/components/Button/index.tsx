@@ -1,3 +1,4 @@
+import type { ButtonHTMLAttributes } from "react";
 import { cn } from "@utils/cn";
 
 type BtnVariant = "success" | "error" | "warning" | "info" | "default";
@@ -14,7 +15,7 @@ const variants: Record<BtnVariant, string> = {
     "bg-gray-100 text-gray-700 border-gray-200 hover:bg-gray-200 hover:border-gray-300",
 };
 
-interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: BtnVariant;
 }
 
