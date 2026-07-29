@@ -58,9 +58,9 @@ export default function Sidebar({ expanded, onToggle }: SidebarProps) {
     >
       <header className="mb-5 flex h-16 items-center border-b-2 border-gray-400 py-3">
         <HamburgerButton open={expanded} onToggle={onToggle} />
-        <div className={cn("flex items-start gap-1", !expanded && "hidden")}>
+        {expanded && (
           <h1 className="truncate text-xl text-white">Daily Report</h1>
-        </div>
+        )}
       </header>
       <nav className="flex-1">
         <ul className="space-y-1">
