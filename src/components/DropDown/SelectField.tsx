@@ -61,7 +61,7 @@ const SelectField = forwardRef<HTMLButtonElement, SelectFieldProps>(
     }, [activeIndex]);
 
     return (
-      <div className={cn("mx-autow-full rounded-lg bg-white py-2", className)}>
+      <div className={cn("mx-autow-full bg-white py-2", className)}>
         <div
           ref={wrapperRef}
           tabIndex={0}
@@ -77,7 +77,7 @@ const SelectField = forwardRef<HTMLButtonElement, SelectFieldProps>(
             ref={ref}
             type="button"
             onClick={toggle}
-            className="flex h-10 w-full items-center justify-between rounded-lg bg-transparent px-4 text-gray-900 ring-2 ring-gray-300 focus:ring-blue-400"
+            className="flex h-10 w-full items-center justify-between rounded-md bg-transparent px-4 text-gray-900 ring-2 ring-gray-300 focus:ring-blue-400"
           >
             <span>{value}</span>
             <ChevronUp className={open ? "rotate-180" : ""} />

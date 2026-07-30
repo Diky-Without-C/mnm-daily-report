@@ -76,7 +76,7 @@ const Input = forwardRef<HTMLInputElement, AutocompleteInputProps>(
     }, [activeIndex]);
 
     return (
-      <div className={cn("rounded-lg bg-white py-2", className)}>
+      <div className={cn("bg-white py-2", className)}>
         <div className="relative">
           <input
             ref={ref}
@@ -89,7 +89,7 @@ const Input = forwardRef<HTMLInputElement, AutocompleteInputProps>(
             onBlur={() => setTimeout(() => setShow(false), 100)}
             onChange={handleOnChange}
             onKeyDown={handleKeyDown}
-            className="h-10 w-full rounded-lg bg-transparent px-4 text-gray-900 uppercase ring-2 ring-gray-300 focus:ring-blue-400 focus:outline-none"
+            className="h-10 w-full rounded-md bg-transparent px-4 text-gray-900 uppercase ring-2 ring-gray-300 focus:ring-blue-400 focus:outline-none"
           />
           {label && (
             <label

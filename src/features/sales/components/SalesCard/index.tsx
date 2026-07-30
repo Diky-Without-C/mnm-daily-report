@@ -31,7 +31,7 @@ export default function SalesCard() {
             );
           })}
         </ul>
-        <SearchBar onSearch={handlers.handleSearch} />
+        <SearchBar onSearch={handlers.handleSearch} className="h-8 w-2xl" />
       </section>
       <section className="flex h-full flex-col overflow-hidden p-4">
         <div className="h-full w-full overflow-y-scroll">

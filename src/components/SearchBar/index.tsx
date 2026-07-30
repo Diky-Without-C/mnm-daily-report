@@ -1,46 +1,54 @@
-import { type ChangeEvent, useRef } from "react";
+import { type ChangeEvent, useRef, useState } from "react";
 import SearchIcon from "@components/Icons/Search";
 import XMark from "@components/Icons/XMark";
+import { cn } from "@utils/cn";
 
 interface SearchBarProps {
   onSearch: (value: string) => void;
+  className?: string;
 }
 
-export default function SearchBar({ onSearch }: SearchBarProps) {
-  const searchRef = useRef<HTMLInputElement>(null);
+export default function SearchBar({ onSearch, className }: SearchBarProps) {
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [value, setValue] = useState("");
 
-  const handleSearch = (e: ChangeEvent<HTMLInputElement>) => {
-    onSearch(e.target.value);
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setValue(value);
+    onSearch(value);
   };
 
   const handleClear = () => {
+    setValue("");
     onSearch("");
-    if (searchRef.current) {
-      searchRef.current.value = "";
-      searchRef.current.focus();
-    }
+    inputRef.current?.focus();
   };
 
   return (
-    <div className="relative flex w-full items-center">
+    <div className={cn("relative flex w-full items-center", className)}>
       <input
-        ref={searchRef}
+        ref={inputRef}
         name="search"
         type="text"
+        value={value}
+        onChange={handleChange}
         placeholder="Search"
-        onChange={handleSearch}
         autoComplete="off"
-        className="h-9 w-full rounded-lg border border-gray-900 bg-gray-50 pl-2 focus:border-blue-500 focus:outline-none"
+        className="h-full w-full rounded-md bg-transparent py-2 pr-14 pl-2 text-gray-900 ring-2 ring-gray-300 focus:ring-blue-400 focus:outline-none"
       />
-      <SearchIcon />
-      {searchRef.current?.value && (
+
+      {value && (
         <button
           onClick={handleClear}
-          className="absolute right-1 mx-3 -translate-x-full cursor-pointer text-gray-800"
+          className="absolute right-8 text-gray-800"
         >
           <XMark />
         </button>
       )}
+
+      <div className="pointer-events-none absolute right-2">
+        <SearchIcon />
+      </div>
     </div>
   );
 }
