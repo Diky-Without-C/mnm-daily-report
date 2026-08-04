@@ -22,7 +22,6 @@ export default function Input({
   hints,
   unit,
   onChange,
-  type = "text",
   value,
   ...props
 }: InputProps) {
@@ -30,13 +29,6 @@ export default function Input({
   const [activeIndex, setActiveIndex] = useState(-1);
   const ref = useRef<HTMLDivElement>(null);
   const id = useId();
-
-  const formatInput = (value: string) => {
-    if (type === "number") {
-      value = value.replace(/\D/g, "");
-    }
-    return value;
-  };
 
   const filteredOptions = useMemo(() => {
     return (
@@ -98,12 +90,9 @@ export default function Input({
         <InputText
           onFocus={() => hints && setIsOpen(true)}
           name={label}
-          inputMode={type === "number" ? "numeric" : undefined}
           type="text"
           unit={unit}
-          onChange={(e) => onChange?.(formatInput(e.target.value))}
           onKeyDown={handleKeyDown}
-          className={cn(label && "pr-12")}
           {...props}
         />
         {label && (

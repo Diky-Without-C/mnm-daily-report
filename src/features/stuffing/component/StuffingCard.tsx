@@ -26,17 +26,19 @@ export default function StuffingCard({
         </div>
         <h2 className="mt-4">Container number</h2>
         <InputText
+          name="containerNumber"
           type="number"
           value={form.containerNumber}
-          onChange={(value) => onChange("containerNumber", Number(value))}
+          onChange={(e) => onChange("containerNumber", e.target.value)}
           className="w-full"
         />
         <h2 className="mt-4">Quantity to stuff</h2>
         <InputText
+          name="stuffingQty"
           type="number"
           unit="PCS"
           value={form.stuffingQty}
-          onChange={(value) => onChange("stuffingQty", Number(value))}
+          onChange={(e) => onChange("stuffingQty", e.target.value)}
           className="w-full"
         />
         <CheckBox

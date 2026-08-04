@@ -8,17 +8,33 @@ export interface InputTextProps extends InputHTMLAttributes<HTMLInputElement> {
 export default function InputText({
   unit,
   className,
+  type,
+  onChange,
   ...props
 }: InputTextProps) {
+  const formatInput = (value: string) => {
+    if (type === "number") {
+      value = value.replace(/\D/g, "");
+    }
+    return value;
+  };
+
   return (
     <div className="relative">
       <input
         type="text"
         autoComplete="off"
+        inputMode={type === "number" ? "numeric" : "text"}
         className={cn(
           "h-10 w-full rounded-md bg-transparent px-4 text-gray-900 ring-2 ring-gray-300 focus:ring-blue-400 focus:outline-none",
+          unit && "pr-10",
           className,
         )}
+        onChange={(e) => {
+          const formattedValue = formatInput(e.target.value);
+          e.target.value = formattedValue;
+          onChange?.(e);
+        }}
         {...props}
       />
       {unit && (
