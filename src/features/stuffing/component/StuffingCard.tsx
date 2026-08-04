@@ -5,8 +5,8 @@ import type { StuffingForm } from "../useStuffing";
 
 interface StuffingCardProps {
   form: StuffingForm;
-  onChange(name: string, value: string | number | boolean): void;
-  onSubmit(): void;
+  onChange: (name: string, value: string | number | boolean) => void;
+  onSubmit: () => void;
 }
 
 export default function StuffingCard({
@@ -28,7 +28,7 @@ export default function StuffingCard({
         <InputText
           type="number"
           value={form.containerNumber}
-          onChange={(value) => onChange("containerNumber", value)}
+          onChange={(value) => onChange("containerNumber", Number(value))}
           className="w-full"
         />
         <h2 className="mt-4">Quantity to stuff</h2>
@@ -36,7 +36,7 @@ export default function StuffingCard({
           type="number"
           unit="PCS"
           value={form.stuffingQty}
-          onChange={(value) => onChange("stuffingQty", value)}
+          onChange={(value) => onChange("stuffingQty", Number(value))}
           className="w-full"
         />
         <CheckBox
