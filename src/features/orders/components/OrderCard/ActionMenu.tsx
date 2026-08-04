@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useId, useState } from "react";
 import Kebab from "@components/Icons/Kebab";
 import DropdownMenu from "@components/Dropdown";
 import Button from "@components/Button";
@@ -13,6 +13,7 @@ export default function OrderActionMenu({
   onDelete,
 }: OrderActionMenuProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const id = useId();
 
   const menuList = [
     {
@@ -26,8 +27,9 @@ export default function OrderActionMenu({
   ];
 
   return (
-    <div data-ignore-click-outside className="relative">
+    <div className="relative">
       <Button
+        id={id}
         onClick={() => setIsOpen((prev) => !prev)}
         variant="transparent"
         className="p-1"
@@ -38,7 +40,8 @@ export default function OrderActionMenu({
         open={isOpen}
         options={menuList}
         onClose={() => setIsOpen(false)}
-        className="top-full w-24"
+        className="w-24"
+        ignoreSelector={`#${id}`}
         closeOnScroll
       />
     </div>

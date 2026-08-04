@@ -46,8 +46,8 @@ export default function DropdownMenu({
     <ul
       ref={ref}
       className={cn(
-        "absolute top-full right-0 z-10 flex max-h-32 w-fit min-w-32 flex-col overflow-hidden overflow-y-auto rounded-md bg-gray-100 py-1 shadow-lg drop-shadow-xl outline-none",
-        variant === "dark" && "bg-neutral-800 text-white",
+        "absolute top-full right-0 z-10 mt-1 flex max-h-32 min-w-36 flex-col overflow-y-auto rounded-md border border-gray-200 bg-white p-1 shadow-xl shadow-black/10 outline-none",
+        variant === "dark" && "border-neutral-700 bg-neutral-800 text-white",
         className,
       )}
       {...props}
@@ -61,10 +61,12 @@ export default function DropdownMenu({
               onClose();
             }}
             className={cn(
-              "z-20 block w-full px-4 py-2 text-left text-sm hover:bg-gray-200",
+              "flex w-full cursor-pointer items-center rounded-md px-3 py-2 text-left text-sm transition-colors duration-150 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none",
+              variant === "dark" ? "hover:bg-neutral-700" : "hover:bg-gray-100",
               activeIndex === index &&
-                (variant === "dark" ? "bg-neutral-700" : "bg-gray-200"),
-              variant === "dark" && "hover:bg-neutral-700",
+                (variant === "dark"
+                  ? "bg-neutral-700"
+                  : "bg-gray-100 font-medium"),
             )}
           >
             {option.text}
