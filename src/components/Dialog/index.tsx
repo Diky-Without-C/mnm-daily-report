@@ -1,5 +1,4 @@
 import { useEffect, type HTMLAttributes } from "react";
-import { useClickOutside } from "@hooks/useClickOutside";
 import { cn } from "@utils/cn";
 
 interface DialogProps extends HTMLAttributes<HTMLDivElement> {
@@ -14,12 +13,6 @@ export default function Dialog({
   className,
   ...props
 }: DialogProps) {
-  const { ref } = useClickOutside<HTMLDivElement>({
-    enabled: open,
-    onClickOutside: onClose,
-    ignoreSelector: "[data-ignore-click-outside]",
-  });
-
   useEffect(() => {
     if (!open) return;
 
@@ -35,11 +28,14 @@ export default function Dialog({
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/20 p-4 backdrop-blur-[2px]">
+    <div
+      onClick={onClose}
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/20 p-4 backdrop-blur-[2px]"
+    >
       <div
-        ref={ref}
+        onClick={(e) => e.stopPropagation()}
         className={cn(
-          "relative w-full max-w-md overflow-hidden rounded-lg border border-gray-200 bg-white shadow-2xl ring-1 ring-black/5",
+          "relative w-full max-w-md rounded-lg border border-gray-200 bg-white shadow-2xl ring-1 ring-black/5",
           className,
         )}
         {...props}

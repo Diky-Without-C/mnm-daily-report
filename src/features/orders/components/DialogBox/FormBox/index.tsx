@@ -1,18 +1,18 @@
 import type { Report } from "@apps/supabase/report.dto";
 import { ITEM_TYPES, CONTAINER_TYPES } from "@apps/constants";
-import InputText from "@components/Input/InputText";
-import SelectField from "@components/DropDown/SelectField";
 import Dialog from "@components/Dialog";
 import Button from "@components/Button";
 import { useLocalStorage } from "@hooks/useLocaleStorage";
-import { ORDER_CATEGORY } from "../../order.constants";
+import { ORDER_CATEGORY } from "../../../order.constants";
+import Select from "./select";
+import Input from "./input";
 
 interface FormProps {
   open: boolean;
   form: Report | null;
-  onClose(): void;
-  onChange(name: string, value?: string | number): void;
-  onSubmit(): void;
+  onClose: () => void;
+  onChange: (name: string, value: string | number) => void;
+  onSubmit: () => void;
 }
 
 export default function FormBox({
@@ -37,7 +37,7 @@ export default function FormBox({
         onSubmit={handleSubmit}
         className="relative grid w-full grid-cols-4 grid-rows-4 gap-2"
       >
-        <InputText
+        <Input
           label="Code"
           value={form.code}
           onChange={(value) => onChange("code", value)}
@@ -45,23 +45,23 @@ export default function FormBox({
           className="col-span-2"
         />
 
-        <SelectField
+        <Select
           label="Category"
           value={form.category}
           onChange={(value) => onChange("category", value)}
-          options={Object.values(ORDER_CATEGORY)}
+          options={Object.values(ORDER_CATEGORY).map((text) => ({ text }))}
           className="col-span-2 col-start-3"
         />
 
-        <SelectField
+        <Select
           label="From"
           value={form.from}
           onChange={(value) => onChange("from", value)}
-          options={CONTAINER_TYPES}
+          options={CONTAINER_TYPES.map((text) => ({ text }))}
           className="col-span-2 row-start-2"
         />
 
-        <InputText
+        <Input
           label="Number"
           value={form.number === 0 ? "" : form.number.toString()}
           onChange={(value) => onChange("number", value)}
@@ -69,15 +69,15 @@ export default function FormBox({
           className="col-span-2 col-start-3 row-start-2"
         />
 
-        <SelectField
+        <Select
           label="Type"
           value={form.type}
           onChange={(value) => onChange("type", value)}
-          options={Object.values(ITEM_TYPES)}
+          options={Object.values(ITEM_TYPES).map((text) => ({ text }))}
           className="col-span-2 row-start-3"
         />
 
-        <InputText
+        <Input
           label="Amount"
           value={form.amount === 0 ? "" : form.amount.toString()}
           onChange={(value) => onChange("amount", value)}

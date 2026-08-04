@@ -1,4 +1,4 @@
-import OrderList from "@features/orders/components/OrderList";
+import OrderList from "@features/orders/components/OrderCard";
 import StuffingCard from "@features/stuffing/component/StuffingCard";
 import useStuffing from "@features/stuffing/useStuffing";
 

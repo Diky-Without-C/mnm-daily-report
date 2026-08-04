@@ -1,7 +1,13 @@
 import type { ButtonHTMLAttributes } from "react";
 import { cn } from "@utils/cn";
 
-type BtnVariant = "success" | "error" | "warning" | "info" | "default";
+type BtnVariant =
+  | "success"
+  | "error"
+  | "warning"
+  | "info"
+  | "default"
+  | "transparent";
 
 const variants: Record<BtnVariant, string> = {
   success:
@@ -13,6 +19,7 @@ const variants: Record<BtnVariant, string> = {
   info: "bg-blue-100 text-blue-700 border-blue-200 hover:bg-blue-200 hover:border-blue-300",
   default:
     "bg-gray-100 text-gray-700 border-gray-200 hover:bg-gray-200 hover:border-gray-300",
+  transparent: "text-gray-700 border-none text-black",
 };
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {

@@ -1,8 +1,9 @@
 import type { Report } from "@apps/supabase/report.dto";
-import Add from "@components/Icons/Add";
 import SearchBar from "@components/SearchBar";
 import Button from "@components/Button";
-import useOrderList from "../../useOrders";
+import Add from "@components/Icons/Add";
+import Kebab from "@components/Icons/Kebab";
+import { useOrders } from "../../useOrders";
 import { getOrderLabel } from "../../order.helpers";
 import type { OrderCategoryType } from "../../order.type";
 import FormBox from "../DialogBox/FormBox";
@@ -14,24 +15,28 @@ interface OrderPageProps {
   setSelectedOrder?(order: Report): void;
 }
 
-export default function OrderList({ mode, setSelectedOrder }: OrderPageProps) {
-  const { orders, form, deleteBoxTrigger, handlers } = useOrderList({ mode });
+export default function OrderCard({ mode, setSelectedOrder }: OrderPageProps) {
+  const { orders, form, deleteBoxTrigger, handlers } = useOrders({ mode });
 
   return (
     <div className="flex h-full w-full flex-col">
       <div className="mb-4 flex w-full items-center justify-between">
         <h1 className="text-xl font-semibold capitalize">{mode}</h1>
-
-        <Button variant="info" onClick={handlers.handleAdd} className="p-2">
-          <Add />
-        </Button>
+        <div className="flex gap-1">
+          <Button variant="info" onClick={handlers.handleAdd} className="p-1.5">
+            <Add />
+          </Button>
+          <Button variant="transparent" className="p-1.5">
+            <Kebab />
+          </Button>
+        </div>
       </div>
-      <div className="flex w-full gap-1">
+      <div className="flex w-full border-b-2 border-gray-300 pb-4">
         <SearchBar onSearch={handlers.handleSearch} />
       </div>
       <ul className="mt-2 flex h-full flex-col items-center overflow-y-auto">
         {orders.length ? (
-          orders.map((order, i) => (
+          orders.map((order) => (
             <li
               key={order.id}
               onClick={() => setSelectedOrder?.(order)}
@@ -41,7 +46,6 @@ export default function OrderList({ mode, setSelectedOrder }: OrderPageProps) {
               <ActionMenu
                 onEdit={() => handlers.handleEdit(order)}
                 onDelete={() => handlers.requestDelete(order.id)}
-                position={i === orders.length - 1 && i > 0 ? "Bottom" : "Top"}
               />
             </li>
           ))

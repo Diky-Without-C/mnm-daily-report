@@ -10,7 +10,7 @@ interface UseOrderPageParams {
   mode: OrderCategoryType;
 }
 
-export default function useOrderList({ mode }: UseOrderPageParams) {
+export function useOrders({ mode }: UseOrderPageParams) {
   const { orders: ordersStore, setOrders } = useOrdersStore();
 
   const [search, setSearch] = useState("");
@@ -49,7 +49,7 @@ export default function useOrderList({ mode }: UseOrderPageParams) {
     initialFormRef.current = structuredClone(newForm);
   };
 
-  const handleChange = (name: keyof Report, value: string | number) => {
+  const handleChange = (name: string, value: string | number) => {
     setForm((prev) => (prev ? { ...prev, [name]: value } : null));
   };
 

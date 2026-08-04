@@ -1,5 +1,5 @@
 import { useState } from "react";
-import OrderList from "@features/orders/components/OrderList";
+import OrderList from "@features/orders/components/OrderCard";
 import PreviewPanel from "./Components/PreviewPanel";
 import SourcePanel from "./Components/SourcePanel";
 import useOrderPage from "./useOrderPage";

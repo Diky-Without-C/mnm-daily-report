@@ -34,7 +34,7 @@ export default function CopyButton({
       variant="info"
       className={cn(
         disabled ? "cursor-not-allowed opacity-60" : "cursor-pointer",
-        "p-2",
+        "p-1.5",
         className,
       )}
     >
