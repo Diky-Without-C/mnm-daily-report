@@ -28,6 +28,7 @@ export default function Input({
   const [isOpen, setIsOpen] = useState(false);
   const [activeIndex, setActiveIndex] = useState(-1);
   const ref = useRef<HTMLDivElement>(null);
+  const inputRef = ref.current?.querySelector<HTMLInputElement>("input");
   const id = useId();
 
   const filteredOptions = useMemo(() => {
@@ -93,6 +94,11 @@ export default function Input({
           type="text"
           unit={unit}
           onKeyDown={handleKeyDown}
+          onChange={(e) => {
+            onChange(e.target.value);
+            setIsOpen(true);
+          }}
+          className="uppercase"
           {...props}
         />
         {label && (
@@ -109,6 +115,7 @@ export default function Input({
         options={filteredOptions}
         onSelect={(option) => {
           onChange?.(option.text as string);
+          if (inputRef) inputRef.value = option.text as string;
           setIsOpen(false);
         }}
         onClose={() => setIsOpen(false)}
