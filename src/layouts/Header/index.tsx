@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import Brand from "@components/Brand";
 import Badge from "@components/Badge";
 import { useDateStore } from "@stores/usetDate.store";
 import { useOnlineStore } from "@stores/useOnline.store";
@@ -9,14 +9,18 @@ export default function Header() {
   const { status } = useOnlineStore();
 
   return (
-    <header className="relative flex h-16 w-full items-end gap-1 border-b-2 border-gray-400 bg-slate-100/80 px-6 py-3">
-      <div className="flex items-start gap-1">
-        <Link to="/" className="text-3xl font-bold">
-          Daily Report
-        </Link>
-        <Badge variant={status === "online" ? "success" : "error"} dot></Badge>
+    <header className="relative flex h-16 w-full items-center justify-between gap-1 border-b-2 border-gray-400 bg-slate-100/80 px-6 py-3">
+      <Brand />
+      <div className="flex items-center gap-3">
+        <Badge
+          variant={status === "online" ? "success" : "error"}
+          dot
+          className="px-2"
+        >
+          {status == "online" ? "Online" : "Offline"}
+        </Badge>
+        <span className="text-md font-semibold">{currentDate}</span>
       </div>
-      <span className="text-lg font-semibold">({currentDate})</span>
     </header>
   );
 }
