@@ -82,7 +82,7 @@ export default function Select({
           onClick={() => setIsOpen((prev) => !prev)}
           onKeyDown={handleKeyDown}
           variant="transparent"
-          className="flex h-10 w-full items-center justify-between rounded-md bg-inherit px-4 ring-2 ring-gray-300 focus:ring-blue-400"
+          className="text-md flex h-10 w-full items-center justify-between rounded-md bg-inherit px-4 ring-2 ring-gray-300 focus:ring-blue-400"
         >
           <span>{value}</span>
           <ChevronUp className={isOpen ? "rotate-180" : "rotate-0"} />

@@ -28,7 +28,6 @@ export default function Input({
   const [isOpen, setIsOpen] = useState(false);
   const [activeIndex, setActiveIndex] = useState(-1);
   const ref = useRef<HTMLDivElement>(null);
-  const inputRef = ref.current?.querySelector<HTMLInputElement>("input");
   const id = useId();
 
   const filteredOptions = useMemo(() => {
@@ -45,6 +44,7 @@ export default function Input({
     if (!isOpen) {
       if (e.key === "ArrowDown" || e.key === "ArrowUp") {
         e.preventDefault();
+        setActiveIndex(0);
         setIsOpen(true);
       }
       return;
@@ -85,14 +85,22 @@ export default function Input({
     }
   }, [activeIndex]);
 
+  useEffect(() => {
+    setActiveIndex(-1);
+  }, [value]);
+
   return (
     <div id={id} ref={ref} className={cn("relative py-2", className)}>
       <div className="relative bg-white">
         <InputText
-          onFocus={() => hints && setIsOpen(true)}
+          onFocus={() => {
+            if (filteredOptions.length) {
+              setIsOpen(true);
+            }
+          }}
           name={label}
-          type="text"
           unit={unit}
+          value={value}
           onKeyDown={handleKeyDown}
           onChange={(e) => {
             onChange(e.target.value);
@@ -108,14 +116,13 @@ export default function Input({
         )}
       </div>
       <DropdownMenu
-        open={isOpen && !!hints?.length && !!filteredOptions.length}
+        open={isOpen && filteredOptions.length > 0}
         activeIndex={activeIndex}
         variant="dark"
         ignoreSelector={`#${id}`}
         options={filteredOptions}
         onSelect={(option) => {
           onChange?.(option.text as string);
-          if (inputRef) inputRef.value = option.text as string;
           setIsOpen(false);
         }}
         onClose={() => setIsOpen(false)}
