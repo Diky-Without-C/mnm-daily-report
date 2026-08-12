@@ -5,6 +5,7 @@ import ClipboardDocument from "@components/Icons/ClipboardDocument";
 import Cube from "@components/Icons/Cube";
 import Ranking from "@components/Icons/Ranking";
 import Archive from "@components/Icons/Archive";
+import Brand from "@components/Brand";
 import { useClickOutside } from "@hooks/useClickOutside";
 import { cn } from "@utils/cn";
 
@@ -56,7 +57,8 @@ export default function Sidebar({ expanded, onToggle }: SidebarProps) {
         expanded ? "w-72" : "w-18",
       )}
     >
-      <header className="mb-5 flex h-16 items-center border-b-2 border-gray-400 py-3">
+      <header className="mb-5 flex h-16 items-center justify-between border-b-2 border-gray-400 py-3">
+        {expanded && <Brand className="ml-2 h-12 invert" />}
         <HamburgerButton open={expanded} onToggle={onToggle} />
       </header>
       <nav className="flex-1">
