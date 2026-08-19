@@ -5,6 +5,7 @@ import {
   type KeyboardEvent,
   useEffect,
   useRef,
+  forwardRef,
 } from "react";
 import InputText, { type InputTextProps } from "@components/Input/InputText";
 import { cn } from "@utils/cn";
@@ -14,19 +15,26 @@ interface InputProps extends Omit<InputTextProps, "onChange"> {
   label?: string;
   hints?: string[];
   onChange: (value: string) => void;
+  onEnter?: () => void;
+  invalid?: boolean;
 }
 
-export default function Input({
-  label,
-  className,
-  hints,
-  unit,
-  onChange,
-  value,
-  ...props
-}: InputProps) {
+const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
+  {
+    label,
+    className,
+    hints,
+    unit,
+    onChange,
+    onEnter,
+    value,
+    invalid,
+    ...props
+  },
+  forwardRef,
+) {
   const [isOpen, setIsOpen] = useState(false);
-  const [activeIndex, setActiveIndex] = useState(-1);
+  const [activeIndex, setActiveIndex] = useState(0);
   const ref = useRef<HTMLDivElement>(null);
   const id = useId();
 
@@ -67,9 +75,9 @@ export default function Input({
 
       case "Enter":
         e.preventDefault();
-        if (activeIndex < 0) return;
-        onChange(filteredOptions[activeIndex].text);
+        onChange(filteredOptions[activeIndex]?.text ?? value);
         setIsOpen(false);
+        onEnter?.();
         break;
     }
   };
@@ -86,13 +94,14 @@ export default function Input({
   }, [activeIndex]);
 
   useEffect(() => {
-    setActiveIndex(-1);
+    setActiveIndex(0);
   }, [value]);
 
   return (
     <div id={id} ref={ref} className={cn("relative py-2", className)}>
       <div className="relative bg-white">
         <InputText
+          ref={forwardRef}
           onFocus={() => {
             if (filteredOptions.length) {
               setIsOpen(true);
@@ -106,7 +115,7 @@ export default function Input({
             onChange(e.target.value);
             setIsOpen(true);
           }}
-          className="uppercase"
+          className={cn("uppercase", invalid && "ring-red-400")}
           {...props}
         />
         {label && (
@@ -130,4 +139,6 @@ export default function Input({
       />
     </div>
   );
-}
+});
+
+export default Input;

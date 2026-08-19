@@ -1,4 +1,11 @@
-import { useId, useState, useEffect, useRef, type KeyboardEvent } from "react";
+import {
+  useId,
+  useState,
+  useEffect,
+  useRef,
+  type KeyboardEvent,
+  forwardRef,
+} from "react";
 import Button from "@components/Button";
 import DropdownMenu from "@components/Dropdown";
 import ChevronUp from "@components/Icons/ChevronUp";
@@ -7,20 +14,19 @@ import { cn } from "@utils/cn";
 interface SelectProps {
   value: string;
   onChange: (value: string) => void;
+  onEnter?: () => void;
   options: { text: string }[];
   className?: string;
   label?: string;
+  invalid?: boolean;
 }
 
-export default function Select({
-  value,
-  options,
-  className = "",
-  onChange,
-  label,
-}: SelectProps) {
+const Select = forwardRef<HTMLButtonElement, SelectProps>(function Select(
+  { value, options, className = "", onChange, onEnter, label, invalid },
+  forwardRef,
+) {
   const [isOpen, setIsOpen] = useState(false);
-  const [activeIndex, setActiveIndex] = useState(-1);
+  const [activeIndex, setActiveIndex] = useState(0);
   const ref = useRef<HTMLDivElement>(null);
   const id = useId();
 
@@ -50,18 +56,18 @@ export default function Select({
 
       case "Enter":
         e.preventDefault();
-        if (activeIndex < 0) return;
         onChange(options[activeIndex].text);
         setIsOpen(false);
+        onEnter?.();
         break;
     }
   };
 
   useEffect(() => {
     if (isOpen) {
-      setActiveIndex(-1);
+      setActiveIndex(options.findIndex((option) => option.text == value));
     }
-  }, [isOpen]);
+  }, [isOpen, options, value]);
 
   useEffect(() => {
     const itemRefs = ref.current?.querySelectorAll<HTMLLIElement>(
@@ -78,11 +84,15 @@ export default function Select({
     <div ref={ref} id={id} className={cn("relative py-2", className)}>
       <div className="relative bg-white">
         <Button
+          ref={forwardRef}
           type="button"
-          onClick={() => setIsOpen((prev) => !prev)}
+          onFocus={() => setIsOpen((prev) => !prev)}
           onKeyDown={handleKeyDown}
           variant="transparent"
-          className="text-md flex h-10 w-full items-center justify-between rounded-md bg-inherit px-4 ring-2 ring-gray-300 focus:ring-blue-400"
+          className={cn(
+            "text-md flex h-10 w-full items-center justify-between rounded-md bg-inherit px-4 ring-2 ring-gray-300 outline-none focus:ring-blue-400",
+            invalid && "ring-red-400",
+          )}
         >
           <span>{value}</span>
           <ChevronUp className={isOpen ? "rotate-180" : "rotate-0"} />
@@ -110,4 +120,6 @@ export default function Select({
       />
     </div>
   );
-}
+});
+
+export default Select;

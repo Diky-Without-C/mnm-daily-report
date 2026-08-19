@@ -1,4 +1,4 @@
-import type { ButtonHTMLAttributes } from "react";
+import { forwardRef, type ButtonHTMLAttributes } from "react";
 import { cn } from "@utils/cn";
 
 type BtnVariant =
@@ -26,14 +26,13 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: BtnVariant;
 }
 
-export default function Button({
-  variant = "default",
-  className,
-  children,
-  ...props
-}: ButtonProps) {
+const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
+  { variant = "default", className, children, ...props },
+  forwardRef,
+) {
   return (
     <button
+      ref={forwardRef}
       className={cn(
         "inline-flex cursor-pointer items-center gap-2 rounded-md border px-4 py-2 text-sm font-medium",
         variants[variant],
@@ -44,4 +43,6 @@ export default function Button({
       {children}
     </button>
   );
-}
+});
+
+export default Button;
