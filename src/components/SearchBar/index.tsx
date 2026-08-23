@@ -1,6 +1,7 @@
-import { type ChangeEvent, useRef, useState } from "react";
+import { type ChangeEvent, useEffect, useRef, useState } from "react";
 import SearchIcon from "@components/Icons/Search";
 import XMark from "@components/Icons/XMark";
+import Button from "@components/Button";
 import { cn } from "@utils/cn";
 
 interface SearchBarProps {
@@ -10,7 +11,22 @@ interface SearchBarProps {
 
 export default function SearchBar({ onSearch, className }: SearchBarProps) {
   const inputRef = useRef<HTMLInputElement>(null);
+  const [isFocused, setIsFocused] = useState(false);
   const [value, setValue] = useState("");
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        inputRef.current?.focus();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -25,28 +41,36 @@ export default function SearchBar({ onSearch, className }: SearchBarProps) {
   };
 
   return (
-    <div className={cn("relative flex w-full items-center", className)}>
+    <div
+      className={cn("relative flex min-h-10 w-full items-center", className)}
+    >
       <input
         ref={inputRef}
         name="search"
         type="text"
         value={value}
         onChange={handleChange}
+        onFocus={() => setIsFocused(true)}
+        onBlur={() => setIsFocused(false)}
         placeholder="Search"
         autoComplete="off"
-        className="h-full w-full rounded-md bg-transparent py-2 pr-14 pl-2 text-gray-900 ring-2 ring-gray-300 focus:ring-blue-400 focus:outline-none"
+        className="h-full w-full rounded-md bg-transparent py-2 pr-8 pl-10 text-gray-900 ring ring-gray-300 focus:ring-blue-400 focus:outline-none"
       />
-
       {value && (
-        <button
+        <Button
           onClick={handleClear}
-          className="absolute right-8 text-gray-800"
+          variant="transparent"
+          className="absolute right-2 p-0"
         >
           <XMark />
-        </button>
+        </Button>
       )}
-
-      <div className="pointer-events-none absolute right-2">
+      {value === "" && !isFocused && (
+        <span className="pointer-events-none absolute right-2 rounded-md border border-gray-300 px-2 py-1 text-xs text-gray-600">
+          Ctrl + K
+        </span>
+      )}
+      <div className="pointer-events-none absolute left-2">
         <SearchIcon />
       </div>
     </div>
