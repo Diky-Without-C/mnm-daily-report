@@ -14,7 +14,7 @@ export default function SelectionBar({
   onDelete,
 }: SelectionBarProps) {
   return count > 0 ? (
-    <div className="flex items-center gap-5 rounded-md border border-gray-200 bg-gray-100 p-1 text-gray-700">
+    <div className="flex w-72 items-center justify-between rounded-lg border border-gray-300 bg-white px-2 py-1.5 shadow-sm">
       <div className="flex items-center">
         <Button className="p-1" variant="transparent" onClick={onClear}>
           <XMark />
