@@ -1,5 +1,5 @@
 import type { Report } from "@apps/supabase/report.dto";
-import { useOrders } from "../../useOrders";
+import { useOrders } from "../../hooks/useOrders";
 import { getOrderLabel } from "../../order.helpers";
 import type { OrderCategoryType } from "../../order.type";
 import FormBox from "../DialogBox/FormBox";

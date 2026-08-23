@@ -17,5 +17,14 @@ export const sortOrders = (a: Report, b: Report) =>
 
 export const filterOrders = (orders: Report[], search: string) =>
   orders.filter((order) =>
-    getOrderLabel(order).toLowerCase().includes(search.toLowerCase()),
+    [
+      order.from,
+      order.number,
+      order.code,
+      order.type,
+      formatNumber(order.amount),
+    ]
+      .join(" ")
+      .toLowerCase()
+      .includes(search.toLowerCase()),
   );

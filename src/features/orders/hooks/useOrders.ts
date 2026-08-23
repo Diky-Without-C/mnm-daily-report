@@ -3,34 +3,37 @@ import type { Report } from "@apps/supabase/report.dto";
 import { supabaseService } from "@apps/supabase/service";
 import { ITEM_TYPES, CONTAINER_TYPES } from "@apps/constants";
 import { useOrdersStore } from "@stores/useOrders.store";
-import { filterOrders, sortOrders } from "./order.helpers";
-import type { OrderCategoryType } from "./order.type";
+import { filterOrders, sortOrders } from "../order.helpers";
+import type { OrderCategoryType } from "../order.type";
 
-interface UseOrderPageParams {
+interface UseOrdersParams {
   mode: OrderCategoryType;
 }
 
-export function useOrders({ mode }: UseOrderPageParams) {
+export function useOrders({ mode }: UseOrdersParams) {
   const { orders: ordersStore, setOrders } = useOrdersStore();
 
   const [search, setSearch] = useState("");
-  const [deleteTargetId, setDeleteTargetId] = useState<string | null>(null);
+  const [deleteTargetIds, setDeleteTargetIds] = useState<string[]>([]);
   const [form, setForm] = useState<Report | null>(null);
 
   const initialFormRef = useRef<Report | null>(null);
 
   const orders = useMemo(() => {
     return filterOrders(
-      ordersStore.filter((item) => item.category === mode).sort(sortOrders),
+      [...ordersStore]
+        .filter((item) => item.category === mode)
+        .sort(sortOrders),
       search,
     );
   }, [ordersStore, mode, search]);
 
-  const handleSearch = (value: string) => setSearch(value);
+  const handleSearch = (value: string) => {
+    setSearch(value);
+  };
 
   const handleEdit = (order: Report) => {
     setForm(order);
-
     initialFormRef.current = structuredClone(order);
   };
 
@@ -102,24 +105,37 @@ export function useOrders({ mode }: UseOrderPageParams) {
     setForm(null);
   };
 
-  const requestDelete = (id: string) => setDeleteTargetId(id);
+  const requestDelete = (ids: string[]) => {
+    if (ids.length === 0) return;
+    setDeleteTargetIds(ids);
+  };
 
-  const cancelDelete = () => setDeleteTargetId(null);
+  const cancelDelete = () => {
+    setDeleteTargetIds([]);
+  };
 
   const confirmDelete = async () => {
-    if (!deleteTargetId) return;
+    if (deleteTargetIds.length === 0) return;
 
-    await supabaseService.remove("report", deleteTargetId);
+    await Promise.all(
+      deleteTargetIds.map((id) => supabaseService.remove("report", id)),
+    );
 
-    setOrders((prev) => prev.filter((item) => item.id !== deleteTargetId));
+    setOrders((prev) =>
+      prev.filter((item) => !deleteTargetIds.includes(item.id)),
+    );
 
-    setDeleteTargetId(null);
+    setDeleteTargetIds([]);
+  };
+
+  const closeForm = () => {
+    setForm(null);
   };
 
   return {
     orders,
     form,
-    deleteBoxTrigger: Boolean(deleteTargetId),
+    deleteBoxTrigger: deleteTargetIds.length > 0,
     handlers: {
       handleSearch,
       handleEdit,
@@ -129,7 +145,7 @@ export function useOrders({ mode }: UseOrderPageParams) {
       requestDelete,
       confirmDelete,
       cancelDelete,
-      closeForm: () => setForm(null),
+      closeForm,
     },
   };
 }

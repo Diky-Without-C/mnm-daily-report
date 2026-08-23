@@ -1,5 +1,5 @@
 import { useState } from "react";
-import OrderList from "@features/orders/components/OrderCard";
+import OrderCard from "@features/orders/components/Card";
 import PreviewPanel from "./Components/PreviewPanel";
 import SourcePanel from "./Components/SourcePanel";
 import useOrderPage from "./useOrderPage";
@@ -28,11 +28,8 @@ export default function Order() {
         isReady={isReady}
         expanded={showSource}
       />
-      <section className="col-start-3 col-end-5 row-span-10 rounded-xl bg-white p-4 shadow-lg">
-        <OrderList mode="pre order" />
-      </section>
-      <section className="col-start-5 col-end-7 row-span-10 rounded-xl bg-white p-4 shadow-lg">
-        <OrderList mode="container" />
+      <section className="col-start-3 col-end-7 row-span-10 rounded-xl bg-white p-4 shadow-lg">
+        <OrderCard />
       </section>
     </main>
   );
