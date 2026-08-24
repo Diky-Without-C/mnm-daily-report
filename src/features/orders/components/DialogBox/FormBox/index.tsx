@@ -27,10 +27,10 @@ export default function FormBox({
   const [codeHint] = useLocalStorage<string[]>("codeHint", []);
 
   const codeRef = useRef<HTMLInputElement>(null);
-  const categoryRef = useRef<HTMLButtonElement>(null);
-  const fromRef = useRef<HTMLButtonElement>(null);
+  const categoryRef = useRef<HTMLDivElement>(null);
+  const fromRef = useRef<HTMLDivElement>(null);
   const numberRef = useRef<HTMLInputElement>(null);
-  const typeRef = useRef<HTMLButtonElement>(null);
+  const typeRef = useRef<HTMLDivElement>(null);
   const amountRef = useRef<HTMLInputElement>(null);
 
   const validate = () => {
@@ -85,7 +85,9 @@ export default function FormBox({
           value={form.category}
           onChange={(value) => onChange("category", value)}
           onEnter={() => fromRef.current?.focus()}
-          options={Object.values(ORDER_CATEGORY).map((text) => ({ text }))}
+          options={Object.values(ORDER_CATEGORY).map((content) => ({
+            content,
+          }))}
           className="col-span-2 col-start-3"
           invalid={
             isSubmited && !Object.values(ORDER_CATEGORY).includes(form.category)
@@ -98,7 +100,7 @@ export default function FormBox({
           value={form.from}
           onChange={(value) => onChange("from", value)}
           onEnter={() => numberRef.current?.focus()}
-          options={CONTAINER_TYPES.map((text) => ({ text }))}
+          options={CONTAINER_TYPES.map((content) => ({ content }))}
           className="col-span-2 row-start-2"
           invalid={isSubmited && !CONTAINER_TYPES.includes(form.from)}
         />
@@ -120,7 +122,7 @@ export default function FormBox({
           value={form.type}
           onChange={(value) => onChange("type", value)}
           onEnter={() => amountRef.current?.focus()}
-          options={Object.values(ITEM_TYPES).map((text) => ({ text }))}
+          options={Object.values(ITEM_TYPES).map((content) => ({ content }))}
           className="col-span-2 row-start-3"
           invalid={isSubmited && !Object.values(ITEM_TYPES).includes(form.type)}
         />

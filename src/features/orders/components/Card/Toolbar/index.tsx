@@ -1,10 +1,14 @@
-import { useState } from "react";
 import Button from "@components/Button";
 import SearchBar from "@components/SearchBar";
-import DropdownMenu from "@components/Dropdown";
 import Add from "@components/Icons/Add";
 import ChevronUp from "@components/Icons/ChevronUp";
-import type { OrderCategoryType } from "../../../order.type";
+import {
+  Dropdown,
+  DropdownTrigger,
+  DropdownContent,
+  DropdownItem,
+} from "@components/Dropdown";
+import type { OrderCategoryType } from "@features/orders/order.type";
 
 interface ToolbarProps {
   mode: OrderCategoryType;
@@ -19,22 +23,14 @@ export default function Toolbar({
   onSearch,
   onAdd,
 }: ToolbarProps) {
-  const [isModeOpen, setIsModeOpen] = useState(false);
-
   const modeOptions = [
     {
-      text: "pre order",
-      onClick: () => {
-        onModeChange("pre order");
-        setIsModeOpen(false);
-      },
+      content: "pre order",
+      onClick: () => onModeChange("pre order"),
     },
     {
-      text: "container",
-      onClick: () => {
-        onModeChange("container");
-        setIsModeOpen(false);
-      },
+      content: "container",
+      onClick: () => onModeChange("container"),
     },
   ];
 
@@ -43,25 +39,27 @@ export default function Toolbar({
       <SearchBar onSearch={onSearch} className="w-sm" />
 
       <div className="flex gap-1">
-        <div className="relative flex">
-          <Button
-            id="modeMenu"
-            className="px-3"
-            onClick={() => setIsModeOpen((prev) => !prev)}
-          >
-            {mode}
-            <ChevronUp className={isModeOpen ? "rotate-180" : "rotate-0"} />
-          </Button>
-          <DropdownMenu
-            ignoreSelector="#modeMenu"
-            open={isModeOpen}
-            activeIndex={modeOptions.findIndex(
-              (option) => option.text === mode,
-            )}
-            onClose={() => setIsModeOpen(false)}
-            options={modeOptions}
-          />
-        </div>
+        <Dropdown>
+          <DropdownTrigger>
+            <Button className="Capitalize">
+              <span>{mode}</span>
+              <ChevronUp />
+            </Button>
+          </DropdownTrigger>
+          <DropdownContent className="w-full">
+            {modeOptions.map((option) => (
+              <DropdownItem
+                key={option.content}
+                selected={option.content === mode}
+                onClick={option.onClick}
+              >
+                {option.content}
+              </DropdownItem>
+            ))}
+          </DropdownContent>
+        </Dropdown>
+
+        <Button className="px-3">Sort</Button>
         <Button variant="info" className="px-3" onClick={onAdd}>
           <Add />
           Order

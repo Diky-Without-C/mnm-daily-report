@@ -1,6 +1,5 @@
 import { useId, useState } from "react";
 import Kebab from "@components/Icons/Kebab";
-import DropdownMenu from "@components/Dropdown";
 import Button from "@components/Button";
 
 interface OrderActionMenuProps {
@@ -17,11 +16,11 @@ export default function OrderActionMenu({
 
   const menuList = [
     {
-      text: "Edit",
+      content: "Edit",
       onClick: onEdit,
     },
     {
-      text: "Delete",
+      content: "Delete",
       onClick: onDelete,
     },
   ];
@@ -36,14 +35,14 @@ export default function OrderActionMenu({
       >
         <Kebab />
       </Button>
-      <DropdownMenu
+      {/* <DropdownMenu
         open={isOpen}
         options={menuList}
         onClose={() => setIsOpen(false)}
         className="w-24"
         ignoreSelector={`#${id}`}
         closeOnScroll
-      />
+      /> */}
     </div>
   );
 }

@@ -9,7 +9,6 @@ import {
 } from "react";
 import InputText, { type InputTextProps } from "@components/Input/InputText";
 import { cn } from "@utils/cn";
-import DropdownMenu from "@components/Dropdown";
 
 interface InputProps extends Omit<InputTextProps, "onChange"> {
   label?: string;
@@ -44,7 +43,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
         ?.filter((hint) =>
           hint.toLowerCase().includes((value as string)?.toLowerCase() || ""),
         )
-        .map((hint) => ({ text: hint })) ?? []
+        .map((hint) => ({ content: hint })) ?? []
     );
   }, [hints, value]);
 
@@ -75,7 +74,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
 
       case "Enter":
         e.preventDefault();
-        onChange(filteredOptions[activeIndex]?.text ?? value);
+        onChange(filteredOptions[activeIndex]?.content ?? value);
         setIsOpen(false);
         onEnter?.();
         break;
@@ -124,19 +123,19 @@ const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
           </span>
         )}
       </div>
-      <DropdownMenu
+      {/* <DropdownMenu
         open={isOpen && filteredOptions.length > 0}
         activeIndex={activeIndex}
         variant="dark"
         ignoreSelector={`#${id}`}
         options={filteredOptions}
         onSelect={(option) => {
-          onChange?.(option.text as string);
+          onChange?.(option.content as string);
           setIsOpen(false);
         }}
         onClose={() => setIsOpen(false)}
         className="w-full"
-      />
+      /> */}
     </div>
   );
 });

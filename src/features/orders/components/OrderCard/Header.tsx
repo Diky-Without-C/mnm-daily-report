@@ -1,6 +1,5 @@
 import { useState, useId } from "react";
 import Button from "@components/Button";
-import DropdownMenu from "@components/Dropdown";
 import Add from "@components/Icons/Add";
 import Kebab from "@components/Icons/Kebab";
 import type { OrderCategoryType } from "../../order.type";
@@ -16,7 +15,7 @@ export default function Header({ mode, onAdd, onSearch }: HeaderProps) {
   const [isOpen, setIsOpen] = useState(false);
   const id = useId();
 
-  const options = [{ text: "Select Multiple" }];
+  const options = [{ content: "Select Multiple" }];
 
   return (
     <div>
@@ -35,13 +34,13 @@ export default function Header({ mode, onAdd, onSearch }: HeaderProps) {
             >
               <Kebab />
             </Button>
-            <DropdownMenu
+            {/* <DropdownMenu
               open={isOpen}
               options={options}
               onClose={() => setIsOpen(false)}
               ignoreSelector={`#${id}`}
               className="mt-2 w-48"
-            />
+            /> */}
           </div>
         </div>
       </div>
