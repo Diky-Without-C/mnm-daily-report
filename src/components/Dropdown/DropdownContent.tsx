@@ -20,7 +20,7 @@ export function DropdownContent({
       tabIndex={-1}
       onKeyDown={onKeyDown}
       className={cn(
-        "absolute top-full right-0 z-10 mt-1 flex max-h-32 min-w-36 flex-col overflow-y-auto rounded-md border border-gray-200 bg-white p-1 shadow-xl shadow-black/10 outline-none",
+        "absolute top-full right-0 z-10 mt-1 flex min-w-36 flex-col overflow-y-auto rounded-md border border-gray-200 bg-white p-1 shadow-xl shadow-black/10 outline-none",
         className,
       )}
       {...props}

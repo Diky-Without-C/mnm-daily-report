@@ -28,6 +28,7 @@ export interface DropdownProps {
 export interface DropdownTriggerProps
   extends ButtonHTMLAttributes<HTMLButtonElement> {
   children: ReactNode;
+  asChild?: boolean;
 }
 
 export interface DropdownContentProps extends HTMLAttributes<HTMLDivElement> {

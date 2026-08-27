@@ -76,7 +76,7 @@ export function DropdownItem({
         "flex w-full cursor-pointer items-center rounded-md px-3 py-2 text-left text-sm transition-colors duration-150 outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-inset",
         isActive && "bg-gray-100 font-medium",
         disabled ? "cursor-not-allowed opacity-50" : "hover:bg-gray-100",
-        selected && "font-medium",
+        selected && "bg-gray-100 font-medium",
         className,
       )}
       {...props}
