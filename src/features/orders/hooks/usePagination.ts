@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useCallback } from "react";
 
 interface UsePaginationOptions {
   totalItems: number;
@@ -11,39 +11,39 @@ export function usePagination({
 }: UsePaginationOptions) {
   const [page, setPage] = useState(1);
 
-  const totalPages = Math.ceil(totalItems / itemsPerPage);
-  const currentPage = Math.min(page, Math.max(totalPages, 1));
+  const totalPages = Math.max(1, Math.ceil(totalItems / itemsPerPage));
+  const currentPage = Math.min(page, totalPages);
+
   const from = (currentPage - 1) * itemsPerPage;
   const to = from + itemsPerPage;
 
-  const setFirstPage = () => {
-    setPage(1);
-  };
+  const setFirstPage = useCallback(() => setPage(1), []);
+  const nextPage = useCallback(
+    () => setPage((prev) => Math.min(prev + 1, totalPages)),
+    [totalPages],
+  );
+  const previousPage = useCallback(
+    () => setPage((prev) => Math.max(prev - 1, 1)),
+    [],
+  );
 
-  const nextPage = () => {
-    setPage((prev) => Math.min(prev + 1, totalPages));
-  };
+  const getPageItems = useCallback(
+    <T>(items: T[]): T[] => items.slice(from, to),
+    [from, to],
+  );
 
-  const previousPage = () => {
-    setPage((prev) => Math.max(prev - 1, 1));
-  };
-
-  const getPageItems = <T>(items: T[]) => {
-    return items.slice(from, to);
-  };
-
-  const pagination = useMemo(
+  const paginationInfo = useMemo(
     () => ({
       page: currentPage,
       totalPages,
       hasPrevious: currentPage > 1,
-      hasNext: totalPages > 0 && currentPage < totalPages,
+      hasNext: currentPage < totalPages,
     }),
     [currentPage, totalPages],
   );
 
   return {
-    ...pagination,
+    ...paginationInfo,
     setFirstPage,
     nextPage,
     previousPage,

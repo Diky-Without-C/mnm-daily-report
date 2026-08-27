@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useCallback } from "react";
 
 interface UseSelectionOptions<T> {
   items: T[];
@@ -9,23 +9,26 @@ export function useSelection<T>({ items, getId }: UseSelectionOptions<T>) {
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
 
   const selectedCount = selectedIds.size;
-  const isSelected = (item: T) => {
-    return selectedIds.has(getId(item));
-  };
+  const isSelected = useCallback(
+    (item: T) => selectedIds.has(getId(item)),
+    [selectedIds, getId],
+  );
 
-  const toggle = (item: T) => {
-    const id = getId(item);
-
-    setSelectedIds((prev) => {
-      const next = new Set(prev);
-      if (next.has(id)) {
-        next.delete(id);
-      } else {
-        next.add(id);
-      }
-      return next;
-    });
-  };
+  const toggle = useCallback(
+    (item: T) => {
+      const id = getId(item);
+      setSelectedIds((prev) => {
+        const next = new Set(prev);
+        if (next.has(id)) {
+          next.delete(id);
+        } else {
+          next.add(id);
+        }
+        return next;
+      });
+    },
+    [getId],
+  );
 
   const allSelected = useMemo(() => {
     return (
@@ -33,26 +36,19 @@ export function useSelection<T>({ items, getId }: UseSelectionOptions<T>) {
     );
   }, [items, selectedIds, getId]);
 
-  const toggleAll = () => {
+  const toggleAll = useCallback(() => {
     setSelectedIds((prev) => {
       const next = new Set(prev);
-
       if (allSelected) {
-        items.forEach((item) => {
-          next.delete(getId(item));
-        });
+        items.forEach((item) => next.delete(getId(item)));
       } else {
-        items.forEach((item) => {
-          next.add(getId(item));
-        });
+        items.forEach((item) => next.add(getId(item)));
       }
       return next;
     });
-  };
+  }, [allSelected, items, getId]);
 
-  const clear = () => {
-    setSelectedIds(new Set());
-  };
+  const clear = useCallback(() => setSelectedIds(new Set()), []);
 
   return {
     selectedIds,
