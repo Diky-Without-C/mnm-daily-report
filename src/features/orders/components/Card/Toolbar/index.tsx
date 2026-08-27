@@ -37,28 +37,28 @@ export default function Toolbar({
 
   return (
     <div className="mb-3 flex justify-between">
-      <div className="relative flex rounded-lg bg-gray-100 p-1">
-        {categories.map((category) => {
-          const active = mode === category;
-
-          return (
-            <button
-              key={category}
-              type="button"
-              onClick={() => onModeChange(category)}
-              className={cn(
-                "relative z-10 h-8 w-24 rounded-md text-sm font-medium capitalize transition-colors duration-200 focus:outline-none",
-                active ? "text-gray-900" : "text-gray-500 hover:text-gray-800",
-              )}
-            >
-              {category}
-            </button>
-          );
-        })}
+      <div className="relative inline-grid grid-flow-col rounded-lg bg-gray-100 p-1">
+        {categories.map((category) => (
+          <button
+            key={category}
+            type="button"
+            onClick={() => onModeChange(category)}
+            className={cn(
+              "relative z-10 rounded-md px-4 py-1.5 text-sm font-medium capitalize",
+              "transition-colors duration-200",
+              mode === category
+                ? "text-gray-900"
+                : "text-gray-500 hover:text-gray-800",
+            )}
+          >
+            {category}
+          </button>
+        ))}
         <div
           aria-hidden
-          className="absolute inset-y-1 left-1 z-0 w-24 rounded-md bg-white shadow-sm transition-transform duration-200 ease-out"
+          className="pointer-events-none absolute inset-y-1 left-1 rounded-md bg-white shadow-sm transition-transform duration-200 ease-out"
           style={{
+            width: `calc((100% - 0.5rem) / ${categories.length})`,
             transform: `translateX(${activeIndex * 100}%)`,
           }}
         />
