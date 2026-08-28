@@ -17,11 +17,7 @@ export function useCard() {
   });
 
   const currentOrders = pagination.getPageItems(orders);
-
-  const selection = useSelection({
-    items: currentOrders,
-    getId: (order) => order.id,
-  });
+  const selection = useSelection({ items: currentOrders });
 
   const changeMode = useCallback(
     (nextMode: OrderCategoryType) => {
