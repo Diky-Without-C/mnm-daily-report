@@ -1,3 +1,4 @@
+import { AdjustmentsHorizontalIcon } from "@heroicons/react/24/outline";
 import Button from "@components/Button";
 import {
   Dropdown,
@@ -5,7 +6,6 @@ import {
   DropdownContent,
   DropdownItem,
 } from "@components/Dropdown";
-import Adjustment from "@components/Icons/Adjustment";
 import CheckBox from "@components/Input/CheckBox";
 import type { OrderFilters } from "@features/orders/order.type";
 
@@ -22,7 +22,7 @@ export default function FilterDropdown({
     <Dropdown closeOnSelect={false}>
       <DropdownTrigger asChild>
         <Button className="px-3 py-1.5">
-          <Adjustment />
+          <AdjustmentsHorizontalIcon className="size-5" />
         </Button>
       </DropdownTrigger>
 

@@ -1,6 +1,5 @@
+import { XMarkIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { type ChangeEvent, useEffect, useRef, useState } from "react";
-import SearchIcon from "@components/Icons/Search";
-import XMark from "@components/Icons/XMark";
 import Button from "@components/Button";
 import { cn } from "@utils/cn";
 
@@ -62,7 +61,7 @@ export default function SearchBar({ onSearch, className }: SearchBarProps) {
           variant="transparent"
           className="absolute right-2 p-0"
         >
-          <XMark />
+          <XMarkIcon className="size-4" />
         </Button>
       )}
       {value === "" && !isFocused && (
@@ -71,7 +70,7 @@ export default function SearchBar({ onSearch, className }: SearchBarProps) {
         </span>
       )}
       <div className="pointer-events-none absolute left-2">
-        <SearchIcon />
+        <MagnifyingGlassIcon className="size-6 text-gray-400" />
       </div>
     </div>
   );

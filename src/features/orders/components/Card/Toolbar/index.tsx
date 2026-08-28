@@ -1,6 +1,6 @@
+import { PlusIcon } from "@heroicons/react/24/outline";
 import Button from "@components/Button";
 import SearchBar from "@components/SearchBar";
-import Add from "@components/Icons/Add";
 import type {
   OrderCategoryType,
   OrderFilters,
@@ -68,7 +68,7 @@ export default function Toolbar({
         <FilterDropdown filter={filter} onFilter={onFilter} />
         <SortDropdown sort={sort} onSort={onSort} />
         <Button variant="info" className="px-3" onClick={onAdd}>
-          <Add />
+          <PlusIcon className="size-5" />
         </Button>
       </div>
     </div>

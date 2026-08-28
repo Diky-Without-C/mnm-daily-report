@@ -1,6 +1,5 @@
+import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 import Button from "@components/Button";
-import ChevronLeft from "@components/Icons/ChevronLeft";
-import ChevronRight from "@components/Icons/ChevronRight";
 
 interface PaginationProps {
   pagination: {
@@ -21,7 +20,7 @@ export default function Pagination({ pagination }: PaginationProps) {
         disabled={!pagination.hasPrevious}
         onClick={pagination.previousPage}
       >
-        <ChevronLeft />
+        <ChevronLeftIcon className="size-6" />
       </Button>
       <span className="w-12 text-center text-sm tabular-nums">
         {pagination.page} / {pagination.totalPages || 1}
@@ -31,7 +30,7 @@ export default function Pagination({ pagination }: PaginationProps) {
         disabled={!pagination.hasNext}
         onClick={pagination.nextPage}
       >
-        <ChevronRight />
+        <ChevronRightIcon className="size-6" />
       </Button>
     </div>
   );

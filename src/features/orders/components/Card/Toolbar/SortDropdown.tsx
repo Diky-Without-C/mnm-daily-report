@@ -1,3 +1,4 @@
+import { ArrowsUpDownIcon } from "@heroicons/react/24/outline";
 import Button from "@components/Button";
 import {
   Dropdown,
@@ -5,7 +6,6 @@ import {
   DropdownContent,
   DropdownItem,
 } from "@components/Dropdown";
-import ArrowUpDown from "@components/Icons/ArrowUpDown";
 import type { OrderSort } from "@features/orders/order.type";
 
 export const SortOptions = [
@@ -37,7 +37,7 @@ export default function SortDropdown({ sort, onSort }: SortDropdownProps) {
     <Dropdown>
       <DropdownTrigger asChild>
         <Button className="px-3 py-1.5">
-          <ArrowUpDown />
+          <ArrowsUpDownIcon className="size-5" />
         </Button>
       </DropdownTrigger>
 

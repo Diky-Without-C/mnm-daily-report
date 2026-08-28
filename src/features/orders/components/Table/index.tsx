@@ -1,7 +1,6 @@
+import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
 import type { Report } from "@apps/supabase/report.dto";
 import Button from "@components/Button";
-import Trash from "@components/Icons/Trash";
-import Pencil from "@components/Icons/Pencil";
 import CheckBox from "@components/Input/CheckBox";
 import { cn } from "@utils/cn";
 import { formatNumber } from "@utils/formatNumber";
@@ -84,7 +83,7 @@ export default function Table({
                     Edit
                     <span className="absolute top-full h-2 w-2 -translate-y-1/2 rotate-45 bg-inherit" />
                   </span>
-                  <Pencil />
+                  <PencilIcon className="size-4" />
                 </Button>
                 <Button
                   className="group relative flex justify-center p-2"
@@ -94,7 +93,7 @@ export default function Table({
                     Delete
                     <span className="absolute top-full h-2 w-2 -translate-y-1/2 rotate-45 bg-inherit" />
                   </span>
-                  <Trash />
+                  <TrashIcon className="size-4" />
                 </Button>
               </div>
             </td>
