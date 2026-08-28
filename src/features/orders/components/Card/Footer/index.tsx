@@ -1,8 +1,8 @@
 import type { Report } from "@apps/supabase/report.dto";
+import Pagination from "@components/Pagination";
+import type { usePagination } from "@features/orders/hooks/usePagination";
+import type { useSelection } from "@features/orders/hooks/useSelection";
 import SelectionBar from "./SelectionBar";
-import Pagination from "./Pagination";
-import type { useSelection } from "../../../hooks/useSelection";
-import type { usePagination } from "../../../hooks/usePagination";
 
 interface FooterProps {
   selection: ReturnType<typeof useSelection<Report>>;
@@ -22,7 +22,7 @@ export default function Footer({
         onClear={selection.clear}
         onDelete={onDeleteSelected}
       />
-      <Pagination pagination={pagination} />
+      <Pagination {...pagination} />
     </div>
   );
 }
