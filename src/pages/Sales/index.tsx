@@ -1,5 +1,5 @@
 import { useState } from "react";
-import SalesCard from "@features/sales/components/SalesCard";
+import SalesCard from "@features/sales/components/Card";
 import SourcePanel from "./Components/SourcePanel";
 import PreviewPanel from "./Components/PreviewPanel";
 import useSalesPage from "./useSalesPage";

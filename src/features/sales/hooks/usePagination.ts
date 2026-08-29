@@ -1,58 +1,52 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { ITEMS_PER_PAGE } from "../sales.constant";
+import { useMemo, useState, useCallback } from "react";
 
-interface UsePaginationOptions<T> {
-  items: T[];
+interface UsePaginationOptions {
+  totalItems: number;
+  itemsPerPage: number;
 }
 
-export function usePagination<T>({ items }: UsePaginationOptions<T>) {
+export function usePagination({
+  totalItems,
+  itemsPerPage,
+}: UsePaginationOptions) {
   const [page, setPage] = useState(1);
 
-  const previousItems = useRef(items);
+  const totalPages = Math.max(1, Math.ceil(totalItems / itemsPerPage));
+  const currentPage = Math.min(page, totalPages);
 
-  useEffect(() => {
-    if (previousItems.current !== items) {
-      setPage(1);
-      previousItems.current = items;
-    }
-  }, [items]);
+  const from = (currentPage - 1) * itemsPerPage;
+  const to = from + itemsPerPage;
 
-  const totalPages = useMemo(
-    () => Math.max(1, Math.ceil(items.length / ITEMS_PER_PAGE)),
-    [items.length],
+  const setFirstPage = useCallback(() => setPage(1), []);
+  const nextPage = useCallback(
+    () => setPage((prev) => Math.min(prev + 1, totalPages)),
+    [totalPages],
+  );
+  const previousPage = useCallback(
+    () => setPage((prev) => Math.max(prev - 1, 1)),
+    [],
   );
 
-  useEffect(() => {
-    setPage((prev) => Math.min(prev, totalPages));
-  }, [totalPages]);
+  const getPageItems = useCallback(
+    <T>(items: T[]): T[] => items.slice(from, to),
+    [from, to],
+  );
 
-  const displayedItems = useMemo(() => {
-    const start = (page - 1) * ITEMS_PER_PAGE;
-    return items.slice(start, start + ITEMS_PER_PAGE);
-  }, [items, page]);
-
-  const nextPage = useCallback(() => {
-    setPage((prev) => Math.min(prev + 1, totalPages));
-  }, [totalPages]);
-
-  const prevPage = useCallback(() => {
-    setPage((prev) => Math.max(prev - 1, 1));
-  }, []);
-
-  const resetPage = useCallback(() => {
-    setPage(1);
-  }, []);
+  const paginationInfo = useMemo(
+    () => ({
+      page: currentPage,
+      totalPages,
+      hasPrevious: currentPage > 1,
+      hasNext: currentPage < totalPages,
+    }),
+    [currentPage, totalPages],
+  );
 
   return {
-    displayedItems,
-    page,
-    totalPages,
-    totalItems: items.length,
-    isFirstPage: page === 1,
-    isLastPage: page === totalPages,
+    ...paginationInfo,
+    setFirstPage,
     nextPage,
-    prevPage,
-    resetPage,
-    setPage,
+    previousPage,
+    getPageItems,
   };
 }

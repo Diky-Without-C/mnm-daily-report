@@ -1,47 +1,20 @@
 import type { ParsedSales } from "@libs/xlsx/xlsx.type";
 import { capitalize } from "@utils/capitalize";
 import { LAST_3_MONTHS } from "./sales.constant";
-import type { ProcessedSale } from "./sales.type";
+import type { ProcessedSale, SalesFilter, SalesSort } from "./sales.type";
 
-export const processingSales = (selectedSales: ParsedSales[]) => {
-  const processedSales: ProcessedSale[] = selectedSales
-    .map((item) => {
-      const last3MonthSales = LAST_3_MONTHS().map(
-        (month) => item.monthlySale[month.index] || 0,
-      );
-
-      return {
-        ...item,
-        last3MonthSales,
-      };
-    })
-    .filter((item) => item.total > 0)
-    .sort((a, b) => b.total - a.total);
+export const processingSales = (sales: ParsedSales[]) => {
+  const processedSales: ProcessedSale[] = sales.map((item) => {
+    const last3MonthSales = LAST_3_MONTHS().map(
+      (month) => item.monthlySale[month.index] || 0,
+    );
+    return {
+      ...item,
+      last3MonthSales,
+    };
+  });
 
   return processedSales;
-};
-
-export const groupingSales = (sales: ParsedSales[][]) => {
-  const grouped = sales.reduce(
-    (acc, sale) => {
-      const firstItem = sale?.[0];
-
-      if (!firstItem) return acc;
-
-      const key = categoryToKey(String(firstItem.category));
-
-      acc[key] ??= [];
-      acc[key].push(...sale);
-
-      return acc;
-    },
-    {} as Record<string, ParsedSales[]>,
-  );
-
-  return {
-    all: sales.flat().filter(Boolean),
-    ...grouped,
-  } as Record<string, ParsedSales[]>;
 };
 
 export const createEmptySales = (count: number): ProcessedSale[] => {
@@ -61,3 +34,33 @@ export const categoryToKey = (value: string) =>
 
 export const keyToLabel = (value: string) =>
   capitalize(value.replace(/_/g, " "));
+
+export const searchSales = (sales: ParsedSales[], search: string) => {
+  const query = search.trim().toLowerCase();
+
+  if (!query) return sales;
+
+  return sales.filter((sale) =>
+    [sale.code, sale.item].join(" ").toLowerCase().includes(query),
+  );
+};
+
+export const filterSales = (sales: ParsedSales[], filters: SalesFilter) => {
+  return sales.filter((sale) => filters.category[sale.category] ?? false);
+};
+
+export function sortSales(
+  sales: ParsedSales[],
+  sort: SalesSort,
+): ParsedSales[] {
+  return [...sales].sort((a, b) => {
+    switch (sort) {
+      case "monthly-asc":
+        return a.total - b.total;
+      case "monthly-desc":
+        return b.total - a.total;
+      default:
+        return 0;
+    }
+  });
+}
