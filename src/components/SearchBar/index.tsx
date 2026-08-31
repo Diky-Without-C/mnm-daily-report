@@ -5,10 +5,15 @@ import { cn } from "@utils/cn";
 
 interface SearchBarProps {
   onSearch: (value: string) => void;
+  placeHolder?: string;
   className?: string;
 }
 
-export default function SearchBar({ onSearch, className }: SearchBarProps) {
+export default function SearchBar({
+  onSearch,
+  className,
+  placeHolder = "Search",
+}: SearchBarProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [isFocused, setIsFocused] = useState(false);
   const [value, setValue] = useState("");
@@ -51,7 +56,7 @@ export default function SearchBar({ onSearch, className }: SearchBarProps) {
         onChange={handleChange}
         onFocus={() => setIsFocused(true)}
         onBlur={() => setIsFocused(false)}
-        placeholder="Search"
+        placeholder={placeHolder}
         autoComplete="off"
         className="h-full w-full rounded-md bg-transparent py-2 pr-8 pl-10 text-gray-900 ring ring-gray-300 focus:ring-blue-400 focus:outline-none"
       />
