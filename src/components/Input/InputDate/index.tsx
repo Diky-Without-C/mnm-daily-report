@@ -1,6 +1,6 @@
+import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 import { useState } from "react";
 import Calendar from "@components/Icons/Calendar";
-import ChevronUp from "@components/Icons/ChevronUp";
 import Button from "@components/Button";
 import { useClickOutside } from "@hooks/useClickOutside";
 import { cn } from "@utils/cn";
@@ -67,21 +67,21 @@ export default function InputDate({ date, onDateChange }: InputDateProps) {
       {isOpen && (
         <div className="absolute right-0 z-20 mt-2 w-64 rounded-xl border border-gray-200 bg-white p-3 shadow-xl">
           <div className="relative mb-3 flex items-center justify-between">
-            <h2 className="text-center text-sm font-semibold text-gray-800">
-              {monthNames[month]} {year}
-            </h2>
-            <div className="flex gap-1">
+            <div className="flex w-full items-center justify-between">
               <Button
                 onClick={() => handleMonthChange(month === 0 ? 11 : month - 1)}
                 className="p-1"
               >
-                <ChevronUp />
+                <ChevronLeftIcon className="size-4" />
               </Button>
+              <span className="text-center text-sm font-semibold text-gray-800">
+                {monthNames[month]} {year}
+              </span>
               <Button
                 onClick={() => handleMonthChange(month === 11 ? 0 : month + 1)}
                 className="p-1"
               >
-                <ChevronUp className="rotate-180" />
+                <ChevronRightIcon className="size-4" />
               </Button>
             </div>
           </div>
