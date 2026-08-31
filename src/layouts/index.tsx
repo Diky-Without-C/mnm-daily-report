@@ -14,7 +14,7 @@ export default function AppLayout() {
         expanded={expanded}
         onToggle={() => setExpanded((prev) => !prev)}
       />
-      <section className="h-full pl-16 transition-[padding] duration-300">
+      <section className="h-full pl-18 transition-[padding] duration-300">
         <Header />
         <Outlet />
       </section>

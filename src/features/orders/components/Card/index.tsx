@@ -5,6 +5,9 @@ import DeleteBox from "../DialogBox/DeleteBox";
 import Toolbar from "./Toolbar";
 import Footer from "./Footer";
 import { useCard } from "./useCard";
+import Divider from "@components/Divider";
+import Tabs from "@components/Tabs";
+import { ORDER_CATEGORY } from "@features/orders/order.constants";
 
 export default function Card() {
   const {
@@ -22,8 +25,6 @@ export default function Card() {
   return (
     <div className="flex h-full w-full flex-col">
       <Toolbar
-        mode={mode}
-        onModeChange={actions.changeMode}
         onSearch={actions.search}
         onAdd={actions.add}
         filter={filter}
@@ -31,7 +32,12 @@ export default function Card() {
         sort={sort}
         onSort={actions.sort}
       />
-      <div className="flex h-full w-full flex-col overflow-hidden rounded-lg border border-gray-200 bg-white">
+      <div className="flex h-full w-full flex-col overflow-hidden">
+        <Tabs
+          items={Object.values(ORDER_CATEGORY)}
+          value={mode}
+          onChange={actions.changeMode}
+        />
         <div className="min-h-0 flex-1">
           {currentOrders.length > 0 ? (
             <Table
@@ -44,6 +50,7 @@ export default function Card() {
             <NotFound />
           )}
         </div>
+        <Divider className="h-[2px]" />
         <Footer
           selection={selection}
           pagination={pagination}

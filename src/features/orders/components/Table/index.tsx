@@ -2,6 +2,7 @@ import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
 import type { Report } from "@apps/supabase/report.dto";
 import Button from "@components/Button";
 import CheckBox from "@components/Input/CheckBox";
+import Badge from "@components/Badge";
 import { cn } from "@utils/cn";
 import { formatNumber } from "@utils/formatNumber";
 import { useSelection } from "../../hooks/useSelection";
@@ -9,7 +10,7 @@ import { ITEMS_PER_PAGE } from "../../order.constants";
 
 interface TableProps {
   orders: Report[];
-  selection: ReturnType<typeof useSelection<Report>>;
+  selection: ReturnType<typeof useSelection>;
   onEdit: (order: Report) => void;
   onDelete: (ids: string[]) => void;
 }
@@ -21,6 +22,11 @@ export default function Table({
   onDelete,
 }: TableProps) {
   const emptyRows = Math.max(ITEMS_PER_PAGE - orders.length, 0);
+  const FROM_BADGE_VARIANT = {
+    LOKAL: "default",
+    MC: "info",
+    MF: "success",
+  } as const;
 
   return (
     <table className="w-full table-fixed border-collapse text-gray-700">
@@ -57,7 +63,9 @@ export default function Table({
               />
             </td>
             <td className="px-4 py-3 text-sm font-medium whitespace-nowrap text-gray-600">
-              {order.from}
+              <Badge variant={FROM_BADGE_VARIANT[order.from]}>
+                {order.from}
+              </Badge>
             </td>
             <td className="px-4 py-3 text-sm font-medium whitespace-nowrap text-gray-900">
               {order.number}

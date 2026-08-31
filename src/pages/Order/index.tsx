@@ -1,34 +1,13 @@
-import { useState } from "react";
 import OrderCard from "@features/orders/components/Card";
-import PreviewPanel from "./Components/PreviewPanel";
-import SourcePanel from "./Components/SourcePanel";
-import useOrderPage from "./useOrderPage";
+import PreviewPanel from "@features/orders/components/PreviewPanel";
 
 export default function Order() {
-  const [showSource, setShowSource] = useState(false);
-  const { file, setFile, date, setDate, text, content, isReady } =
-    useOrderPage();
-
   return (
-    <main className="grid h-[calc(100%-4rem)] grid-cols-6 grid-rows-10 gap-2 p-6">
-      <SourcePanel
-        file={file}
-        date={date}
-        setDate={setDate}
-        showSource={showSource}
-        onToggle={() => setShowSource((v) => !v)}
-        onFileChange={(file) => {
-          setFile(file);
-          setShowSource(false);
-        }}
-      />
-      <PreviewPanel
-        text={text}
-        content={content}
-        isReady={isReady}
-        expanded={showSource}
-      />
-      <section className="col-start-3 col-end-7 row-span-10 rounded-xl bg-white p-4 shadow-lg">
+    <main className="grid h-[calc(100%-4rem)] grid-cols-3 grid-rows-1 p-3">
+      <section className="relative col-start-1 col-end-2 rounded-l-md bg-white p-3">
+        <PreviewPanel />
+      </section>
+      <section className="relative col-start-2 col-end-4 flex items-center rounded-r-md border-l-2 border-gray-200 bg-white p-3">
         <OrderCard />
       </section>
     </main>
