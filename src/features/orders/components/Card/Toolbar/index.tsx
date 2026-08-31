@@ -1,19 +1,11 @@
 import { PlusIcon } from "@heroicons/react/24/outline";
 import Button from "@components/Button";
 import SearchBar from "@components/SearchBar";
-import type {
-  OrderCategoryType,
-  OrderFilters,
-  OrderSort,
-} from "@features/orders/order.type";
+import type { OrderFilters, OrderSort } from "@features/orders/order.type";
 import FilterDropdown from "./FilterDropdown";
 import SortDropdown from "./SortDropdown";
-import { ORDER_CATEGORY } from "@features/orders/order.constants";
-import Tabs from "@components/Tabs";
 
 interface ToolbarProps {
-  mode: OrderCategoryType;
-  onModeChange: (mode: OrderCategoryType) => void;
   onSearch: (value: string) => void;
   onAdd: () => void;
   filter: OrderFilters;
@@ -23,8 +15,6 @@ interface ToolbarProps {
 }
 
 export default function Toolbar({
-  mode,
-  onModeChange,
   onSearch,
   onAdd,
   filter,
@@ -32,17 +22,18 @@ export default function Toolbar({
   sort,
   onSort,
 }: ToolbarProps) {
-  const categories = Object.values(ORDER_CATEGORY);
-
   return (
-    <div className="mb-3 flex justify-between">
-      <Tabs items={categories} value={mode} onChange={onModeChange} />
-      <div className="flex gap-1">
-        <SearchBar onSearch={onSearch} className="mr-0.5 w-xs" />
+    <div className="mb-2 flex">
+      <div className="flex w-full gap-1">
+        <SearchBar onSearch={onSearch} className="mr-0.5 w-full bg-white" />
         <FilterDropdown filter={filter} onFilter={onFilter} />
         <SortDropdown sort={sort} onSort={onSort} />
-        <Button variant="info" className="px-3" onClick={onAdd}>
-          <PlusIcon className="size-5" />
+        <Button
+          variant="info"
+          className="px-3 whitespace-nowrap"
+          onClick={onAdd}
+        >
+          <PlusIcon className="size-5" /> Order
         </Button>
       </div>
     </div>

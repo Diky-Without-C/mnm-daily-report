@@ -37,10 +37,9 @@ export default function SortDropdown({ sort, onSort }: SortDropdownProps) {
     <Dropdown>
       <DropdownTrigger asChild>
         <Button className="px-3 py-1.5">
-          <ArrowsUpDownIcon className="size-5" />
+          <ArrowsUpDownIcon className="size-5" /> Sort
         </Button>
       </DropdownTrigger>
-
       <DropdownContent className="w-56 p-1.5">
         <div className="px-2 pt-1 pb-1.5">
           <span className="text-xs font-medium tracking-wide text-gray-500 uppercase">

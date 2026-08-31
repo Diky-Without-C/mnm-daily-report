@@ -7,6 +7,7 @@ import {
   DropdownItem,
 } from "@components/Dropdown";
 import CheckBox from "@components/Input/CheckBox";
+import Divider from "@components/Divider";
 import type { OrderFilters } from "@features/orders/order.type";
 
 interface FilterDropdownProps {
@@ -22,7 +23,7 @@ export default function FilterDropdown({
     <Dropdown closeOnSelect={false}>
       <DropdownTrigger asChild>
         <Button className="px-3 py-1.5">
-          <AdjustmentsHorizontalIcon className="size-5" />
+          <AdjustmentsHorizontalIcon className="size-5" /> FIlter
         </Button>
       </DropdownTrigger>
 
@@ -59,7 +60,7 @@ export default function FilterDropdown({
             );
           })}
         </div>
-        <div className="my-1.5 border-t border-gray-200" />
+        <Divider />
         <div className="px-2 pt-1 pb-1.5">
           <span className="text-xs font-medium tracking-wide text-gray-500 uppercase">
             Type
