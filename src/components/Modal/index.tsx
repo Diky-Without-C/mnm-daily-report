@@ -1,18 +1,18 @@
 import { useEffect, type HTMLAttributes } from "react";
 import { cn } from "@utils/cn";
 
-interface DialogProps extends HTMLAttributes<HTMLDivElement> {
+interface ModalProps extends HTMLAttributes<HTMLDivElement> {
   open: boolean;
   onClose: () => void;
 }
 
-export default function Dialog({
+export default function Modal({
   open,
   onClose,
   children,
   className,
   ...props
-}: DialogProps) {
+}: ModalProps) {
   useEffect(() => {
     if (!open) return;
 

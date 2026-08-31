@@ -1,7 +1,7 @@
 import { useRef, useEffect, useState } from "react";
 import type { Report } from "@apps/supabase/report.dto";
 import { ITEM_TYPES, CONTAINER_TYPES } from "@apps/constants";
-import Dialog from "@components/Dialog";
+import Modal from "@components/Modal";
 import Button from "@components/Button";
 import { useLocalStorage } from "@hooks/useLocaleStorage";
 import { ORDER_CATEGORY } from "../../../order.constants";
@@ -63,7 +63,7 @@ export default function FormBox({
   if (!form) return;
 
   return (
-    <Dialog open={open} onClose={onClose} className="max-w-md p-6">
+    <Modal open={open} onClose={onClose} className="max-w-md p-6">
       <form
         onSubmit={handleSubmit}
         className="relative grid w-full grid-cols-4 grid-rows-4 gap-2"
@@ -153,6 +153,6 @@ export default function FormBox({
           </Button>
         </div>
       </form>
-    </Dialog>
+    </Modal>
   );
 }

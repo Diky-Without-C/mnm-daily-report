@@ -1,5 +1,5 @@
 import Button from "@components/Button";
-import Dialog from "@components/Dialog";
+import Modal from "@components/Modal";
 
 interface DeleteConfirmProps {
   open: boolean;
@@ -13,7 +13,7 @@ export default function DeleteBox({
   onCancel,
 }: DeleteConfirmProps) {
   return (
-    <Dialog open={open} onClose={onCancel} className="max-w-md p-6">
+    <Modal open={open} onClose={onCancel} className="max-w-md p-6">
       <h1 className="text-xl font-semibold">Delete Order</h1>
       <p className="mt-3 text-gray-600">
         You're about to permanently delete this order. Are you sure you want to
@@ -27,6 +27,6 @@ export default function DeleteBox({
           Delete
         </Button>
       </div>
-    </Dialog>
+    </Modal>
   );
 }
