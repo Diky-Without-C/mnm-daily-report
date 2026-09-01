@@ -3,7 +3,7 @@ import { cn } from "@utils/cn";
 
 type BtnVariant =
   | "success"
-  | "error"
+  | "danger"
   | "warning"
   | "info"
   | "default"
@@ -12,7 +12,7 @@ type BtnVariant =
 const variants: Record<BtnVariant, string> = {
   success:
     "bg-green-100 text-green-700 border-green-200 hover:bg-green-200 hover:border-green-300",
-  error:
+  danger:
     "bg-red-100 text-red-700 border-red-200 hover:bg-red-200 hover:border-red-300",
   warning:
     "bg-yellow-100 text-yellow-700 border-yellow-200 hover:bg-yellow-200 hover:border-yellow-300",

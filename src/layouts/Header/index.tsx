@@ -13,8 +13,7 @@ export default function Header() {
       <Brand />
       <div className="flex items-center gap-3">
         <Badge
-          variant={status === "online" ? "success" : "error"}
-          dot
+          variant={status === "online" ? "success" : "danger"}
           className="px-2"
         >
           {status == "online" ? "Online" : "Offline"}

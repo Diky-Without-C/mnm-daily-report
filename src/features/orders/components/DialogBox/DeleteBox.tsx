@@ -20,7 +20,7 @@ export default function DeleteBox({
         continue?
       </p>
       <div className="mt-8 flex justify-end gap-2">
-        <Button onClick={onCancel} variant="error">
+        <Button onClick={onCancel} variant="danger">
           Cancel
         </Button>
         <Button onClick={onConfirm} variant="info">

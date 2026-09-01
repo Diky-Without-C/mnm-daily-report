@@ -21,7 +21,7 @@ export default function SelectionBar({
         <span className="mr-1 text-lg font-bold text-blue-700">{count}</span>
         <span className="font-medium text-gray-700">Selected</span>
       </div>
-      <Button variant="error" className="px-3 py-2" onClick={onDelete}>
+      <Button variant="danger" className="px-3 py-2" onClick={onDelete}>
         <TrashIcon className="size-5" />
         Delete All
       </Button>
