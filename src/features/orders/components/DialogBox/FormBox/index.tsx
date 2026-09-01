@@ -145,7 +145,7 @@ export default function FormBox({
         />
 
         <div className="col-span-2 col-start-3 mt-5 flex justify-end gap-2">
-          <Button type="button" onClick={onClose} variant="error">
+          <Button type="button" onClick={onClose} variant="danger">
             Cancel
           </Button>
           <Button type="submit" variant="info">

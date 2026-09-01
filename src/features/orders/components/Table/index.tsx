@@ -32,18 +32,19 @@ export default function Table({
     <table className="w-full table-fixed border-collapse text-gray-700">
       <thead className="border-b border-gray-200 bg-gray-100">
         <tr>
-          <th className="w-1/15 p-4">
+          <th className="w-1/14 p-4">
             <CheckBox
               checked={selection.allSelected}
               onChange={selection.toggleAll}
             />
           </th>
-          <th className="w-2/15 p-4 text-left text-sm">From</th>
-          <th className="w-2/15 p-4 text-left text-sm">Number</th>
-          <th className="w-4/15 p-4 text-left text-sm">Code</th>
-          <th className="w-2/15 p-4 text-left text-sm">Type</th>
-          <th className="w-2/15 p-4 text-left text-sm">Amount</th>
-          <th className="w-2/15 p-4 text-left text-sm">Action</th>
+          <th className="w-2/14 p-4 text-left text-sm">Category</th>
+          <th className="w-2/14 p-4 text-left text-sm">From</th>
+          <th className="w-2/14 p-4 text-left text-sm">Number</th>
+          <th className="w-2/14 p-4 text-left text-sm">Code</th>
+          <th className="w-2/14 p-4 text-left text-sm">Type</th>
+          <th className="w-2/14 p-4 text-left text-sm">Amount</th>
+          <th className="w-2/14 p-4 text-left text-sm">Action</th>
         </tr>
       </thead>
       <tbody>
@@ -61,6 +62,9 @@ export default function Table({
                 checked={selection.isSelected(order)}
                 onChange={() => selection.toggle(order)}
               />
+            </td>
+            <td className="px-4 py-3 text-sm font-medium whitespace-nowrap text-gray-600 capitalize">
+              {order.category}
             </td>
             <td className="px-4 py-3 text-sm font-medium whitespace-nowrap text-gray-600">
               <Badge variant={FROM_BADGE_VARIANT[order.from]}>

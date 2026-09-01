@@ -2,21 +2,25 @@ import { useOrdersStore } from "@stores/useOrders.store";
 import { useOrderFilter } from "./useOrderFilter";
 import { useOrderForm } from "./useOrderForm";
 import { useOrderDeletion } from "./useOrderDeletion";
-import type { OrderCategoryType } from "../order.type";
+import type { OrderTabs } from "../order.type";
 
 interface UseOrdersParams {
-  mode: OrderCategoryType;
+  tabs: OrderTabs;
 }
 
-export function useOrders({ mode }: UseOrdersParams) {
+export function useOrders({ tabs }: UseOrdersParams) {
   const { orders: ordersStore, setOrders } = useOrdersStore();
 
-  const filter = useOrderFilter({ orders: ordersStore, mode });
-  const form = useOrderForm({ mode, setOrders });
+  const currentTabs = tabs === "all" ? "pre order" : tabs;
+  const filter = useOrderFilter({ orders: ordersStore });
+  const form = useOrderForm({ category: currentTabs, setOrders });
   const deletion = useOrderDeletion({ setOrders });
+  const currentOrders = filter.orders.filter(
+    (order) => order.category === tabs || tabs === "all",
+  );
 
   return {
-    orders: filter.orders,
+    orders: currentOrders,
     filter: filter.filter,
     sort: filter.sort,
     form: form.form,

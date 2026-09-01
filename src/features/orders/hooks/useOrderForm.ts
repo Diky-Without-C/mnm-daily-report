@@ -5,11 +5,11 @@ import { ITEM_TYPES, CONTAINER_TYPES } from "@apps/constants";
 import type { OrderCategoryType } from "../order.type";
 
 interface UseOrderFormParams {
-  mode: OrderCategoryType;
+  category: OrderCategoryType;
   setOrders: React.Dispatch<React.SetStateAction<Report[]>>;
 }
 
-export function useOrderForm({ mode, setOrders }: UseOrderFormParams) {
+export function useOrderForm({ category, setOrders }: UseOrderFormParams) {
   const [form, setForm] = useState<Report | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -24,7 +24,7 @@ export function useOrderForm({ mode, setOrders }: UseOrderFormParams) {
     const newForm: Report = {
       id: "",
       code: "",
-      category: mode,
+      category: category,
       from: CONTAINER_TYPES[0],
       number: 0,
       amount: 0,
@@ -33,7 +33,7 @@ export function useOrderForm({ mode, setOrders }: UseOrderFormParams) {
 
     setForm(newForm);
     initialFormRef.current = null;
-  }, [mode]);
+  }, [category]);
 
   const handleChange = useCallback((name: string, value: string | number) => {
     setForm((prev) => (prev ? { ...prev, [name]: value } : null));

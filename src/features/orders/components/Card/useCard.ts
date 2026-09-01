@@ -3,12 +3,12 @@ import { useOrders } from "@features/orders/hooks/useOrders";
 import { usePagination } from "@features/orders/hooks/usePagination";
 import { useSelection } from "@features/orders/hooks/useSelection";
 import { ITEMS_PER_PAGE } from "@features/orders/order.constants";
-import type { OrderCategoryType } from "@features/orders/order.type";
+import type { OrderTabs } from "@features/orders/order.type";
 
 export function useCard() {
-  const [mode, setMode] = useState<OrderCategoryType>("pre order");
+  const [currentTab, setcurrentTabs] = useState<OrderTabs>("all");
   const { orders, filter, sort, form, isDeleting, handlers } = useOrders({
-    mode,
+    tabs: currentTab,
   });
 
   const pagination = usePagination({
@@ -19,9 +19,9 @@ export function useCard() {
   const currentOrders = pagination.getPageItems(orders);
   const selection = useSelection({ items: currentOrders });
 
-  const changeMode = useCallback(
-    (nextMode: OrderCategoryType) => {
-      setMode(nextMode);
+  const ChangeTab = useCallback(
+    (nextMode: OrderTabs) => {
+      setcurrentTabs(nextMode);
       pagination.setFirstPage();
       selection.clear();
     },
@@ -43,7 +43,7 @@ export function useCard() {
   }, [handlers, selection]);
 
   return {
-    mode,
+    tabs: currentTab,
     filter,
     sort,
     currentOrders,
@@ -52,7 +52,7 @@ export function useCard() {
     form,
     isDeleting,
     actions: {
-      changeMode,
+      changeTab: ChangeTab,
       search,
       add: handlers.handleAdd,
       edit: handlers.handleEdit,

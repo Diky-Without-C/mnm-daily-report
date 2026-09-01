@@ -1,37 +1,29 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import type { Report } from "@apps/supabase/report.dto";
 import { filterOrders, searchOrders, sortOrders } from "../order.helpers";
-import type { OrderCategoryType, OrderFilters, OrderSort } from "../order.type";
+import type { OrderFilters, OrderSort } from "../order.type";
 
 interface UseOrderFilterParams {
   orders: Report[];
-  mode: OrderCategoryType;
 }
 
-export function useOrderFilter({ orders, mode }: UseOrderFilterParams) {
+export function useOrderFilter({ orders }: UseOrderFilterParams) {
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState<OrderSort>("number-asc");
   const [filter, setFilter] = useState<OrderFilters>(() =>
     getInitialFilter(orders),
   );
 
-  const modeOrders = useMemo(
-    () => orders.filter((item) => item.category === mode),
-    [orders, mode],
-  );
-
   useEffect(() => {
-    setFilter(getInitialFilter(modeOrders));
-  }, [modeOrders]);
+    setFilter(getInitialFilter(orders));
+  }, [orders]);
 
   const filteredOrders = useMemo(() => {
-    const filteredByCategory = orders.filter((item) => item.category === mode);
-
-    const sorted = sortOrders(filteredByCategory, sort);
+    const sorted = sortOrders(orders, sort);
     const filtered = filterOrders(sorted, filter);
 
     return searchOrders(filtered, search);
-  }, [orders, mode, search, filter, sort]);
+  }, [orders, search, filter, sort]);
 
   const handleSearch = useCallback((value: string) => {
     setSearch(value);
