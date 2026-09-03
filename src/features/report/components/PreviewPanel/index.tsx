@@ -8,12 +8,26 @@ import Button from "@components/Button";
 import InputDate from "@components/Input/InputDate";
 import { cn } from "@utils/cn";
 import FileField from "../Modal/FileField";
-import usePreviewPanel from "./usePreviewPanel";
 
-export default function PreviewPanel() {
+interface PreviewPanelProps {
+  setFile: (file: File | null) => void;
+  date: Date;
+  setDate: (date: Date) => void;
+  text: string;
+  content: string;
+  isReady: boolean;
+}
+
+export default function PreviewPanel({
+  setFile,
+  date,
+  setDate,
+  text,
+  content,
+  isReady,
+}: PreviewPanelProps) {
   const [isCopy, setIsCopy] = useState(false);
   const [showField, setShowField] = useState(false);
-  const { setFile, date, setDate, text, content, isReady } = usePreviewPanel();
 
   const handleCopy = () => {
     if (!isReady) return;

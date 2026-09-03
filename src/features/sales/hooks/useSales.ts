@@ -2,8 +2,13 @@ import { useMemo } from "react";
 import { usePersistedFile } from "@hooks/usePersistedFile";
 import { useExcelParser } from "@libs/xlsx/useExcelParser";
 import { useSalesFilter } from "./useFilterSales";
+import type { SalesTabs } from "../sales.type";
 
-export default function useSales() {
+interface UseSalesProps {
+  tabs: SalesTabs;
+}
+
+export default function useSales({ tabs }: UseSalesProps) {
   const [file] = usePersistedFile("mnm-xlsx-sales-storage");
 
   const { data: sales } = useExcelParser({
@@ -12,8 +17,14 @@ export default function useSales() {
     content: "sales",
   });
 
+  const currentSales = useMemo(() => {
+    return sales
+      .flat()
+      .filter((sale) => sale.category.toLowerCase() === tabs || tabs === "all");
+  }, [sales, tabs]);
+
   const filter = useSalesFilter({
-    sales: useMemo(() => sales.flat(), [sales]),
+    sales: currentSales,
   });
 
   return {

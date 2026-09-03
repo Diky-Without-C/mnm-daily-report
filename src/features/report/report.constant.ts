@@ -19,7 +19,7 @@ export const ITEMS_TO_REPLACE = {
 };
 
 export const CATEGORY_KEYS = [
-  "star_rider",
+  "star rider",
   "fancy",
   "snipper",
   "roboman",

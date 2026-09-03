@@ -1,4 +1,6 @@
 import { useDateStore } from "@stores/usetDate.store";
+import { CATEGORY_KEYS } from "@features/report/report.constant";
+import type { SalesTabs } from "./sales.type";
 
 export const MONTHS = [
   "Jan",
@@ -62,3 +64,5 @@ export const CODE_GROUPS = {
   MC550A: "MC550A",
   MC550B: "MC550A",
 } as const;
+
+export const SALES_TABS: SalesTabs[] = ["all", ...CATEGORY_KEYS];

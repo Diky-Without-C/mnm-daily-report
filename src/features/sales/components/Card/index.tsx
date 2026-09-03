@@ -1,22 +1,37 @@
+import { useState } from "react";
 import NotFound from "@features/orders/components/NotFound";
+import FileField from "@features/report/components/Modal/FileField";
+import { SALES_TABS } from "@features/sales/sales.constant";
+import { usePersistedFile } from "@hooks/usePersistedFile";
+import Divider from "@components/Divider";
+import Tabs from "@components/Tabs";
 import SalesChart from "../SalesChart";
 import Footer from "./Footer";
 import Toolbar from "./Toolbar";
 import { useCard } from "./useCard";
 
 export default function SalesCard() {
-  const { filter, sort, currentSales, pagination, actions } = useCard();
+  const [showField, setShowField] = useState(false);
+  const [, setFile] = usePersistedFile("mnm-xlsx-sales-storage");
+
+  const { tabs, filter, sort, currentSales, pagination, actions } = useCard();
 
   return (
     <div className="flex h-full w-full flex-col">
       <Toolbar
+        setShowField={setShowField}
         onSearch={actions.search}
         filter={filter}
         onFilter={actions.filter}
         sort={sort}
         onSort={actions.sort}
       />
-      <div className="z-10 flex h-full w-full flex-col overflow-hidden rounded-lg border border-gray-200 bg-white">
+      <div className="flex h-full w-full flex-col overflow-hidden">
+        <Tabs
+          items={SALES_TABS.map(String)}
+          value={String(tabs)}
+          onChange={actions.changeTab}
+        />
         <div className="min-h-0 flex-1">
           {!currentSales.every((sales) => sales.total === 0) ? (
             <SalesChart displayedSales={currentSales} />
@@ -24,8 +39,14 @@ export default function SalesCard() {
             <NotFound />
           )}
         </div>
+        <Divider className="h-[2px]" />
         <Footer pagination={pagination} />
       </div>
+      <FileField
+        onFileChange={setFile}
+        open={showField}
+        onCancel={() => setShowField(false)}
+      />
     </div>
   );
 }

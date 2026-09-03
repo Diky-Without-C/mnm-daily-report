@@ -7,8 +7,8 @@ import { useDateStore } from "@stores/usetDate.store";
 import { useOrdersStore } from "@stores/useOrders.store";
 
 export default function useSalesPage() {
-  const [file, setFile] = usePersistedFile("mnm-xlsx-sales-storage");
-  const [reportFile] = usePersistedFile("mnm-xlsx-report-storage");
+  const [salesfile] = usePersistedFile("mnm-xlsx-sales-storage");
+  const [file, setFile] = usePersistedFile("mnm-xlsx-report-storage");
 
   const { date, setDate } = useDateStore();
   const { orders } = useOrdersStore();
@@ -18,7 +18,7 @@ export default function useSalesPage() {
     loading: salesLoading,
     error: salesError,
   } = useExcelParser({
-    file,
+    file: salesfile,
     sheetIndex: useMemo(() => [1, 2, 3, 4], []),
     content: "sales",
   });
@@ -28,7 +28,7 @@ export default function useSalesPage() {
     loading: reportLoading,
     error: reportError,
   } = useExcelParser({
-    file: reportFile,
+    file: file,
     sheetIndex: useMemo(() => [date.getDate()], [date]),
     content: "report",
   });

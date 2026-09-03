@@ -21,16 +21,16 @@ export const groupByCategory = (items: ParsedReport[][]): GroupedCategories => {
 
     switch (category) {
       case "star rider":
-        categories.star_rider.push(sortedGroup);
+        categories["star rider"].push(sortedGroup);
         break;
       case "fancy":
-        categories.fancy.push(sortedGroup);
+        categories["fancy"].push(sortedGroup);
         break;
       case "snipper":
-        categories.snipper.push(sortedGroup);
+        categories["snipper"].push(sortedGroup);
         break;
       case "roboman":
-        categories.roboman.push(sortedGroup);
+        categories["roboman"].push(sortedGroup);
         break;
     }
   }

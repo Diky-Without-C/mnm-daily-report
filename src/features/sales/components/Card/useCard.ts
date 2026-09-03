@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { usePagination } from "@features/sales/hooks/usePagination";
 import useSales from "@features/sales/hooks/useSales";
 import {
@@ -6,15 +6,24 @@ import {
   processingSales,
 } from "@features/sales/sales.helper";
 import { ITEMS_PER_PAGE } from "@features/sales/sales.constant";
-import type { ProcessedSale } from "@features/sales/sales.type";
+import type { ProcessedSale, SalesTabs } from "@features/sales/sales.type";
 
 export function useCard() {
-  const { sales, filter, sort, handlers } = useSales();
+  const [currentTab, setcurrentTabs] = useState<SalesTabs>("all");
+  const { sales, filter, sort, handlers } = useSales({ tabs: currentTab });
 
   const pagination = usePagination({
     totalItems: sales.length,
     itemsPerPage: ITEMS_PER_PAGE,
   });
+
+  const changeTab = useCallback(
+    (nextMode: string) => {
+      setcurrentTabs(nextMode as SalesTabs);
+      pagination.setFirstPage();
+    },
+    [pagination],
+  );
 
   const pages = pagination.getPageItems(sales);
   const currentSales = useMemo(() => {
@@ -33,6 +42,7 @@ export function useCard() {
   );
 
   return {
+    tabs: currentTab,
     currentSales,
     filter,
     sort,
@@ -41,6 +51,7 @@ export function useCard() {
       search,
       filter: handlers.handleFilterChange,
       sort: handlers.handleSortChange,
+      changeTab,
     },
   };
 }
