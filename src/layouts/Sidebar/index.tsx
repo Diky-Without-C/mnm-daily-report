@@ -1,11 +1,14 @@
+import {
+  ChartBarIcon,
+  DocumentCheckIcon,
+  TruckIcon,
+} from "@heroicons/react/24/outline";
 import { type ReactNode } from "react";
 import { NavLink } from "react-router-dom";
 import HamburgerButton from "@components/Button/HamburgerButton";
-import ClipboardDocument from "@components/Icons/ClipboardDocument";
-import Cube from "@components/Icons/Cube";
-import Ranking from "@components/Icons/Ranking";
-import Archive from "@components/Icons/Archive";
+import Divider from "@components/Divider";
 import Brand from "@components/Brand";
+import Tooltip from "@components/Tooltip";
 import { useClickOutside } from "@hooks/useClickOutside";
 import { cn } from "@utils/cn";
 
@@ -23,23 +26,18 @@ interface MenuItem {
 const menuItems: MenuItem[] = [
   {
     label: "Order",
-    icon: <ClipboardDocument />,
+    icon: <DocumentCheckIcon className="size-6" />,
     path: "/order",
   },
   {
     label: "Stuffing",
-    icon: <Cube />,
+    icon: <TruckIcon className="size-6" />,
     path: "/stuffing",
   },
   {
     label: "Sales",
-    icon: <Ranking />,
+    icon: <ChartBarIcon className="size-6" />,
     path: "/sales",
-  },
-  {
-    label: "Archive",
-    icon: <Archive />,
-    path: "/archive",
   },
 ];
 
@@ -53,45 +51,68 @@ export default function Sidebar({ expanded, onToggle }: SidebarProps) {
     <aside
       ref={ref}
       className={cn(
-        "fixed inset-y-0 left-0 z-10 flex flex-col bg-gray-900 px-3 shadow-xl transition-[width] duration-300",
-        expanded ? "w-72" : "w-18",
+        "fixed inset-y-0 left-0 z-10 flex flex-col border-r border-gray-800/70 bg-gray-950 shadow-[4px_0_24px_rgba(0,0,0,0.12)] transition-[width] duration-300 ease-out",
+        expanded ? "w-64" : "w-18",
       )}
     >
-      <header className="mb-5 flex h-16 items-center justify-between border-b-2 border-gray-400 py-3">
-        {expanded && <Brand className="ml-2 h-12 invert" />}
+      <header className="flex h-16 items-center px-3">
+        <div
+          className={cn(
+            "flex min-w-0 flex-1 items-center",
+            !expanded && "justify-center",
+          )}
+        >
+          {expanded && <Brand className="ml-2" variant="dark" />}
+        </div>
         <HamburgerButton open={expanded} onToggle={onToggle} />
       </header>
-      <nav className="flex-1">
+      <Divider className="-mt-[2px] h-[2px] bg-gray-800/70" />
+      <nav className="flex-1 px-2.5 pt-4">
+        {expanded && (
+          <p className="mb-2 px-3 text-[11px] font-semibold tracking-[0.12em] text-gray-500 uppercase">
+            Workspace
+          </p>
+        )}
+
         <ul className="space-y-1">
-          {menuItems.map((item) => (
-            <li key={item.path}>
+          {menuItems.map((item) => {
+            const link = (
               <NavLink
                 to={item.path}
+                aria-label={!expanded ? item.label : undefined}
                 className={({ isActive }) =>
                   cn(
-                    "group relative flex h-12 items-center rounded-lg px-3 transition-colors",
+                    "group relative flex h-11 items-center rounded-md transition-colors duration-200",
+                    expanded ? "px-3" : "justify-center px-3",
                     isActive
-                      ? "bg-gray-800 text-white"
-                      : "text-gray-200 hover:bg-gray-800",
+                      ? "bg-gray-800/80 text-white shadow-sm before:absolute before:left-0 before:h-6 before:w-0.5 before:rounded-full before:bg-blue-500"
+                      : "text-gray-400 hover:bg-gray-900/80 hover:text-gray-100",
                   )
                 }
               >
-                <div className="flex size-6 shrink-0 items-center justify-center">
+                <span className="flex size-6 shrink-0 items-center justify-center">
                   {item.icon}
-                </div>
-                {expanded ? (
-                  <span className="ml-3 truncate text-base font-medium">
+                </span>
+                {expanded && (
+                  <span className="ml-3 truncate text-sm font-medium">
                     {item.label}
-                  </span>
-                ) : (
-                  <span className="pointer-events-none absolute left-full ml-4 hidden rounded-lg bg-slate-800 px-3 py-2 text-sm font-medium whitespace-nowrap text-white shadow-xl group-hover:flex">
-                    {item.label}
-                    <span className="absolute top-1/2 left-0 h-2 w-2 -translate-x-1/2 -translate-y-1/2 rotate-45 bg-inherit" />
                   </span>
                 )}
               </NavLink>
-            </li>
-          ))}
+            );
+
+            return (
+              <li key={item.path}>
+                {expanded ? (
+                  link
+                ) : (
+                  <Tooltip content={item.label} position="right">
+                    {link}
+                  </Tooltip>
+                )}
+              </li>
+            );
+          })}
         </ul>
       </nav>
     </aside>
