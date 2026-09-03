@@ -2,8 +2,8 @@ import type { Report } from "@apps/supabase/report.dto";
 import { useOrders } from "../../hooks/useOrders";
 import { getOrderLabel } from "../../order.helpers";
 import type { OrderCategoryType } from "../../order.type";
-import FormBox from "../DialogBox/FormBox";
-import DeleteBox from "../DialogBox/DeleteBox";
+import FormBox from "../Modal/FormBox";
+import DeleteBox from "../Modal/DeleteBox";
 import ActionMenu from "./ActionMenu";
 import Header from "./Header";
 
