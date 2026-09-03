@@ -19,7 +19,7 @@ export function useCard() {
   const currentOrders = pagination.getPageItems(orders);
   const selection = useSelection({ items: currentOrders });
 
-  const ChangeTab = useCallback(
+  const changeTab = useCallback(
     (nextMode: OrderTabs) => {
       setcurrentTabs(nextMode);
       pagination.setFirstPage();
@@ -52,7 +52,7 @@ export function useCard() {
     form,
     isDeleting,
     actions: {
-      changeTab: ChangeTab,
+      changeTab,
       search,
       add: handlers.handleAdd,
       edit: handlers.handleEdit,

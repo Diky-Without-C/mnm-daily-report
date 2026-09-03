@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { BarChart } from "@mui/x-charts/BarChart";
 import { formatNumber } from "@utils/formatNumber";
 import { LAST_3_MONTHS } from "../../sales.constant";
@@ -8,61 +8,73 @@ interface SalesChartProps {
   displayedSales: ProcessedSale[];
 }
 
+const BAR_OFFSET = 12;
+
 export default function SalesChart({ displayedSales }: SalesChartProps) {
+  const containerRef = useRef<HTMLDivElement>(null);
   const [seriesPositions, setSeriesPositions] = useState<number[]>([]);
-  const ref = useRef<HTMLDivElement>(null);
 
-  const chartSeries = useMemo(() => {
-    return LAST_3_MONTHS().map((month, index) => ({
-      label: month.label,
-      data: displayedSales.map(({ last3MonthSales }) => last3MonthSales[index]),
-      stack: "total",
-    }));
-  }, [displayedSales]);
+  const chartSeries = useMemo(
+    () =>
+      LAST_3_MONTHS().map((month, index) => ({
+        label: month.label,
+        data: displayedSales.map(
+          ({ last3MonthSales }) => last3MonthSales[index],
+        ),
+        stack: "total",
+      })),
+    [displayedSales],
+  );
 
-  const calculatePositions = () => {
-    if (!ref.current) return;
-    const series = ref.current.querySelectorAll<HTMLElement>(
-      ".MuiBarChart-series",
-    );
-    const [{ children: elements }] = series;
+  const getSeriesPositions = useCallback(() => {
+    const container = containerRef.current;
 
-    series.forEach((element) => {
-      element.style.transform = "translateY(12px)";
-    });
+    if (!container) return;
 
-    if (!elements || elements.length === 0) return;
-    const positions: number[] = [...elements].map(({ attributes }) => {
-      const yPosition = attributes.getNamedItem("y")?.value;
+    const series = container.querySelector<HTMLElement>(".MuiBarChart-series");
 
-      return yPosition ? parseFloat(yPosition) - 12 : 0;
-    });
+    if (!series) return;
+
+    const positions = [...series.children]
+      .map((element) => {
+        const y = element.getAttribute("y");
+
+        return y ? Number(y) - BAR_OFFSET : null;
+      })
+      .filter((position): position is number => position !== null);
+
+    if (positions.length !== displayedSales.length) return;
 
     setSeriesPositions(positions);
-  };
+  }, [displayedSales.length]);
 
   useEffect(() => {
-    if (!ref.current) return;
+    const frame = requestAnimationFrame(getSeriesPositions);
+    return () => cancelAnimationFrame(frame);
+  }, [displayedSales, getSeriesPositions]);
 
-    const observer = new ResizeObserver(() => {
-      requestAnimationFrame(() => {
-        requestAnimationFrame(calculatePositions);
-      });
-    });
+  useEffect(() => {
+    const container = containerRef.current;
 
-    observer.observe(ref.current);
+    if (!container) return;
+    const observer = new ResizeObserver(getSeriesPositions);
+    observer.observe(container);
 
     return () => observer.disconnect();
-  }, [displayedSales]);
+  }, [getSeriesPositions]);
 
   return (
-    <section ref={ref} className="relative flex h-full w-full flex-col">
+    <section
+      ref={containerRef}
+      className="relative flex h-full w-full flex-col"
+    >
       <div className="pointer-events-none absolute inset-0 z-10">
         {displayedSales.map(
           (sale, index) =>
-            sale.total > 0 && (
+            sale.total > 0 &&
+            seriesPositions[index] !== undefined && (
               <span
-                key={index}
+                key={sale.item}
                 className="absolute left-2 truncate"
                 style={{ top: seriesPositions[index] }}
               >
@@ -74,8 +86,12 @@ export default function SalesChart({ displayedSales }: SalesChartProps) {
       <BarChart
         layout="horizontal"
         className="h-full w-full"
-        skipAnimation
         hideLegend
+        sx={{
+          "& .MuiBarChart-series": {
+            transform: `translateY(${BAR_OFFSET}px)`,
+          },
+        }}
         margin={{
           top: 20,
           bottom: 20,
