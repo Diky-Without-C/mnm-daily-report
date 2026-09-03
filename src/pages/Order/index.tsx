@@ -1,5 +1,5 @@
 import OrderCard from "@features/orders/components/Card";
-import PreviewPanel from "@features/orders/components/PreviewPanel";
+import PreviewPanel from "@features/report/components/PreviewPanel";
 
 export default function Order() {
   return (

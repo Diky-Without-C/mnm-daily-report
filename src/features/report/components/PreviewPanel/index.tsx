@@ -7,8 +7,8 @@ import { useState } from "react";
 import Button from "@components/Button";
 import InputDate from "@components/Input/InputDate";
 import { cn } from "@utils/cn";
+import FileField from "../FileField";
 import usePreviewPanel from "./usePreviewPanel";
-import FileField from "../DialogBox/FileField";
 
 export default function PreviewPanel() {
   const [isCopy, setIsCopy] = useState(false);
