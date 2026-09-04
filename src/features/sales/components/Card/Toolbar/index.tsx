@@ -27,7 +27,7 @@ export default function Toolbar({
       <div className="flex w-full gap-1">
         <SearchBar
           onSearch={onSearch}
-          placeHolder="Search sales by name or code"
+          placeHolder="Search sale"
           className="mr-0.5 w-full bg-white"
         />
         <FilterDropdown filter={filter} onFilter={onFilter} />

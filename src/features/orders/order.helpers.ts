@@ -15,22 +15,24 @@ export const getOrderLabel = (order: Report) =>
   orderLabelMap[order.category](order);
 
 export const searchOrders = (orders: Report[], search: string) => {
-  const query = search.trim().toLowerCase();
+  const queries = search.trim().toLowerCase().split(/\s+/).filter(Boolean);
 
-  if (!query) return orders;
+  if (!queries.length) return orders;
 
-  return orders.filter((order) =>
-    [
+  return orders.filter((order) => {
+    const text = [
+      order.category,
       order.from,
       order.number,
       order.code,
       order.type,
-      formatNumber(order.amount),
+      order.amount,
     ]
       .join(" ")
-      .toLowerCase()
-      .includes(query),
-  );
+      .toLowerCase();
+
+    return queries.every((query) => text.includes(query));
+  });
 };
 
 export const filterOrders = (orders: Report[], filters: OrderFilters) => {
@@ -42,7 +44,7 @@ export const filterOrders = (orders: Report[], filters: OrderFilters) => {
   });
 };
 
-export function sortOrders(orders: Report[], sort: OrderSort): Report[] {
+export const sortOrders = (orders: Report[], sort: OrderSort): Report[] => {
   return [...orders].sort((a, b) => {
     switch (sort) {
       case "number-asc":
@@ -57,4 +59,4 @@ export function sortOrders(orders: Report[], sort: OrderSort): Report[] {
         return 0;
     }
   });
-}
+};

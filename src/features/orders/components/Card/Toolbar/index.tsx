@@ -27,7 +27,7 @@ export default function Toolbar({
       <div className="flex w-full gap-1">
         <SearchBar
           onSearch={onSearch}
-          placeHolder="Search order by code, from, type, or number"
+          placeHolder="Search order"
           className="mr-0.5 w-full bg-white"
         />
         <FilterDropdown filter={filter} onFilter={onFilter} />

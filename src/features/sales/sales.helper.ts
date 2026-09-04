@@ -36,23 +36,27 @@ export const keyToLabel = (value: string) =>
   capitalize(value.replace(/_/g, " "));
 
 export const searchSales = (sales: ParsedSales[], search: string) => {
-  const query = search.trim().toLowerCase();
+  const queries = search.trim().toLowerCase().split(/\s+/).filter(Boolean);
 
-  if (!query) return sales;
+  if (!queries.length) return sales;
 
-  return sales.filter((sale) =>
-    [sale.code, sale.item].join(" ").toLowerCase().includes(query),
-  );
+  return sales.filter((sale) => {
+    const text = [sale.category, sale.item, sale.code, sale.packing, sale.total]
+      .join(" ")
+      .toLowerCase();
+
+    return queries.every((query) => text.includes(query));
+  });
 };
 
 export const filterSales = (sales: ParsedSales[], filters: SalesFilter) => {
   return sales.filter((sale) => filters.category[sale.category] ?? false);
 };
 
-export function sortSales(
+export const sortSales = (
   sales: ParsedSales[],
   sort: SalesSort,
-): ParsedSales[] {
+): ParsedSales[] => {
   return [...sales].sort((a, b) => {
     switch (sort) {
       case "monthly-asc":
@@ -63,4 +67,4 @@ export function sortSales(
         return 0;
     }
   });
-}
+};
