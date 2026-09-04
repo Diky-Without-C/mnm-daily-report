@@ -5,10 +5,7 @@ export type OrderCategoryType = (typeof ORDER_CATEGORY)[OrderCategoryLabel];
 
 export type OrderTabs = OrderCategoryType | "all";
 
-export type OrderFilters = {
-  from: Record<string, boolean>;
-  type: Record<string, boolean>;
-};
+export type OrderFilters = Record<string, Record<string, boolean>>;
 
 export type OrderSort =
   | "number-asc"

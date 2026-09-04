@@ -16,7 +16,7 @@ interface FilterDropdownProps {
 }
 
 export default function FilterDropdown({
-  filter: { from, type },
+  filter,
   onFilter,
 }: FilterDropdownProps) {
   return (
@@ -27,72 +27,49 @@ export default function FilterDropdown({
         </Button>
       </DropdownTrigger>
 
-      <DropdownContent className="w-56 p-1.5">
-        <div className="px-2 pt-1 pb-1.5">
-          <span className="text-xs font-medium tracking-wide text-gray-500 uppercase">
-            From
-          </span>
-        </div>
-        <div className="space-y-0.5">
-          {Object.keys(from).map((container) => {
-            const id = `filter-container-${container}`;
+      <DropdownContent className="max-h-[17rem] w-56 p-1.5">
+        {Object.keys(filter).map((group, index) => {
+          const groupFilters = filter[group];
 
-            return (
-              <DropdownItem
-                key={container}
-                onClick={() => onFilter("from", container, !from[container])}
-                className="px-2"
-              >
-                <label
-                  htmlFor={id}
-                  className="flex w-full cursor-pointer items-center gap-2"
-                >
-                  <CheckBox
-                    id={id}
-                    checked={from[container]}
-                    onChange={(e) =>
-                      onFilter("from", container, !e.target.checked)
-                    }
-                  />
-                  <span className="text-sm">{container}</span>
-                </label>
-              </DropdownItem>
-            );
-          })}
-        </div>
-        <Divider />
-        <div className="px-2 pt-1 pb-1.5">
-          <span className="text-xs font-medium tracking-wide text-gray-500 uppercase">
-            Type
-          </span>
-        </div>
-        <div className="space-y-0.5">
-          {Object.keys(type).map((ItemType) => {
-            const id = `filter-type-${ItemType}`;
+          return (
+            <div key={group}>
+              <div className="px-2 pt-1 pb-1.5">
+                <span className="text-xs font-medium tracking-wide text-gray-500 uppercase">
+                  {group}
+                </span>
+              </div>
+              <div className="space-y-0.5">
+                {Object.keys(groupFilters).map((key) => {
+                  const id = `filter-${group}-${key}`;
 
-            return (
-              <DropdownItem
-                key={ItemType}
-                onClick={() => onFilter("type", ItemType, !type[ItemType])}
-                className="px-2"
-              >
-                <label
-                  htmlFor={id}
-                  className="flex w-full cursor-pointer items-center gap-2"
-                >
-                  <CheckBox
-                    id={id}
-                    checked={type[ItemType]}
-                    onChange={(e) =>
-                      onFilter("type", ItemType, !e.target.checked)
-                    }
-                  />
-                  <span className="text-sm">{ItemType}</span>
-                </label>
-              </DropdownItem>
-            );
-          })}
-        </div>
+                  return (
+                    <DropdownItem
+                      key={key}
+                      onClick={() => onFilter(group, key, !groupFilters[key])}
+                      className="px-2"
+                    >
+                      <label
+                        htmlFor={id}
+                        className="flex w-full cursor-pointer items-center gap-2"
+                      >
+                        <CheckBox
+                          id={id}
+                          checked={groupFilters[key]}
+                          onChange={(e) =>
+                            onFilter(group, key, !e.target.checked)
+                          }
+                        />
+                        <span className="text-sm">{key}</span>
+                      </label>
+                    </DropdownItem>
+                  );
+                })}
+              </div>
+              {index < Object.keys(filter).length - 1 &&
+                Object.keys(filter).length > 0 && <Divider className="my-1" />}
+            </div>
+          );
+        })}
       </DropdownContent>
     </Dropdown>
   );

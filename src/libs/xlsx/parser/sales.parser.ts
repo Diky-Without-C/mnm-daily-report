@@ -49,6 +49,7 @@ export default function salesParser(bytes: Uint8Array, sheetIndex: number) {
 
       const matchPacking = clearItem.match(/[([](.+?)[)\]]/);
       const packing = matchPacking?.[1];
+      const clearPacking = packing?.toLowerCase();
 
       const matchCode = clearItem.match(
         /\b(?:MC|MD|SR|FC|RM|MF|TS)\s\d{3,4}\S*/g,
@@ -59,11 +60,11 @@ export default function salesParser(bytes: Uint8Array, sheetIndex: number) {
       const clearName = clearItem.replace(code, "").replace(`(${packing})`, "");
 
       const transformed = schema.transform(row, indexes);
-      const propperName = `${clearName} - ${clearCode} ${packing ? `(${packing})` : ""}`;
+      const propperName = `${clearName} - ${clearCode} ${clearPacking ? `(${clearPacking})` : ""}`;
 
       return {
         item: propperName,
-        packing,
+        packing: clearPacking,
         code: clearCode,
         category,
         total: transformed.total,

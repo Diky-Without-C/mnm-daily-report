@@ -60,9 +60,9 @@ export function useSalesFilter({ sales }: UseOrderFilterParams) {
 }
 
 function getInitialFilter(sales: ParsedSales[]): SalesFilter {
-  const category = [...new Set(sales.map((sale) => sale.category))];
+  const packing = [...new Set(sales.map((sale) => sale.packing))];
 
   return {
-    category: Object.fromEntries(category.map((value) => [value, true])),
+    packing: Object.fromEntries(packing.map((value) => [value, true])),
   };
 }

@@ -5,9 +5,7 @@ export interface ProcessedSale extends ParsedSales {
   last3MonthSales: number[];
 }
 
-export type SalesFilter = {
-  category: Record<string, boolean>;
-};
+export type SalesFilter = Record<string, Record<string, boolean>>;
 
 export type SalesSort = "monthly-asc" | "monthly-desc";
 

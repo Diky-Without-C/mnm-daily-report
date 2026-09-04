@@ -50,7 +50,7 @@ export const searchSales = (sales: ParsedSales[], search: string) => {
 };
 
 export const filterSales = (sales: ParsedSales[], filters: SalesFilter) => {
-  return sales.filter((sale) => filters.category[sale.category] ?? false);
+  return sales.filter((sale) => sale.packing && filters.packing[sale.packing]);
 };
 
 export const sortSales = (
