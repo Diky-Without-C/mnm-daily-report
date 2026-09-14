@@ -38,7 +38,7 @@ export function useCard() {
   );
 
   const deleteSelected = useCallback(() => {
-    handlers.requestDelete(Array.from(selection.selectedIds));
+    handlers.requestDelete(selection.selectedIds);
     selection.clear();
   }, [handlers, selection]);
 

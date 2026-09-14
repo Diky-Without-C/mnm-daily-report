@@ -23,7 +23,7 @@ export default function FilterDropdown({
     <Dropdown closeOnSelect={false}>
       <DropdownTrigger asChild>
         <Button className="px-3 py-1.5">
-          <AdjustmentsHorizontalIcon className="size-5" />
+          <AdjustmentsHorizontalIcon className="size-5" /> Filter
         </Button>
       </DropdownTrigger>
 

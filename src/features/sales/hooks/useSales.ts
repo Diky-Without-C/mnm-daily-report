@@ -9,7 +9,7 @@ interface UseSalesProps {
 }
 
 export default function useSales({ tabs }: UseSalesProps) {
-  const [file] = usePersistedFile("mnm-xlsx-sales-storage");
+  const { file } = usePersistedFile("mnm-xlsx-sales-storage");
 
   const { data: sales } = useExcelParser({
     file,

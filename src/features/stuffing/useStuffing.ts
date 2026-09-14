@@ -2,18 +2,21 @@ import { useState } from "react";
 import type { Report } from "@apps/supabase/report.dto";
 import { supabaseService } from "@apps/supabase/service";
 import { useOrdersStore } from "@stores/useOrders.store";
+import type { ContainerType } from "@apps/constants";
 
 export interface StuffingForm {
   item: Report | null;
   stuffingQty: number;
-  containerNumber: number | string;
+  containerCategory: ContainerType;
+  containerNumber: number;
   clearOrder: boolean;
 }
 
 const initialForm: StuffingForm = {
   item: null,
   stuffingQty: 0,
-  containerNumber: "",
+  containerCategory: "MC",
+  containerNumber: 0,
   clearOrder: false,
 };
 
@@ -31,6 +34,7 @@ export default function useStuffing() {
       return {
         item,
         stuffingQty: item.amount,
+        containerCategory: prev.containerCategory,
         containerNumber: prev.containerNumber,
         clearOrder: prev.clearOrder,
       };
@@ -45,14 +49,10 @@ export default function useStuffing() {
   };
 
   const resetForm = () => {
-    setForm(
-      form.containerNumber == ""
-        ? initialForm
-        : {
-            ...initialForm,
-            containerNumber: form.containerNumber,
-          },
-    );
+    setForm({
+      ...initialForm,
+      containerNumber: form.containerNumber,
+    });
   };
 
   const handleSubmit = async () => {
@@ -61,6 +61,7 @@ export default function useStuffing() {
     }
 
     const stuffingQty = Number(form.stuffingQty);
+    const containerCategory = form.containerCategory;
     const containerNumber = Number(form.containerNumber);
 
     const remainingQty = form.item.amount - stuffingQty;
@@ -70,6 +71,7 @@ export default function useStuffing() {
     const containerItem = {
       ...payload,
       category: "container",
+      from: containerCategory,
       number: containerNumber,
       amount: stuffingQty,
     };
@@ -98,6 +100,7 @@ export default function useStuffing() {
     } else {
       await updateData({
         category: "container",
+        from: containerCategory,
         number: containerNumber,
         amount: stuffingQty,
       });

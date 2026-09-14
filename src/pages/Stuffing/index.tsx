@@ -1,24 +1,18 @@
-import OrderList from "@features/orders/components/OrderCard";
-import StuffingCard from "@features/stuffing/component/StuffingCard";
-import useStuffing from "@features/stuffing/useStuffing";
+import { useState } from "react";
+import type { Report } from "@apps/supabase/report.dto";
+import OrderCard from "@features/orders/components/Card";
+import StuffingCard from "@features/stuffing/component/Card";
 
 export default function Stuffing() {
-  const { form, handler } = useStuffing();
+  const [selected, setSelected] = useState<Report | null>(null);
 
   return (
-    <main className="relative grid h-[calc(100%-4rem)] w-full grid-cols-6 grid-rows-10 gap-2 p-6">
-      <section className="relative col-start-1 col-end-3 row-start-1 row-end-11 rounded-xl bg-white p-4 shadow-lg">
-        <OrderList mode="pre order" setSelectedOrder={handler.selectItem} />
+    <main className="grid h-[calc(100%-4rem)] grid-cols-3 grid-rows-1 p-3">
+      <section className="relative col-start-1 col-end-2 rounded-l-md bg-white p-3">
+        <StuffingCard selected={selected} />
       </section>
-      <section className="relative col-start-3 col-end-5 row-start-1 row-end-11 rounded-xl bg-white p-4 shadow-lg">
-        <StuffingCard
-          form={form}
-          onChange={handler.handleChange}
-          onSubmit={handler.handleSubmit}
-        />
-      </section>
-      <section className="relative col-start-5 col-end-7 row-start-1 row-end-11 rounded-xl bg-white p-4 shadow-lg">
-        <OrderList mode="container" />
+      <section className="relative col-start-2 col-end-4 flex items-center rounded-r-md border-l-2 border-gray-200 bg-white p-3">
+        <OrderCard mode="stuffing" onSelect={setSelected} />
       </section>
     </main>
   );

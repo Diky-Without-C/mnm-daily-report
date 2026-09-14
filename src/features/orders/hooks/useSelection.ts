@@ -46,7 +46,7 @@ export function useSelection({ items }: UseSelectionOptions) {
   const clear = useCallback(() => setSelectedIds(new Set()), []);
 
   return {
-    selectedIds,
+    selectedIds: Array.from(selectedIds),
     selectedCount,
     isSelected,
     allSelected,

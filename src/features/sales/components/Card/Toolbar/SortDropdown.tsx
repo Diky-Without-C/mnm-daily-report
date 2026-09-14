@@ -29,7 +29,7 @@ export default function SortDropdown({ sort, onSort }: SortDropdownProps) {
     <Dropdown>
       <DropdownTrigger asChild>
         <Button className="px-3 py-1.5">
-          <ArrowsUpDownIcon className="size-5" />
+          <ArrowsUpDownIcon className="size-5" /> Sort
         </Button>
       </DropdownTrigger>
 

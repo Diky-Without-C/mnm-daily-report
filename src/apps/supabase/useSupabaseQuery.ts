@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { supabaseService } from "./service";
 
 export function useSupabaseQuery<T>(table: string) {
@@ -6,27 +6,28 @@ export function useSupabaseQuery<T>(table: string) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    let mounted = true;
+  const fetchData = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError(null);
 
-    const fetch = async () => {
-      try {
-        setLoading(true);
-        const result = await supabaseService.fetchAll<T>(table);
-        if (mounted) setData(result);
-      } catch (err: unknown) {
-        if (mounted) setError((err as Error).message);
-      } finally {
-        if (mounted) setLoading(false);
-      }
-    };
-
-    fetch();
-
-    return () => {
-      mounted = false;
-    };
+      const result = await supabaseService.fetchAll<T>(table);
+      setData(result);
+    } catch (err: unknown) {
+      setError((err as Error).message);
+    } finally {
+      setLoading(false);
+    }
   }, [table]);
 
-  return { data, loading, error };
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  return {
+    data,
+    loading,
+    error,
+    refetch: fetchData,
+  };
 }

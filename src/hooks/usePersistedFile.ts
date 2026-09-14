@@ -3,12 +3,17 @@ import { getFile, saveFile, removeFile } from "@libs/indexedDB";
 import { useFileStore } from "@stores/useFileStore";
 
 export function usePersistedFile(key: string) {
-  const file = useFileStore((state) => state.files[key] ?? null);
+  const file = useFileStore((state) => state.files[key]);
   const setStoreFile = useFileStore((state) => state.setFile);
 
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(file === undefined);
 
   useEffect(() => {
+    if (file !== undefined) {
+      setLoading(false);
+      return;
+    }
+
     let mounted = true;
 
     async function load() {
@@ -25,7 +30,7 @@ export function usePersistedFile(key: string) {
     return () => {
       mounted = false;
     };
-  }, [key, setStoreFile]);
+  }, [key, file, setStoreFile]);
 
   const setFile = useCallback(
     async (value: File | null) => {
@@ -40,5 +45,9 @@ export function usePersistedFile(key: string) {
     [key, setStoreFile],
   );
 
-  return [file, setFile, loading] as const;
+  return {
+    file: file ?? null,
+    setFile,
+    loading,
+  };
 }

@@ -7,8 +7,8 @@ import { useDateStore } from "@stores/usetDate.store";
 import { useOrdersStore } from "@stores/useOrders.store";
 
 export default function useSalesPage() {
-  const [salesfile] = usePersistedFile("mnm-xlsx-sales-storage");
-  const [file, setFile] = usePersistedFile("mnm-xlsx-report-storage");
+  const { file: salesfile } = usePersistedFile("mnm-xlsx-sales-storage");
+  const { file, setFile } = usePersistedFile("mnm-xlsx-report-storage");
 
   const { date, setDate } = useDateStore();
   const { orders } = useOrdersStore();
@@ -67,6 +67,7 @@ export default function useSalesPage() {
     loading: salesLoading || reportLoading,
     error: salesError || reportError,
     content,
+    text: content,
     isReady,
     date,
     setDate,

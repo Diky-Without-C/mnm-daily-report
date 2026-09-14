@@ -1,6 +1,5 @@
 import { useState } from "react";
 import NotFound from "@features/orders/components/NotFound";
-import FileField from "@features/report/components/Modal/FileField";
 import { SALES_TABS } from "@features/sales/sales.constant";
 import { usePersistedFile } from "@hooks/usePersistedFile";
 import Divider from "@components/Divider";
@@ -12,7 +11,7 @@ import { useCard } from "./useCard";
 
 export default function SalesCard() {
   const [showField, setShowField] = useState(false);
-  const [, setFile] = usePersistedFile("mnm-xlsx-sales-storage");
+  const { setFile } = usePersistedFile("mnm-xlsx-sales-storage");
 
   const { tabs, filter, sort, currentSales, pagination, actions } = useCard();
 
@@ -42,11 +41,6 @@ export default function SalesCard() {
         <Divider className="h-[2px]" />
         <Footer pagination={pagination} />
       </div>
-      <FileField
-        onFileChange={setFile}
-        open={showField}
-        onCancel={() => setShowField(false)}
-      />
     </div>
   );
 }

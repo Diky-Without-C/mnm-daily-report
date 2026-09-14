@@ -1,3 +1,4 @@
+import type { Report } from "@apps/supabase/report.dto";
 import Divider from "@components/Divider";
 import Tabs from "@components/Tabs";
 import Table from "../Table";
@@ -8,8 +9,14 @@ import Toolbar from "./Toolbar";
 import Footer from "./Footer";
 import { useCard } from "./useCard";
 import { ORDER_TABS } from "@features/orders/order.constants";
+import { useEffect } from "react";
 
-export default function Card() {
+interface CardProps {
+  mode: "order" | "stuffing";
+  onSelect: (order: Report) => void;
+}
+
+export default function Card({ mode, onSelect }: CardProps) {
   const {
     tabs,
     filter,
@@ -21,6 +28,14 @@ export default function Card() {
     isDeleting,
     actions,
   } = useCard();
+
+  useEffect(() => {
+    if (mode !== "stuffing") return;
+
+    const [id] = selection.selectedIds;
+    const selected = currentOrders.find((order) => order.id === id);
+    if (selected) onSelect(selected);
+  }, [currentOrders, mode, onSelect, selection.selectedIds]);
 
   return (
     <div className="flex h-full w-full flex-col">
@@ -37,6 +52,7 @@ export default function Card() {
         <div className="min-h-0 flex-1">
           {currentOrders.length > 0 ? (
             <Table
+              mode={mode}
               orders={currentOrders}
               selection={selection}
               onEdit={actions.edit}
@@ -48,7 +64,7 @@ export default function Card() {
         </div>
         <Divider className="h-[2px]" />
         <Footer
-          selection={selection}
+          selection={mode === "order" ? selection : null}
           pagination={pagination}
           onDeleteSelected={actions.deleteSelected}
         />

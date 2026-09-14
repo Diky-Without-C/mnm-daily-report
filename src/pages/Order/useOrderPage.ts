@@ -1,6 +1,4 @@
 import { useEffect, useMemo } from "react";
-import { useSupabaseQuery } from "@apps/supabase/useSupabaseQuery";
-import type { Report } from "@apps/supabase/report.dto";
 import { processData } from "@features/report";
 import { reportToText } from "@features/report/dataToText/report.text";
 import { usePersistedFile } from "@hooks/usePersistedFile";
@@ -10,13 +8,11 @@ import { useDateStore } from "@stores/usetDate.store";
 import { useOrdersStore } from "@stores/useOrders.store";
 
 export default function useOrderPage() {
-  const [file, setFile] = usePersistedFile("mnm-xlsx-report-storage");
-
+  const { file, setFile } = usePersistedFile("mnm-xlsx-report-storage");
   const { date, setDate } = useDateStore();
-  const { orders, setOrders } = useOrdersStore();
-
+  const { orders } = useOrdersStore();
   const [, setCodeHint] = useLocalStorage<string[]>("codeHint", []);
-  const { data: report } = useSupabaseQuery<Report>("report");
+
   const {
     data: [parsedData],
     loading,
@@ -26,12 +22,6 @@ export default function useOrderPage() {
     sheetIndex: useMemo(() => [date.getDate()], [date]),
     content: "report",
   });
-
-  useEffect(() => {
-    if (report) {
-      setOrders(report);
-    }
-  }, [report, setOrders]);
 
   useEffect(() => {
     if (!parsedData?.length) return;
@@ -63,7 +53,7 @@ export default function useOrderPage() {
     setFile,
     date,
     setDate,
-    text,
+    text: content,
     content,
     loading,
     error,

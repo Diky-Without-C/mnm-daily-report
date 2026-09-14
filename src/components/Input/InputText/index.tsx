@@ -25,7 +25,7 @@ const InputText = forwardRef<HTMLInputElement, InputTextProps>(
           autoComplete="off"
           inputMode={type === "number" ? "numeric" : "text"}
           className={cn(
-            "h-10 w-full rounded-md bg-transparent px-4 text-gray-900 ring-2 ring-gray-300 focus:ring-blue-400 focus:outline-none",
+            "h-10 w-full rounded-md bg-transparent px-4 text-gray-900 ring-1 ring-gray-300 focus:ring-blue-400 focus:outline-none",
             unit && "pr-10",
             className,
           )}

@@ -5,8 +5,8 @@ import {
   DropdownContent,
   DropdownItem,
 } from "@components/Dropdown";
-import ChevronUp from "@components/Icons/ChevronUp";
 import { cn } from "@utils/cn";
+import { ChevronDownIcon } from "@heroicons/react/24/outline";
 
 interface SelectProps {
   value: string;
@@ -32,7 +32,7 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(function Select(
           )}
         >
           <span>{value}</span>
-          <ChevronUp />
+          <ChevronDownIcon className="size-5" />
         </DropdownTrigger>
         {label && (
           <span className="absolute -top-3 left-4 bg-inherit px-1 text-sm text-gray-600">
