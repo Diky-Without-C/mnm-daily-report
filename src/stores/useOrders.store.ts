@@ -1,9 +1,11 @@
 import { create } from "zustand";
-import type { Report } from "@apps/supabase/report.dto";
+import type { OrderSchema } from "@apps/supabase/Order.Schema.dto";
 
 type OrdersState = {
-  orders: Report[];
-  setOrders: (value: Report[] | ((prev: Report[]) => Report[])) => void;
+  orders: OrderSchema[];
+  setOrders: (
+    value: OrderSchema[] | ((prev: OrderSchema[]) => OrderSchema[]),
+  ) => void;
 };
 
 export const useOrdersStore = create<OrdersState>((set) => ({

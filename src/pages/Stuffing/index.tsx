@@ -1,10 +1,10 @@
 import { useState } from "react";
-import type { Report } from "@apps/supabase/report.dto";
+import type { OrderSchema } from "@apps/supabase/Order.Schema.dto";
 import OrderCard from "@features/orders/components/Card";
 import StuffingCard from "@features/stuffing/component/Card";
 
 export default function Stuffing() {
-  const [selected, setSelected] = useState<Report | null>(null);
+  const [selected, setSelected] = useState<OrderSchema | null>(null);
 
   return (
     <main className="grid h-[calc(100%-4rem)] grid-cols-3 grid-rows-1 p-3">

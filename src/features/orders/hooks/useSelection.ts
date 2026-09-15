@@ -1,8 +1,8 @@
-import type { Report } from "@apps/supabase/report.dto";
+import type { OrderSchema } from "@apps/supabase/Order.Schema.dto";
 import { useMemo, useState, useCallback } from "react";
 
 interface UseSelectionOptions {
-  items: Report[];
+  items: OrderSchema[];
 }
 
 export function useSelection({ items }: UseSelectionOptions) {
@@ -10,11 +10,11 @@ export function useSelection({ items }: UseSelectionOptions) {
 
   const selectedCount = selectedIds.size;
   const isSelected = useCallback(
-    (item: Report) => selectedIds.has(item.id),
+    (item: OrderSchema) => selectedIds.has(item.id),
     [selectedIds],
   );
 
-  const toggle = useCallback((item: Report) => {
+  const toggle = useCallback((item: OrderSchema) => {
     const id = item.id;
     setSelectedIds((prev) => {
       const next = new Set(prev);

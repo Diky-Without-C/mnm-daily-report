@@ -1,9 +1,9 @@
 import { useCallback, useState } from "react";
-import type { Report } from "@apps/supabase/report.dto";
+import type { OrderSchema } from "@apps/supabase/Order.Schema.dto";
 import { supabaseService } from "@apps/supabase/service";
 
 interface UseOrderDeletionParams {
-  setOrders: React.Dispatch<React.SetStateAction<Report[]>>;
+  setOrders: React.Dispatch<React.SetStateAction<OrderSchema[]>>;
 }
 
 export function useOrderDeletion({ setOrders }: UseOrderDeletionParams) {

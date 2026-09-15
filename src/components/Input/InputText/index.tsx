@@ -3,11 +3,12 @@ import { cn } from "@utils/cn";
 
 export interface InputTextProps extends InputHTMLAttributes<HTMLInputElement> {
   unit?: string;
+  invalid?: boolean;
 }
 
 const InputText = forwardRef<HTMLInputElement, InputTextProps>(
   function InputText(
-    { unit, className, type, onChange, ...props },
+    { unit, invalid = false, className, type, onChange, ...props },
     forwardRef,
   ) {
     const formatInput = (value: string) => {
@@ -25,7 +26,8 @@ const InputText = forwardRef<HTMLInputElement, InputTextProps>(
           autoComplete="off"
           inputMode={type === "number" ? "numeric" : "text"}
           className={cn(
-            "h-10 w-full rounded-md bg-transparent px-4 text-gray-900 ring-1 ring-gray-300 focus:ring-blue-400 focus:outline-none",
+            "h-10 w-full rounded-md bg-transparent px-4 text-gray-900 ring-1 focus:ring-blue-400 focus:outline-none",
+            invalid ? "ring-red-500" : "ring-gray-300",
             unit && "pr-10",
             className,
           )}

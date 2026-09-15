@@ -1,20 +1,20 @@
-import type { Report } from "@apps/supabase/report.dto";
+import type { OrderSchema } from "@apps/supabase/Order.Schema.dto";
 import { formatNumber } from "@utils/formatNumber";
 import { ORDER_CATEGORY } from "./order.constants";
 import type { OrderFilters, OrderSort } from "./order.type";
 
 const orderLabelMap = {
-  [ORDER_CATEGORY.PRE_ORDER]: (order: Report) =>
+  [ORDER_CATEGORY.PRE_ORDER]: (order: OrderSchema) =>
     `(PO.${order.number}/${order.from}) ${order.code} ${order.type} ${formatNumber(order.amount)}`,
 
-  [ORDER_CATEGORY.CONTAINER]: (order: Report) =>
+  [ORDER_CATEGORY.CONTAINER]: (order: OrderSchema) =>
     `(${order.from} ${order.number.toString().padStart(2, "0")}) ${order.code} ${order.type} ${formatNumber(order.amount)}`,
 };
 
-export const getOrderLabel = (order: Report) =>
+export const getOrderLabel = (order: OrderSchema) =>
   orderLabelMap[order.category](order);
 
-export const searchOrders = (orders: Report[], search: string) => {
+export const searchOrders = (orders: OrderSchema[], search: string) => {
   const queries = search.trim().toLowerCase().split(/\s+/).filter(Boolean);
 
   if (!queries.length) return orders;
@@ -35,7 +35,7 @@ export const searchOrders = (orders: Report[], search: string) => {
   });
 };
 
-export const filterOrders = (orders: Report[], filters: OrderFilters) => {
+export const filterOrders = (orders: OrderSchema[], filters: OrderFilters) => {
   return orders.filter((order) => {
     const matchesFrom = filters.from[order.from] ?? false;
     const matchesType = filters.type[order.type] ?? false;
@@ -44,7 +44,10 @@ export const filterOrders = (orders: Report[], filters: OrderFilters) => {
   });
 };
 
-export const sortOrders = (orders: Report[], sort: OrderSort): Report[] => {
+export const sortOrders = (
+  orders: OrderSchema[],
+  sort: OrderSort,
+): OrderSchema[] => {
   return [...orders].sort((a, b) => {
     switch (sort) {
       case "number-asc":

@@ -5,22 +5,30 @@ import {
   DropdownContent,
   DropdownItem,
 } from "@components/Dropdown";
-import { CONTAINER_TYPES, type ContainerType } from "@apps/constants";
+import { CONTAINER_TYPES, type ContainerType } from "@constants/Order";
+import { cn } from "@utils/cn";
 
 interface ContainerDropdownProps {
-  value: ContainerType;
+  value: ContainerType | "";
   onChange: (value: ContainerType) => void;
+  invalid?: boolean;
 }
 
 export default function ContainerDropdown({
   value,
   onChange,
+  invalid = false,
 }: ContainerDropdownProps) {
   return (
     <Dropdown className="relative w-full">
       <DropdownTrigger className="w-full">
-        <div className="flex h-10 w-full items-center justify-between rounded-md bg-transparent px-4 text-gray-900 ring-1 ring-gray-300">
-          <span>{value}</span>
+        <div
+          className={cn(
+            "flex h-10 w-full items-center justify-between rounded-md bg-transparent px-4 text-gray-900 ring-1",
+            invalid ? "ring-red-500" : "ring-gray-300",
+          )}
+        >
+          <span>{value === "" ? "-" : value}</span>
           <ChevronDownIcon className="size-5 shrink-0" />
         </div>
       </DropdownTrigger>

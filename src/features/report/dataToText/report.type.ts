@@ -1,10 +1,10 @@
-import type { Report } from "@apps/supabase/report.dto";
+import type { OrderSchema } from "@apps/supabase/Order.Schema.dto";
 import type { ParsedReport, ParsedSales } from "@libs/xlsx/xlsx.type";
 import { CATEGORY_KEYS } from "../report.constant";
 
 export type ProcessedGroup = {
   content: ParsedReport[];
-  orders: Report[];
+  orders: OrderSchema[];
   sales?: ParsedSales[];
 };
 

@@ -1,4 +1,4 @@
-import type { Report } from "@apps/supabase/report.dto";
+import type { OrderSchema } from "@apps/supabase/Order.Schema.dto";
 import { CODE_GROUPS } from "@features/sales/sales.constant";
 import type {
   GroupedCategories,
@@ -11,8 +11,8 @@ const normalizeCode = (code: string) => {
   return String(code).trim().replace(/\s+/g, "").toUpperCase();
 };
 
-export const groupOrdersByCode = (orders: Report[]) => {
-  const result: Record<string, Report[]> = {};
+export const groupOrdersByCode = (orders: OrderSchema[]) => {
+  const result: Record<string, OrderSchema[]> = {};
 
   for (const order of orders) {
     const code = normalizeCode(order.code);
@@ -45,7 +45,7 @@ export const groupSalesByCode = (sales: ParsedSales[]) => {
   return result;
 };
 
-const sortByCategory = (item: Report[]) => {
+const sortByCategory = (item: OrderSchema[]) => {
   return item.sort(
     (a, b) =>
       a.category.localeCompare(b.category) ||
@@ -56,12 +56,12 @@ const sortByCategory = (item: Report[]) => {
 
 const buildOrdersGroup = (
   pair: ParsedReport[],
-  orders: Record<string, Report[]>,
+  orders: Record<string, OrderSchema[]>,
   sales?: Record<string, ParsedSales[]>,
 ) => {
   const itemCodes = new Set(pair.map((item) => normalizeCode(item.code)));
 
-  const containers: Report[] = [];
+  const containers: OrderSchema[] = [];
   const connectedSales: ParsedSales[] = [];
 
   for (const code of itemCodes) {
@@ -78,7 +78,7 @@ const buildOrdersGroup = (
 
 export const processedData = (
   groups: GroupedCategories,
-  orders: Report[],
+  orders: OrderSchema[],
   sales?: ParsedSales[],
 ): ProcessedGroups => {
   const groupedOrders = groupOrdersByCode(orders);

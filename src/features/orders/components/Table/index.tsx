@@ -1,4 +1,4 @@
-import type { Report } from "@apps/supabase/report.dto";
+import type { OrderSchema } from "@apps/supabase/Order.Schema.dto";
 import CheckBox from "@components/Input/CheckBox";
 import Badge from "@components/Badge";
 import { cn } from "@utils/cn";
@@ -10,9 +10,9 @@ import { ChevronLeftIcon } from "@heroicons/react/24/outline";
 
 interface TableProps {
   mode: "order" | "stuffing";
-  orders: Report[];
+  orders: OrderSchema[];
   selection: ReturnType<typeof useSelection>;
-  onEdit: (order: Report) => void;
+  onEdit: (order: OrderSchema) => void;
   onDelete: (ids: string[]) => void;
 }
 

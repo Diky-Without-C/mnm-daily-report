@@ -1,5 +1,5 @@
 import { useRef, useEffect, useState } from "react";
-import type { Report } from "@apps/supabase/report.dto";
+import type { OrderSchema } from "@apps/supabase/Order.Schema.dto";
 import { ITEM_TYPES, CONTAINER_TYPES } from "@apps/constants";
 import Modal from "@components/Modal";
 import Button from "@components/Button";
@@ -10,7 +10,7 @@ import Input from "./input";
 
 interface FormProps {
   open: boolean;
-  form: Report | null;
+  form: OrderSchema | null;
   onClose: () => void;
   onChange: (name: string, value: string | number) => void;
   onSubmit: () => void;

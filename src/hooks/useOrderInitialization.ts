@@ -1,11 +1,11 @@
 import { useEffect, useRef } from "react";
-import type { Report } from "@apps/supabase/report.dto";
+import type { OrderSchema } from "@apps/supabase/Order.Schema.dto";
 import { useSupabaseQuery } from "@apps/supabase/useSupabaseQuery";
 import { useOrdersStore } from "@stores/useOrders.store";
 import { useOnlineStore } from "@stores/useOnline.store";
 
 export function useOrdersInitialization() {
-  const { data: report, refetch } = useSupabaseQuery<Report>("report");
+  const { data: report, refetch } = useSupabaseQuery<OrderSchema>("report");
   const { setOrders } = useOrdersStore();
   const { status } = useOnlineStore();
 

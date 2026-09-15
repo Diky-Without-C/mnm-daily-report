@@ -1,4 +1,4 @@
-import type { Report } from "@apps/supabase/report.dto";
+import type { OrderSchema } from "@apps/supabase/Order.Schema.dto";
 import Divider from "@components/Divider";
 import Tabs from "@components/Tabs";
 import Table from "../Table";
@@ -13,7 +13,7 @@ import { useEffect } from "react";
 
 interface CardProps {
   mode: "order" | "stuffing";
-  onSelect: (order: Report) => void;
+  onSelect: (order: OrderSchema) => void;
 }
 
 export default function Card({ mode, onSelect }: CardProps) {

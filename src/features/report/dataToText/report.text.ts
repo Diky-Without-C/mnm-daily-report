@@ -1,5 +1,5 @@
+import type { OrderSchema } from "@apps/supabase/Order.Schema.dto";
 import { ITEM_TYPES } from "@apps/constants";
-import type { Report } from "@apps/supabase/report.dto";
 import { getOrderLabel } from "@features/orders/order.helpers";
 import { LAST_3_MONTHS } from "@features/sales/sales.constant";
 import type {
@@ -59,13 +59,13 @@ const buildStockLine = (items: ParsedReport[]) => {
   });
 };
 
-const buildContainerLine = (orders: Report[]) => {
+const buildContainerLine = (orders: OrderSchema[]) => {
   const lines = orders.map(getOrderLabel);
 
   return ["CONTAINER", ...lines];
 };
 
-const buildTotalLine = (content: ParsedReport[], orders: Report[]) => {
+const buildTotalLine = (content: ParsedReport[], orders: OrderSchema[]) => {
   const totalOrder = orders.reduce<Record<string, number>>((acc, curr) => {
     acc[curr.type] = (acc[curr.type] ?? 0) + curr.amount;
     return acc;
@@ -122,7 +122,7 @@ const buildReportText = (group: ProcessedGroup) => {
 export const reportToText = (
   data: GroupedCategories,
   date: Date,
-  orders: Report[],
+  orders: OrderSchema[],
   sales?: ParsedSales[],
 ) => {
   const normalized = processedData(data, orders, sales);

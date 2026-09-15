@@ -1,27 +1,27 @@
 import { useCallback, useRef, useState } from "react";
-import type { Report } from "@apps/supabase/report.dto";
+import type { OrderSchema } from "@apps/supabase/Order.Schema.dto";
 import { supabaseService } from "@apps/supabase/service";
 import { ITEM_TYPES, CONTAINER_TYPES } from "@apps/constants";
 import type { OrderCategoryType } from "../order.type";
 
 interface UseOrderFormParams {
   category: OrderCategoryType;
-  setOrders: React.Dispatch<React.SetStateAction<Report[]>>;
+  setOrders: React.Dispatch<React.SetStateAction<OrderSchema[]>>;
 }
 
 export function useOrderForm({ category, setOrders }: UseOrderFormParams) {
-  const [form, setForm] = useState<Report | null>(null);
+  const [form, setForm] = useState<OrderSchema | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const initialFormRef = useRef<Report | null>(null);
+  const initialFormRef = useRef<OrderSchema | null>(null);
 
-  const handleEdit = useCallback((order: Report) => {
+  const handleEdit = useCallback((order: OrderSchema) => {
     setForm({ ...order });
     initialFormRef.current = { ...order };
   }, []);
 
   const handleAdd = useCallback(() => {
-    const newForm: Report = {
+    const newForm: OrderSchema = {
       id: "",
       code: "",
       category: category,

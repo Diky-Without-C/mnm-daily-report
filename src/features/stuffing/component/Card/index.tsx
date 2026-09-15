@@ -1,24 +1,26 @@
 import { useEffect } from "react";
-import type { Report } from "@apps/supabase/report.dto";
+import type { OrderSchema } from "@apps/supabase/Order.Schema.dto";
 import Button from "@components/Button";
 import Divider from "@components/Divider";
 import CheckBox from "@components/Input/CheckBox";
 import InputText from "@components/Input/InputText";
 import useStuffing from "@features/stuffing/useStuffing";
 import ContainerDropdown from "./ContainerDropdown";
+import { cn } from "@utils/cn";
 
 interface CardProps {
-  selected: Report | null;
+  selected: OrderSchema | null;
 }
 
 export default function Card({ selected }: CardProps) {
-  const { form, handler } = useStuffing();
+  const { form, error, handler } = useStuffing();
+  const { selectItem } = handler;
 
   useEffect(() => {
     if (selected) {
-      handler.selectItem(selected);
+      selectItem(selected);
     }
-  }, [handler, selected]);
+  }, [selected, selectItem]);
 
   return (
     <section className="flex h-full w-full flex-col overflow-hidden">
@@ -38,7 +40,12 @@ export default function Card({ selected }: CardProps) {
                 The order that will be stuffed.
               </p>
             </div>
-            <div className="rounded-lg border border-gray-500 bg-gray-50 px-4 py-3">
+            <div
+              className={cn(
+                "h-12 rounded-lg border bg-gray-50 px-4 py-3",
+                error?.fields?.["item"] ? "border-red-500" : "border-gray-500",
+              )}
+            >
               {form.item ? (
                 <div className="flex items-center justify-between gap-4">
                   <div className="min-w-0">
@@ -54,6 +61,9 @@ export default function Card({ selected }: CardProps) {
                 <p className="text-sm text-gray-400">No order selected</p>
               )}
             </div>
+            <span className="-mt-1 h-1 text-xs text-red-500">
+              {error?.fields?.["item"]}
+            </span>
           </section>
           <section className="flex flex-col gap-3">
             <div>
@@ -64,20 +74,17 @@ export default function Card({ selected }: CardProps) {
             </div>
             <div className="grid grid-cols-2 gap-3">
               <div className="flex flex-col gap-1.5">
-                <label
-                  htmlFor="containerCategory"
-                  className="text-sm text-gray-600"
-                >
-                  From
-                </label>
+                <span className="text-sm text-gray-600">To</span>
                 <div className="w-full">
                   <ContainerDropdown
-                    value={form.containerCategory ?? "MC"}
-                    onChange={(value) =>
-                      handler.handleChange("containerCategory", value)
-                    }
+                    value={form.container.type}
+                    onChange={(value) => handler.setContainerType(value)}
+                    invalid={!!error?.fields?.["container.type"]}
                   />
                 </div>
+                <span className="h-1 text-xs text-red-500">
+                  {error?.fields?.["container.type"]}
+                </span>
               </div>
               <div className="flex flex-col gap-1.5">
                 <label
@@ -90,33 +97,45 @@ export default function Card({ selected }: CardProps) {
                   name="containerNumber"
                   id="containerNumber"
                   type="number"
-                  value={form.containerNumber}
+                  invalid={!!error?.fields?.["container.number"]}
+                  value={form.container.number ?? ""}
                   onChange={(e) =>
-                    handler.handleChange("containerNumber", e.target.value)
+                    handler.setContainerNumber(
+                      e.target.value === "" ? null : Number(e.target.value),
+                    )
                   }
                   className="w-full"
                 />
+                <span className="h-1 text-xs text-red-500">
+                  {error?.fields?.["container.number"]}
+                </span>
               </div>
             </div>
           </section>
           <section className="flex flex-col gap-3">
-            <div>
+            <label htmlFor="stuffingQty">
               <h2 className="text-sm font-medium">Quantity</h2>
               <p className="text-xs text-gray-500">
                 How many items should be stuffed?
               </p>
-            </div>
+            </label>
             <InputText
               name="stuffingQty"
               id="stuffingQty"
               type="number"
               unit="PCS"
-              value={form.stuffingQty}
+              invalid={!!error?.fields?.["stuffingQty"]}
+              value={form.stuffingQty ?? ""}
               onChange={(e) =>
-                handler.handleChange("stuffingQty", e.target.value)
+                handler.setStuffingQty(
+                  e.target.value === "" ? null : Number(e.target.value),
+                )
               }
               className="w-full"
             />
+            <span className="-mt-1 h-1 text-xs text-red-500">
+              {error?.fields?.["stuffingQty"]}
+            </span>
           </section>
           <section className="rounded-lg border border-gray-500 bg-gray-50 px-4 py-3">
             <label
@@ -126,9 +145,7 @@ export default function Card({ selected }: CardProps) {
               <CheckBox
                 id="clearOrder"
                 checked={form.clearOrder ?? false}
-                onChange={(e) =>
-                  handler.handleChange("clearOrder", e.target.checked)
-                }
+                onChange={(e) => handler.setClearOrder(e.target.checked)}
               />
               <div>
                 <p className="text-sm font-medium">
@@ -147,7 +164,6 @@ export default function Card({ selected }: CardProps) {
         <Button
           variant="info"
           className="w-full justify-center"
-          disabled={!form.item}
           type="submit"
           onClick={handler.handleSubmit}
         >

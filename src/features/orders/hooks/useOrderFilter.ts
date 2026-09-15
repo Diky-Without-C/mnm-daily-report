@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import type { Report } from "@apps/supabase/report.dto";
+import type { OrderSchema } from "@apps/supabase/Order.Schema.dto";
 import { filterOrders, searchOrders, sortOrders } from "../order.helpers";
 import type { OrderFilters, OrderSort } from "../order.type";
 
 interface UseOrderFilterParams {
-  orders: Report[];
+  orders: OrderSchema[];
 }
 
 export function useOrderFilter({ orders }: UseOrderFilterParams) {
@@ -59,7 +59,7 @@ export function useOrderFilter({ orders }: UseOrderFilterParams) {
   };
 }
 
-function getInitialFilter(orders: Report[]): OrderFilters {
+function getInitialFilter(orders: OrderSchema[]): OrderFilters {
   const types = [...new Set(orders.map((order) => order.type))];
   const from = [...new Set(orders.map((order) => order.from))];
 
