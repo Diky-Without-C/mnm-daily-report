@@ -34,7 +34,7 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(function Select(
           <ChevronDownIcon className="size-5" />
         </div>
       </DropdownTrigger>
-      <DropdownContent className="max-h-52 w-full overflow-y-auto">
+      <DropdownContent className="max-h-56 w-full overflow-y-auto">
         {options.map((option) => (
           <DropdownItem
             key={option.content}

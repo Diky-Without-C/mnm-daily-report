@@ -7,7 +7,15 @@ export const DropdownTrigger = forwardRef<
   HTMLButtonElement,
   DropdownTriggerProps
 >(function DropdownTrigger(
-  { children, className, onClick, onKeyDown, asChild = false, ...props },
+  {
+    children,
+    className,
+    onClick,
+    onKeyDown,
+    toggle = true,
+    asChild = false,
+    ...props
+  },
   ref,
 ) {
   const { open, setOpen, close, triggerId, contentId } = useDropdownContext();
@@ -17,7 +25,7 @@ export const DropdownTrigger = forwardRef<
 
     if (event.defaultPrevented) return;
 
-    setOpen(!open);
+    setOpen(toggle ? !open : true);
   };
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLButtonElement>) => {
@@ -38,7 +46,7 @@ export const DropdownTrigger = forwardRef<
   };
 
   const triggerProps = {
-    id: triggerId,
+    ...(asChild ? {} : { id: triggerId }),
     type: "button" as const,
     "aria-haspopup": "menu" as const,
     "aria-expanded": open,

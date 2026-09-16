@@ -1,12 +1,14 @@
 import Button from "@components/Button";
 import Divider from "@components/Divider";
 import InputText from "@components/Input/InputText";
+import Autocomplete from "@components/Input/AutocompleteText";
 import Modal from "@components/Modal";
 import { CONTAINER_TYPES, ORDER_CATEGORY } from "@constants/Order";
 import { ITEM_TYPES } from "@constants/Report";
 import type { useOrderForm } from "./useOrderForm";
 import Select from "./select";
 import Field from "./FormField";
+import { useLocalStorage } from "@hooks/useLocaleStorage";
 
 interface FormProps {
   open: boolean;
@@ -25,6 +27,8 @@ export default function Form({
   onChange,
   onSubmit,
 }: FormProps) {
+  const [codeHints] = useLocalStorage("codeHint", []);
+
   if (!form) return null;
   const getError = (field: string) => error?.fields?.[field];
 
@@ -56,15 +60,14 @@ export default function Form({
           <div className="flex flex-col gap-5">
             <div className="grid grid-cols-2 gap-3">
               <Field label="Code" htmlFor="orderCode" error={getError("code")}>
-                <InputText
+                <Autocomplete
                   id="orderCode"
                   name="code"
+                  options={codeHints}
                   value={form.code ?? ""}
-                  onChange={(event) =>
-                    onChange("code", event.target.value.toUpperCase())
-                  }
+                  onChange={(value) => onChange("code", value)}
                   invalid={!!getError("code")}
-                  className="w-full"
+                  className="w-full uppercase"
                 />
               </Field>
               <Field label="Category" error={getError("category")}>
@@ -98,14 +101,8 @@ export default function Form({
                   id="orderNumber"
                   name="number"
                   type="number"
-                  value={form.number ?? ""}
                   onChange={(event) =>
-                    onChange(
-                      "number",
-                      event.target.value === ""
-                        ? null
-                        : Number(event.target.value),
-                    )
+                    onChange("number", Number(event.target.value))
                   }
                   invalid={!!getError("number")}
                   className="w-full"
@@ -134,12 +131,7 @@ export default function Form({
                   unit="PCS"
                   value={form.amount ?? ""}
                   onChange={(event) =>
-                    onChange(
-                      "amount",
-                      event.target.value === ""
-                        ? null
-                        : Number(event.target.value),
-                    )
+                    onChange("amount", Number(event.target.value))
                   }
                   invalid={!!getError("amount")}
                   className="w-full"
