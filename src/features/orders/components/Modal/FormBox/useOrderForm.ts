@@ -38,7 +38,7 @@ export function useOrderForm() {
 
   const add = useCallback(() => {
     setError(null);
-    setForm({ ...initialForm });
+    setForm({ ...initialForm, category: "pre order" });
   }, []);
 
   const edit = useCallback((order: OrderSchema) => {
