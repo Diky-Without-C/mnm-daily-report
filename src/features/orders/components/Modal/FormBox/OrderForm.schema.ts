@@ -14,7 +14,7 @@ export const OrderFormSchema = z.object({
       message: "Amount is required",
     })
     .positive("Amount must be > 0"),
-  code: z.string("Code is required").trim().uppercase(),
+  code: z.string("Code is required").trim().toUpperCase(),
   from: z.enum(CONTAINER_TYPES, {
     message: "Please select a container",
   }),
