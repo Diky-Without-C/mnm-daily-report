@@ -1,25 +1,23 @@
 import { useCallback, useState } from "react";
-import type { OrderSchema } from "@apps/supabase/Order.Schema.dto";
 import { supabaseService } from "@apps/supabase/service";
+import { useOrdersStore } from "@stores/useOrders.store";
 
-interface UseOrderDeletionParams {
-  setOrders: React.Dispatch<React.SetStateAction<OrderSchema[]>>;
-}
-
-export function useOrderDeletion({ setOrders }: UseOrderDeletionParams) {
+export function useOrderDeletion() {
   const [deleteTargetIds, setDeleteTargetIds] = useState<string[]>([]);
 
-  const requestDelete = useCallback((ids: string[]) => {
+  const { setOrders } = useOrdersStore();
+
+  const request = useCallback((ids: string[]) => {
     if (ids.length > 0) {
       setDeleteTargetIds(ids);
     }
   }, []);
 
-  const cancelDelete = useCallback(() => {
+  const cancel = useCallback(() => {
     setDeleteTargetIds([]);
   }, []);
 
-  const confirmDelete = useCallback(async () => {
+  const confirm = useCallback(async () => {
     if (deleteTargetIds.length === 0) return;
 
     try {
@@ -39,10 +37,8 @@ export function useOrderDeletion({ setOrders }: UseOrderDeletionParams) {
 
   return {
     isDeleting: deleteTargetIds.length > 0,
-    handlers: {
-      requestDelete,
-      confirmDelete,
-      cancelDelete,
-    },
+    request,
+    cancel,
+    confirm,
   };
 }

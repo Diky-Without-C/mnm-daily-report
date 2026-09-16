@@ -1,15 +1,15 @@
+import { useEffect } from "react";
 import type { OrderSchema } from "@apps/supabase/Order.Schema.dto";
 import Divider from "@components/Divider";
 import Tabs from "@components/Tabs";
 import Table from "../Table";
 import NotFound from "../NotFound";
-import FormBox from "../Modal/FormBox";
+import Form from "../Modal/FormBox";
 import DeleteBox from "../Modal/DeleteBox";
 import Toolbar from "./Toolbar";
 import Footer from "./Footer";
 import { useCard } from "./useCard";
 import { ORDER_TABS } from "@features/orders/order.constants";
-import { useEffect } from "react";
 
 interface CardProps {
   mode: "order" | "stuffing";
@@ -17,46 +17,40 @@ interface CardProps {
 }
 
 export default function Card({ mode, onSelect }: CardProps) {
-  const {
-    tabs,
-    filter,
-    sort,
-    currentOrders,
-    selection,
-    pagination,
-    form,
-    isDeleting,
-    actions,
-  } = useCard();
+  const { tab, orders, filter, form, deletion, pagination, selection } =
+    useCard();
 
   useEffect(() => {
     if (mode !== "stuffing") return;
 
     const [id] = selection.selectedIds;
-    const selected = currentOrders.find((order) => order.id === id);
-    if (selected) onSelect(selected);
-  }, [currentOrders, mode, onSelect, selection.selectedIds]);
+    const selected = orders.data.find((order) => order.id === id);
+
+    if (selected) {
+      onSelect(selected);
+    }
+  }, [mode, onSelect, orders.data, selection.selectedIds]);
 
   return (
     <div className="flex h-full w-full flex-col">
       <Toolbar
-        onSearch={actions.search}
-        onAdd={actions.add}
-        filter={filter}
-        onFilter={actions.filter}
-        sort={sort}
-        onSort={actions.sort}
+        onSearch={filter.search}
+        onAdd={form.add}
+        filter={filter.value}
+        onFilter={filter.change}
+        sort={filter.sort}
+        onSort={filter.changeSort}
       />
       <div className="flex h-full w-full flex-col overflow-hidden">
-        <Tabs items={ORDER_TABS} value={tabs} onChange={actions.changeTab} />
+        <Tabs items={ORDER_TABS} value={tab.value} onChange={tab.change} />
         <div className="min-h-0 flex-1">
-          {currentOrders.length > 0 ? (
+          {orders.data.length > 0 ? (
             <Table
               mode={mode}
-              orders={currentOrders}
+              orders={orders.data}
               selection={selection}
-              onEdit={actions.edit}
-              onDelete={actions.requestDelete}
+              onEdit={form.edit}
+              onDelete={deletion.request}
             />
           ) : (
             <NotFound />
@@ -66,20 +60,21 @@ export default function Card({ mode, onSelect }: CardProps) {
         <Footer
           selection={mode === "order" ? selection : null}
           pagination={pagination}
-          onDeleteSelected={actions.deleteSelected}
+          onDeleteSelected={deletion.deleteSelected}
         />
       </div>
-      <FormBox
-        open={Boolean(form)}
-        form={form}
-        onClose={actions.closeForm}
-        onChange={actions.changeForm}
-        onSubmit={actions.submitForm}
+      <Form
+        open={Boolean(form.data)}
+        onClose={form.reset}
+        form={form.data}
+        error={form.error}
+        onChange={form.change}
+        onSubmit={form.submit}
       />
       <DeleteBox
-        open={isDeleting}
-        onConfirm={actions.confirmDelete}
-        onCancel={actions.cancelDelete}
+        open={deletion.isDeleting}
+        onConfirm={deletion.confirm}
+        onCancel={deletion.cancel}
       />
     </div>
   );

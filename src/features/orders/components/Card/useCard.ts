@@ -1,27 +1,30 @@
-import { useState, useCallback } from "react";
+import { useCallback, useState } from "react";
 import { useOrders } from "@features/orders/hooks/useOrders";
+import { useOrderForm } from "@features/orders/components/Modal/FormBox/useOrderForm";
+import { useOrderDeletion } from "@features/orders/hooks/useOrderDeletion";
 import { usePagination } from "@features/orders/hooks/usePagination";
 import { useSelection } from "@features/orders/hooks/useSelection";
 import { ITEMS_PER_PAGE } from "@features/orders/order.constants";
 import type { OrderTabs } from "@features/orders/order.type";
 
 export function useCard() {
-  const [currentTab, setcurrentTabs] = useState<OrderTabs>("all");
-  const { orders, filter, sort, form, isDeleting, handlers } = useOrders({
-    tabs: currentTab,
-  });
+  const [tab, setTab] = useState<OrderTabs>("all");
+
+  const orders = useOrders({ tabs: tab });
+  const form = useOrderForm();
+  const deletion = useOrderDeletion();
 
   const pagination = usePagination({
-    totalItems: orders.length,
+    totalItems: orders.data.length,
     itemsPerPage: ITEMS_PER_PAGE,
   });
 
-  const currentOrders = pagination.getPageItems(orders);
+  const currentOrders = pagination.getPageItems(orders.data);
   const selection = useSelection({ items: currentOrders });
 
   const changeTab = useCallback(
-    (nextMode: OrderTabs) => {
-      setcurrentTabs(nextMode);
+    (nextTab: OrderTabs) => {
+      setTab(nextTab);
       pagination.setFirstPage();
       selection.clear();
     },
@@ -32,39 +35,46 @@ export function useCard() {
     (value: string) => {
       pagination.setFirstPage();
       selection.clear();
-      handlers.handleSearch(value);
+
+      orders.filter.search(value);
     },
-    [pagination, selection, handlers],
+    [orders.filter, pagination, selection],
   );
 
   const deleteSelected = useCallback(() => {
-    handlers.requestDelete(selection.selectedIds);
+    if (selection.selectedIds.length === 0) {
+      return;
+    }
+
+    deletion.request(selection.selectedIds);
     selection.clear();
-  }, [handlers, selection]);
+  }, [deletion, selection]);
 
   return {
-    tabs: currentTab,
-    filter,
-    sort,
-    currentOrders,
-    selection,
-    pagination,
-    form,
-    isDeleting,
-    actions: {
-      changeTab,
-      search,
-      add: handlers.handleAdd,
-      edit: handlers.handleEdit,
-      requestDelete: handlers.requestDelete,
-      deleteSelected,
-      closeForm: handlers.closeForm,
-      changeForm: handlers.handleChange,
-      submitForm: handlers.handleSubmit,
-      confirmDelete: handlers.confirmDelete,
-      cancelDelete: handlers.cancelDelete,
-      filter: handlers.handleFilterChange,
-      sort: handlers.handleSortChange,
+    tab: {
+      value: tab,
+      change: changeTab,
     },
+    orders: {
+      data: currentOrders,
+      all: orders.data,
+    },
+    filter: {
+      value: orders.filter.value,
+      sort: orders.filter.sort,
+      search,
+      change: orders.filter.change,
+      changeSort: orders.filter.changeSort,
+    },
+    form,
+    deletion: {
+      isDeleting: deletion.isDeleting,
+      request: deletion.request,
+      confirm: deletion.confirm,
+      cancel: deletion.cancel,
+      deleteSelected,
+    },
+    pagination,
+    selection,
   };
 }

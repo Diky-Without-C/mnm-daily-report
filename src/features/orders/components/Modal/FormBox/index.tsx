@@ -1,157 +1,162 @@
-import { useRef, useEffect, useState } from "react";
-import type { OrderSchema } from "@apps/supabase/Order.Schema.dto";
-import { ITEM_TYPES, CONTAINER_TYPES } from "@apps/constants";
-import Modal from "@components/Modal";
 import Button from "@components/Button";
-import { useLocalStorage } from "@hooks/useLocaleStorage";
-import { ORDER_CATEGORY } from "../../../order.constants";
+import Divider from "@components/Divider";
+import InputText from "@components/Input/InputText";
+import Modal from "@components/Modal";
+import { CONTAINER_TYPES, ORDER_CATEGORY } from "@constants/Order";
+import { ITEM_TYPES } from "@constants/Report";
+import type { useOrderForm } from "./useOrderForm";
 import Select from "./select";
-import Input from "./input";
+import Field from "./FormField";
 
 interface FormProps {
   open: boolean;
-  form: OrderSchema | null;
   onClose: () => void;
-  onChange: (name: string, value: string | number) => void;
-  onSubmit: () => void;
+  form: ReturnType<typeof useOrderForm>["data"];
+  error: ReturnType<typeof useOrderForm>["error"];
+  onChange: ReturnType<typeof useOrderForm>["change"];
+  onSubmit: ReturnType<typeof useOrderForm>["submit"];
 }
 
-export default function FormBox({
+export default function Form({
   open,
-  form,
   onClose,
+  form,
+  error,
   onChange,
   onSubmit,
 }: FormProps) {
-  const [isSubmited, setIsSubmited] = useState(false);
-  const [codeHint] = useLocalStorage<string[]>("codeHint", []);
-
-  const codeRef = useRef<HTMLInputElement>(null);
-  const categoryRef = useRef<HTMLDivElement>(null);
-  const fromRef = useRef<HTMLDivElement>(null);
-  const numberRef = useRef<HTMLInputElement>(null);
-  const typeRef = useRef<HTMLDivElement>(null);
-  const amountRef = useRef<HTMLInputElement>(null);
-
-  const validate = () => {
-    if (!form) return false;
-
-    return (
-      form.code.trim() !== "" &&
-      Object.values(ORDER_CATEGORY).includes(form.category) &&
-      CONTAINER_TYPES.includes(form.from) &&
-      form.number > 0 &&
-      Object.values(ITEM_TYPES).includes(form.type) &&
-      form.amount > 0
-    );
-  };
-
-  useEffect(() => {
-    if (open) {
-      codeRef.current?.focus();
-      setIsSubmited(false);
-    }
-  }, [open]);
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmited(true);
-    if (!validate()) return;
-    onSubmit();
-  };
-
-  if (!form) return;
+  if (!form) return null;
+  const getError = (field: string) => error?.fields?.[field];
 
   return (
-    <Modal open={open} onClose={onClose} className="max-w-md p-6">
+    <Modal
+      open={open}
+      onClose={onClose}
+      className="flex w-full max-w-lg flex-col"
+    >
+      <header className="shrink-0 px-4 py-4">
+        <h1 className="text-xl font-semibold">
+          {form.id ? "Edit Order" : "Create Order"}
+        </h1>
+        <p className="mt-1 text-sm text-gray-500">
+          {form.id
+            ? "Update the details of the selected order."
+            : "Enter the details for the new order."}
+        </p>
+      </header>
+      <Divider />
       <form
-        onSubmit={handleSubmit}
-        className="relative grid w-full grid-cols-4 grid-rows-4 gap-2"
+        onSubmit={(event) => {
+          event.preventDefault();
+          onSubmit();
+        }}
+        className="flex min-h-0 flex-1 flex-col"
       >
-        <Input
-          ref={codeRef}
-          label="Code"
-          value={form.code}
-          onChange={(value) => onChange("code", value)}
-          onEnter={() => categoryRef.current?.focus()}
-          hints={codeHint}
-          className="col-span-2"
-          invalid={isSubmited && form.code === ""}
-        />
-
-        <Select
-          ref={categoryRef}
-          label="Category"
-          value={form.category}
-          onChange={(value) => onChange("category", value)}
-          onEnter={() => fromRef.current?.focus()}
-          options={Object.values(ORDER_CATEGORY).map((content) => ({
-            content,
-          }))}
-          className="col-span-2 col-start-3"
-          invalid={
-            isSubmited && !Object.values(ORDER_CATEGORY).includes(form.category)
-          }
-        />
-
-        <Select
-          ref={fromRef}
-          label="From"
-          value={form.from}
-          onChange={(value) => onChange("from", value)}
-          onEnter={() => numberRef.current?.focus()}
-          options={CONTAINER_TYPES.map((content) => ({ content }))}
-          className="col-span-2 row-start-2"
-          invalid={isSubmited && !CONTAINER_TYPES.includes(form.from)}
-        />
-
-        <Input
-          ref={numberRef}
-          label="Number"
-          value={form.number === 0 ? "" : form.number.toString()}
-          onChange={(value) => onChange("number", value)}
-          onEnter={() => typeRef.current?.focus()}
-          type="number"
-          className="col-span-2 col-start-3 row-start-2"
-          invalid={isSubmited && form.number <= 0}
-        />
-
-        <Select
-          ref={typeRef}
-          label="Type"
-          value={form.type}
-          onChange={(value) => onChange("type", value)}
-          onEnter={() => amountRef.current?.focus()}
-          options={Object.values(ITEM_TYPES).map((content) => ({ content }))}
-          className="col-span-2 row-start-3"
-          invalid={isSubmited && !Object.values(ITEM_TYPES).includes(form.type)}
-        />
-
-        <Input
-          ref={amountRef}
-          label="Amount"
-          value={form.amount === 0 ? "" : form.amount.toString()}
-          onChange={(value) => onChange("amount", value)}
-          onEnter={() => {
-            setIsSubmited(true);
-            if (validate()) {
-              onSubmit();
-            }
-          }}
-          type="number"
-          className="col-span-2 col-start-3 row-start-3"
-          unit="PCS"
-          invalid={isSubmited && form.amount <= 0}
-        />
-
-        <div className="col-span-2 col-start-3 mt-5 flex justify-end gap-2">
+        <div className="min-h-0 flex-1 px-4 py-4">
+          <div className="flex flex-col gap-5">
+            <div className="grid grid-cols-2 gap-3">
+              <Field label="Code" htmlFor="orderCode" error={getError("code")}>
+                <InputText
+                  id="orderCode"
+                  name="code"
+                  value={form.code ?? ""}
+                  onChange={(event) =>
+                    onChange("code", event.target.value.toUpperCase())
+                  }
+                  invalid={!!getError("code")}
+                  className="w-full"
+                />
+              </Field>
+              <Field label="Category" error={getError("category")}>
+                <Select
+                  value={form.category ?? "-"}
+                  onChange={(value) => onChange("category", value)}
+                  options={Object.values(ORDER_CATEGORY).map((content) => ({
+                    content,
+                  }))}
+                  invalid={!!getError("category")}
+                  className="w-full"
+                />
+              </Field>
+              <Field label="From" error={getError("from")}>
+                <Select
+                  value={form.from ?? "-"}
+                  onChange={(value) => onChange("from", value)}
+                  options={CONTAINER_TYPES.map((content) => ({
+                    content,
+                  }))}
+                  invalid={!!getError("from")}
+                  className="w-full"
+                />
+              </Field>
+              <Field
+                label="Number"
+                htmlFor="orderNumber"
+                error={getError("number")}
+              >
+                <InputText
+                  id="orderNumber"
+                  name="number"
+                  type="number"
+                  value={form.number ?? ""}
+                  onChange={(event) =>
+                    onChange(
+                      "number",
+                      event.target.value === ""
+                        ? null
+                        : Number(event.target.value),
+                    )
+                  }
+                  invalid={!!getError("number")}
+                  className="w-full"
+                />
+              </Field>
+              <Field label="Type" error={getError("type")}>
+                <Select
+                  value={form.type ?? "-"}
+                  onChange={(value) => onChange("type", value)}
+                  options={ITEM_TYPES.map((content) => ({
+                    content,
+                  }))}
+                  invalid={!!getError("type")}
+                  className="w-full"
+                />
+              </Field>
+              <Field
+                label="Amount"
+                htmlFor="orderAmount"
+                error={getError("amount")}
+              >
+                <InputText
+                  id="orderAmount"
+                  name="amount"
+                  type="number"
+                  unit="PCS"
+                  value={form.amount ?? ""}
+                  onChange={(event) =>
+                    onChange(
+                      "amount",
+                      event.target.value === ""
+                        ? null
+                        : Number(event.target.value),
+                    )
+                  }
+                  invalid={!!getError("amount")}
+                  className="w-full"
+                />
+              </Field>
+            </div>
+          </div>
+        </div>
+        <Divider className="h-[2px]" />
+        <footer className="mt-0.5 flex shrink-0 justify-end gap-2 px-4 py-3">
           <Button type="button" onClick={onClose} variant="danger">
             Cancel
           </Button>
           <Button type="submit" variant="info">
             Submit
           </Button>
-        </div>
+        </footer>
       </form>
     </Modal>
   );
