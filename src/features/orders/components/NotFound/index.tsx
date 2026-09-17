@@ -1,4 +1,4 @@
-import NotFoundImage from "@assets/no-data-found.png";
+import NotFoundImage from "@assets/image/no-data-found.png";
 
 export default function NotFound() {
   return (
