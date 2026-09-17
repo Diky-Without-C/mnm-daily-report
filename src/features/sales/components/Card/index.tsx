@@ -1,7 +1,5 @@
-import { useState } from "react";
 import NotFound from "@features/orders/components/NotFound";
 import { SALES_TABS } from "@features/sales/sales.constant";
-import { usePersistedFile } from "@hooks/usePersistedFile";
 import Divider from "@components/Divider";
 import Tabs from "@components/Tabs";
 import SalesChart from "../SalesChart";
@@ -10,15 +8,11 @@ import Toolbar from "./Toolbar";
 import { useCard } from "./useCard";
 
 export default function SalesCard() {
-  const [showField, setShowField] = useState(false);
-  const { setFile } = usePersistedFile("mnm-xlsx-sales-storage");
-
   const { tabs, filter, sort, currentSales, pagination, actions } = useCard();
 
   return (
     <div className="flex h-full w-full flex-col">
       <Toolbar
-        setShowField={setShowField}
         onSearch={actions.search}
         filter={filter}
         onFilter={actions.filter}

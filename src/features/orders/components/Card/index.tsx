@@ -13,7 +13,7 @@ import { ORDER_TABS } from "@features/orders/order.constants";
 
 interface CardProps {
   mode: "order" | "stuffing";
-  onSelect: (order: OrderSchema) => void;
+  onSelect?: (order: OrderSchema) => void;
 }
 
 export default function Card({ mode, onSelect }: CardProps) {
@@ -27,7 +27,7 @@ export default function Card({ mode, onSelect }: CardProps) {
     const selected = orders.data.find((order) => order.id === id);
 
     if (selected) {
-      onSelect(selected);
+      onSelect?.(selected);
     }
   }, [mode, onSelect, orders.data, selection.selectedIds]);
 

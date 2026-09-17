@@ -6,7 +6,6 @@ import FilterDropdown from "./FilterDropdown";
 import SortDropdown from "./SortDropdown";
 
 interface ToolbarProps {
-  setShowField: (show: boolean) => void;
   onSearch: (value: string) => void;
   filter: SalesFilter;
   onFilter: (group: keyof SalesFilter, key: string, value: boolean) => void;
@@ -15,7 +14,6 @@ interface ToolbarProps {
 }
 
 export default function Toolbar({
-  setShowField,
   onSearch,
   filter,
   onFilter,
@@ -32,10 +30,7 @@ export default function Toolbar({
         />
         <FilterDropdown filter={filter} onFilter={onFilter} />
         <SortDropdown sort={sort} onSort={onSort} />
-        <Button
-          className="px-3 whitespace-nowrap"
-          onClick={() => setShowField(true)}
-        >
+        <Button className="px-3 whitespace-nowrap" onClick={() => {}}>
           <ArrowUpTrayIcon className="size-5" /> Import Sales
         </Button>
       </div>
