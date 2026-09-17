@@ -43,7 +43,7 @@ export default function InputDate({ date, onDateChange }: InputDateProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [viewDate, setViewDate] = useState(() => new Date(date));
 
-  const { ref } = useClickOutside<HTMLDivElement>({
+  const ref = useClickOutside<HTMLDivElement>({
     enabled: isOpen,
     onClickOutside: () => setIsOpen(false),
   });

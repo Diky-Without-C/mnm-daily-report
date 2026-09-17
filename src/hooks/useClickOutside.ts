@@ -3,14 +3,12 @@ import { useEffect, useRef } from "react";
 interface UseClickOutsideProps {
   onClickOutside: () => void;
   enabled?: boolean;
-  closeOnScroll?: boolean;
   ignoreSelector?: string;
 }
 
 export function useClickOutside<T extends HTMLElement>({
   onClickOutside,
   enabled = true,
-  closeOnScroll = false,
   ignoreSelector,
 }: UseClickOutsideProps) {
   const ref = useRef<T>(null);
@@ -18,32 +16,26 @@ export function useClickOutside<T extends HTMLElement>({
   useEffect(() => {
     if (!enabled) return;
 
-    function handleClickOutside(e: MouseEvent) {
-      const target = e.target as HTMLElement;
+    const handleMouseDown = (event: MouseEvent) => {
+      const target = event.target;
+
+      if (!(target instanceof Element)) return;
 
       if (ignoreSelector && target.closest(ignoreSelector)) {
         return;
       }
 
-      if (ref.current && !ref.current.contains(target)) {
+      if (!ref.current?.contains(target)) {
         onClickOutside();
       }
-    }
+    };
 
-    document.addEventListener("mousedown", handleClickOutside);
-
-    if (closeOnScroll) {
-      window.addEventListener("scroll", onClickOutside, true);
-    }
+    document.addEventListener("mousedown", handleMouseDown);
 
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-
-      if (closeOnScroll) {
-        window.removeEventListener("scroll", onClickOutside, true);
-      }
+      document.removeEventListener("mousedown", handleMouseDown);
     };
-  }, [onClickOutside, enabled, closeOnScroll, ignoreSelector]);
+  }, [enabled, ignoreSelector, onClickOutside]);
 
-  return { ref };
+  return ref;
 }

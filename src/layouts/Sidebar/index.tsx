@@ -42,7 +42,7 @@ const menuItems: MenuItem[] = [
 ];
 
 export default function Sidebar({ expanded, onToggle }: SidebarProps) {
-  const { ref } = useClickOutside<HTMLDivElement>({
+  const ref = useClickOutside<HTMLDivElement>({
     enabled: expanded,
     onClickOutside: () => onToggle(false),
   });

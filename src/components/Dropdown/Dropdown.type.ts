@@ -19,7 +19,6 @@ export interface DropdownProps {
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
   closeOnClickOutside?: boolean;
-  closeOnScroll?: boolean;
   closeOnSelect?: boolean;
   ignoreSelector?: string;
   className?: string;

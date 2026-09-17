@@ -3,11 +3,13 @@ import {
   useCallback,
   useEffect,
   useId,
+  useMemo,
   useRef,
   useState,
 } from "react";
-import { cn } from "@utils/cn";
 import { useClickOutside } from "@hooks/useClickOutside";
+import { cn } from "@utils/cn";
+import { combineRefs } from "@utils/combineRefs";
 import type { DropdownProps } from "./Dropdown.type";
 import { DropdownContext } from "./DropdownContext";
 
@@ -19,7 +21,6 @@ export const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(
       open: controlledOpen,
       onOpenChange,
       closeOnClickOutside = true,
-      closeOnScroll = false,
       closeOnSelect = true,
       ignoreSelector,
       className,
@@ -68,10 +69,15 @@ export const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(
     const getItems = useCallback(() => {
       return [...itemRefs.current].sort((a, b) => {
         const position = a.compareDocumentPosition(b);
-        if (position) {
-          if (Node.DOCUMENT_POSITION_FOLLOWING) return -1;
-          if (Node.DOCUMENT_POSITION_PRECEDING) return 1;
+
+        if (position & Node.DOCUMENT_POSITION_FOLLOWING) {
+          return -1;
         }
+
+        if (position & Node.DOCUMENT_POSITION_PRECEDING) {
+          return 1;
+        }
+
         return 0;
       });
     }, []);
@@ -83,6 +89,12 @@ export const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(
         block: "nearest",
       });
     }, []);
+
+    const clickOutsideRef = useClickOutside<HTMLDivElement>({
+      enabled: open && closeOnClickOutside,
+      onClickOutside: close,
+      ignoreSelector,
+    });
 
     useEffect(() => {
       if (!open) setActiveItem(null);
@@ -131,26 +143,9 @@ export const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(
       };
     }, [open, activeItem, close, getItems, focusItem]);
 
-    const { ref: wrapperRef } = useClickOutside<HTMLDivElement>({
-      enabled: open && closeOnClickOutside,
-      onClickOutside: close,
-      closeOnScroll,
-      ignoreSelector,
-    });
-
-    const combinedRef = useCallback(
-      (element: HTMLDivElement | null) => {
-        if (typeof ref === "function") {
-          ref(element);
-        } else if (ref) {
-          ref.current = element;
-        }
-
-        if (wrapperRef) {
-          wrapperRef.current = element;
-        }
-      },
-      [ref, wrapperRef],
+    const combinedRef = useMemo(
+      () => combineRefs(ref, clickOutsideRef),
+      [clickOutsideRef, ref],
     );
 
     return (
