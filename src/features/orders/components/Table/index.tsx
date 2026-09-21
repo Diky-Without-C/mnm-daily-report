@@ -34,24 +34,24 @@ export default function Table({
 
   return (
     <div className="relative w-full overflow-x-auto">
-      <table className="w-full border-collapse text-gray-700">
+      <table className="w-full table-fixed border-collapse text-gray-700">
         <thead className="relative border-b border-gray-200 bg-gray-50">
           <tr className="h-12 text-xs font-semibold tracking-wide text-gray-500 uppercase">
             {selection.enabled && (
-              <th className="w-1 px-4 text-center">
+              <th className="w-[5%] px-4 text-center">
                 <CheckBox
                   checked={selection.allSelected}
                   onChange={selection.toggleAll}
                 />
               </th>
             )}
-            <th className="px-4 text-left whitespace-nowrap">Category</th>
-            <th className="px-4 text-left whitespace-nowrap">From</th>
-            <th className="px-4 text-left whitespace-nowrap">Number</th>
-            <th className="px-4 text-left">Code</th>
-            <th className="px-4 text-left whitespace-nowrap">Type</th>
-            <th className="px-4 text-right whitespace-nowrap">Amount</th>
-            <th className="w-1 px-4 text-center" />
+            <th className="w-[15%] px-4 text-left">Category</th>
+            <th className="w-[10%] px-4 text-left">From</th>
+            <th className="w-[15%] px-4 text-left">Number</th>
+            <th className="w-[20%] px-4 text-left">Code</th>
+            <th className="w-[10%] px-4 text-left">Type</th>
+            <th className="w-[15%] px-4 text-right">Amount</th>
+            <th className="w-[10%] px-2 text-center" />
           </tr>
         </thead>
 
