@@ -28,11 +28,7 @@ export const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(
     ref,
   ) {
     const [internalOpen, setInternalOpen] = useState(defaultOpen);
-    const [activeItem, setActiveItem] = useState<HTMLButtonElement | null>(
-      null,
-    );
-
-    const itemRefs = useRef(new Set<HTMLButtonElement>());
+    const containerRef = useRef<HTMLDivElement>(null);
 
     const triggerId = useId();
     const contentId = useId();
@@ -45,7 +41,6 @@ export const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(
         if (!isControlled) {
           setInternalOpen(nextOpen);
         }
-
         onOpenChange?.(nextOpen);
       },
       [isControlled, onOpenChange],
@@ -53,41 +48,15 @@ export const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(
 
     const close = useCallback(() => {
       setOpen(false);
-      setActiveItem(null);
     }, [setOpen]);
 
-    const registerItem = useCallback((element: HTMLButtonElement) => {
-      itemRefs.current.add(element);
-    }, []);
-
-    const unregisterItem = useCallback((element: HTMLButtonElement) => {
-      itemRefs.current.delete(element);
-
-      setActiveItem((current) => (current === element ? null : current));
-    }, []);
-
-    const getItems = useCallback(() => {
-      return [...itemRefs.current].sort((a, b) => {
-        const position = a.compareDocumentPosition(b);
-
-        if (position & Node.DOCUMENT_POSITION_FOLLOWING) {
-          return -1;
-        }
-
-        if (position & Node.DOCUMENT_POSITION_PRECEDING) {
-          return 1;
-        }
-
-        return 0;
-      });
-    }, []);
-
-    const focusItem = useCallback((element: HTMLButtonElement) => {
-      setActiveItem(element);
-      element.focus();
-      element.scrollIntoView({
-        block: "nearest",
-      });
+    const getNavigableItems = useCallback(() => {
+      if (!containerRef.current) return [];
+      const selector =
+        'button:not([disabled]), [role="menuitem"]:not([disabled])';
+      return Array.from(
+        containerRef.current.querySelectorAll<HTMLElement>(selector),
+      );
     }, []);
 
     const clickOutsideRef = useClickOutside<HTMLDivElement>({
@@ -95,10 +64,6 @@ export const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(
       onClickOutside: close,
       ignoreSelector,
     });
-
-    useEffect(() => {
-      if (!open) setActiveItem(null);
-    }, [open]);
 
     useEffect(() => {
       if (!open) return;
@@ -114,55 +79,52 @@ export const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(
           return;
         }
 
-        e.preventDefault();
-
-        const items = getItems().filter((item) => !item.disabled);
+        const items = getNavigableItems();
         if (items.length === 0) return;
 
-        const currentIndex = activeItem ? items.indexOf(activeItem) : -1;
-        let nextIndex: number;
+        e.preventDefault();
 
-        if (e.key === "ArrowUp") {
+        const activeElement = document.activeElement as HTMLElement;
+        const currentIndex = items.indexOf(activeElement);
+
+        let nextIndex: number;
+        if (e.key === "ArrowDown") {
           nextIndex =
-            currentIndex === -1 ? 0 : (currentIndex + 1) % items.length;
+            currentIndex === -1 || currentIndex === items.length - 1
+              ? 0
+              : currentIndex + 1;
         } else {
-          nextIndex =
-            currentIndex === -1
-              ? items.length - 1
-              : (currentIndex - 1 + items.length) % items.length;
+          nextIndex = currentIndex <= 0 ? items.length - 1 : currentIndex - 1;
         }
 
         const nextItem = items[nextIndex];
-        focusItem(nextItem);
+        nextItem?.focus();
+        nextItem?.scrollIntoView({ block: "nearest" });
       };
 
       window.addEventListener("keydown", handleKeyDown);
-
-      return () => {
-        window.removeEventListener("keydown", handleKeyDown);
-      };
-    }, [open, activeItem, close, getItems, focusItem]);
+      return () => window.removeEventListener("keydown", handleKeyDown);
+    }, [open, close, getNavigableItems]);
 
     const combinedRef = useMemo(
-      () => combineRefs(ref, clickOutsideRef),
-      [clickOutsideRef, ref],
+      () => combineRefs(ref, containerRef, clickOutsideRef),
+      [ref, clickOutsideRef],
+    );
+
+    const contextValue = useMemo(
+      () => ({
+        open,
+        setOpen,
+        close,
+        closeOnSelect,
+        triggerId,
+        contentId,
+      }),
+      [open, setOpen, close, closeOnSelect, triggerId, contentId],
     );
 
     return (
-      <DropdownContext.Provider
-        value={{
-          open,
-          setOpen,
-          close,
-          activeItem,
-          setActiveItem,
-          registerItem,
-          unregisterItem,
-          closeOnSelect,
-          triggerId,
-          contentId,
-        }}
-      >
+      <DropdownContext.Provider value={contextValue}>
         <div
           ref={combinedRef}
           className={cn("relative inline-flex", className)}

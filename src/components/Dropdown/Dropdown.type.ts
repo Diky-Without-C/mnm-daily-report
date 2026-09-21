@@ -4,10 +4,6 @@ export interface DropdownContextValue {
   open: boolean;
   setOpen: (open: boolean) => void;
   close: () => void;
-  activeItem: HTMLButtonElement | null;
-  setActiveItem: (element: HTMLButtonElement | null) => void;
-  registerItem: (element: HTMLButtonElement) => void;
-  unregisterItem: (element: HTMLButtonElement) => void;
   closeOnSelect: boolean;
   triggerId: string;
   contentId: string;
