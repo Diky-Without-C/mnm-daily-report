@@ -11,7 +11,7 @@ export default function Order() {
         <PreviewPanel {...orderPage} />
       </section>
       <section className="relative col-span-2 flex items-center rounded-r-md border-l-2 border-gray-200 bg-white p-3">
-        <OrderCard mode="order" />
+        <OrderCard />
       </section>
     </main>
   );

@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import type { OrderSchema } from "@apps/supabase/Order.Schema.dto";
 import Divider from "@components/Divider";
 import Tabs from "@components/Tabs";
@@ -12,24 +11,12 @@ import { useCard } from "./useCard";
 import { ORDER_TABS } from "@features/orders/order.constants";
 
 interface CardProps {
-  mode: "order" | "stuffing";
   onSelect?: (order: OrderSchema) => void;
 }
 
-export default function Card({ mode, onSelect }: CardProps) {
+export default function Card({ onSelect }: CardProps) {
   const { tab, orders, filter, form, deletion, pagination, selection } =
     useCard();
-
-  useEffect(() => {
-    if (mode !== "stuffing") return;
-
-    const [id] = selection.selectedIds;
-    const selected = orders.data.find((order) => order.id === id);
-
-    if (selected) {
-      onSelect?.(selected);
-    }
-  }, [mode, onSelect, orders.data, selection.selectedIds]);
 
   return (
     <div className="flex h-full w-full flex-col">
@@ -46,11 +33,11 @@ export default function Card({ mode, onSelect }: CardProps) {
         <div className="min-h-0 flex-1">
           {orders.data.length > 0 ? (
             <Table
-              mode={mode}
               orders={orders.data}
               selection={selection}
-              onEdit={form.edit}
-              onDelete={deletion.request}
+              form={form}
+              deletion={deletion}
+              onSelect={onSelect}
             />
           ) : (
             <NotFound />
@@ -58,9 +45,9 @@ export default function Card({ mode, onSelect }: CardProps) {
         </div>
         <Divider className="h-[2px]" />
         <Footer
-          selection={mode === "order" ? selection : null}
+          selection={selection}
           pagination={pagination}
-          onDeleteSelected={deletion.deleteSelected}
+          deletion={deletion}
         />
       </div>
       <Form

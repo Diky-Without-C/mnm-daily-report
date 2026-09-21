@@ -68,10 +68,7 @@ export function useCard() {
     },
     form,
     deletion: {
-      isDeleting: deletion.isDeleting,
-      request: deletion.request,
-      confirm: deletion.confirm,
-      cancel: deletion.cancel,
+      ...deletion,
       deleteSelected,
     },
     pagination,

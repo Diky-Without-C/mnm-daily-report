@@ -1,11 +1,12 @@
+import { useCallback, useMemo, useState } from "react";
 import type { OrderSchema } from "@apps/supabase/Order.Schema.dto";
-import { useMemo, useState, useCallback } from "react";
 
 interface UseSelectionOptions {
   items: OrderSchema[];
 }
 
 export function useSelection({ items }: UseSelectionOptions) {
+  const [enabled, setEnabled] = useState(false);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
 
   const selectedCount = selectedIds.size;
@@ -43,9 +44,18 @@ export function useSelection({ items }: UseSelectionOptions) {
     });
   }, [allSelected, items]);
 
-  const clear = useCallback(() => setSelectedIds(new Set()), []);
+  const clear = useCallback(() => {
+    setSelectedIds(new Set());
+    setEnabled(false);
+  }, []);
+
+  const enable = useCallback(() => {
+    setEnabled(true);
+  }, []);
 
   return {
+    enabled,
+    enable,
     selectedIds: Array.from(selectedIds),
     selectedCount,
     isSelected,

@@ -1,5 +1,6 @@
 import {
   EllipsisVerticalIcon,
+  CheckIcon,
   PencilIcon,
   TrashIcon,
 } from "@heroicons/react/24/outline";
@@ -14,14 +15,20 @@ import {
 interface ActionProps {
   onEdit: () => void;
   onDelete: () => void;
+  onSelect: () => void;
 }
 
-export default function Action({ onEdit, onDelete }: ActionProps) {
+export default function Action({ onEdit, onDelete, onSelect }: ActionProps) {
   const actionItems = [
     {
       label: "Edit",
       onClick: onEdit,
       icon: <PencilIcon className="size-4" />,
+    },
+    {
+      label: "Select",
+      onClick: onSelect,
+      icon: <CheckIcon className="size-4" />,
     },
     {
       label: "Delete",

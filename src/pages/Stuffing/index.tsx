@@ -12,7 +12,7 @@ export default function Stuffing() {
         <StuffingCard selected={selected} />
       </section>
       <section className="relative col-start-2 col-end-4 flex items-center rounded-r-md border-l-2 border-gray-200 bg-white p-3">
-        <OrderCard mode="stuffing" onSelect={setSelected} />
+        <OrderCard onSelect={setSelected} />
       </section>
     </main>
   );
