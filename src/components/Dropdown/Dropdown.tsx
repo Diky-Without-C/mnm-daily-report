@@ -75,6 +75,11 @@ export const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(
           return;
         }
 
+        if (e.key === "Tab") {
+          close();
+          return;
+        }
+
         if (e.key !== "ArrowDown" && e.key !== "ArrowUp") {
           return;
         }
