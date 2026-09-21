@@ -1,3 +1,4 @@
+import { PencilIcon, CheckIcon, TrashIcon } from "@heroicons/react/24/outline";
 import type { OrderSchema } from "@apps/supabase/Order.Schema.dto";
 import Badge from "@components/Badge";
 import CheckBox from "@components/Input/CheckBox";
@@ -123,12 +124,28 @@ export default function Table({
                 >
                   <div className="flex justify-center">
                     <Action
-                      onEdit={() => form.edit(order)}
-                      onDelete={() => deletion.request([order.id])}
-                      onSelect={() => {
-                        selection.enable();
-                        selection.toggle(order);
-                      }}
+                      items={[
+                        {
+                          label: "Edit",
+                          icon: <PencilIcon className="size-4" />,
+                          onClick: () => form.edit(order),
+                        },
+                        {
+                          label: "Select",
+                          icon: <CheckIcon className="size-4" />,
+                          onClick: () => {
+                            selection.enable();
+                            selection.toggle(order);
+                          },
+                        },
+                        {
+                          label: "Delete",
+                          icon: <TrashIcon className="size-4" />,
+                          onClick: () => deletion.request([order.id]),
+                          disabled: selection.enabled,
+                          variant: "danger",
+                        },
+                      ]}
                     />
                   </div>
                 </td>

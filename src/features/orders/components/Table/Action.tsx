@@ -1,9 +1,4 @@
-import {
-  EllipsisVerticalIcon,
-  CheckIcon,
-  PencilIcon,
-  TrashIcon,
-} from "@heroicons/react/24/outline";
+import { EllipsisVerticalIcon } from "@heroicons/react/24/outline";
 import Button from "@components/Button";
 import {
   Dropdown,
@@ -11,32 +6,21 @@ import {
   DropdownItem,
   DropdownTrigger,
 } from "@components/Dropdown";
+import { cn } from "@utils/cn";
 
-interface ActionProps {
-  onEdit: () => void;
-  onDelete: () => void;
-  onSelect: () => void;
+export interface ActionItem {
+  label: string;
+  onClick: () => void;
+  icon?: React.ReactNode;
+  disabled?: boolean;
+  variant?: "default" | "danger";
 }
 
-export default function Action({ onEdit, onDelete, onSelect }: ActionProps) {
-  const actionItems = [
-    {
-      label: "Edit",
-      onClick: onEdit,
-      icon: <PencilIcon className="size-4" />,
-    },
-    {
-      label: "Select",
-      onClick: onSelect,
-      icon: <CheckIcon className="size-4" />,
-    },
-    {
-      label: "Delete",
-      onClick: onDelete,
-      icon: <TrashIcon className="size-4" />,
-    },
-  ];
+interface ActionProps {
+  items: ActionItem[];
+}
 
+export default function Action({ items }: ActionProps) {
   return (
     <Dropdown>
       <DropdownTrigger asChild>
@@ -45,19 +29,22 @@ export default function Action({ onEdit, onDelete, onSelect }: ActionProps) {
         </Button>
       </DropdownTrigger>
 
-      <DropdownContent className="p-1.5">
-        {actionItems.map((item, index) => {
-          return (
-            <DropdownItem
-              key={index}
-              onClick={item.onClick}
-              className="flex items-center gap-2"
-            >
-              {item.icon}
-              <span>{item.label}</span>
-            </DropdownItem>
-          );
-        })}
+      <DropdownContent className="gap-0.5 p-1.5">
+        {items.map((item, index) => (
+          <DropdownItem
+            key={index}
+            onClick={item.onClick}
+            disabled={item.disabled}
+            className={cn(
+              "flex items-center gap-2 disabled:pointer-events-none disabled:opacity-50",
+              item.variant === "danger" &&
+                "border-red-200 bg-red-100 text-red-700 hover:border-red-300 hover:bg-red-200",
+            )}
+          >
+            {item.icon}
+            <span>{item.label}</span>
+          </DropdownItem>
+        ))}
       </DropdownContent>
     </Dropdown>
   );
