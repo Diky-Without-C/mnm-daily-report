@@ -9,7 +9,7 @@ export default function Field({ label, htmlFor, error, children }: FieldProps) {
   return (
     <div className="flex min-w-0 flex-col gap-1.5">
       {htmlFor ? (
-        <label htmlFor={htmlFor} className="text-sm text-gray-600">
+        <label htmlFor={htmlFor} className="max-w-fit text-sm text-gray-600">
           {label}
         </label>
       ) : (
