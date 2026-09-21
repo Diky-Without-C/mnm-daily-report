@@ -43,6 +43,7 @@ export function useOrderForm() {
 
   const edit = useCallback((order: OrderSchema) => {
     setError(null);
+
     setForm({
       id: order.id,
       category: order.category,

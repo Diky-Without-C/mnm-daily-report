@@ -101,6 +101,7 @@ export default function Form({
                   id="orderNumber"
                   name="number"
                   type="number"
+                  value={form.number ?? ""}
                   onChange={(event) =>
                     onChange("number", Number(event.target.value))
                   }
