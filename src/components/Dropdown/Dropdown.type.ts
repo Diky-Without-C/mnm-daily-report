@@ -1,4 +1,9 @@
-import type { ButtonHTMLAttributes, HTMLAttributes, ReactNode } from "react";
+import type {
+  ButtonHTMLAttributes,
+  HTMLAttributes,
+  ReactNode,
+  RefObject,
+} from "react";
 
 export interface DropdownContextValue {
   open: boolean;
@@ -7,6 +12,7 @@ export interface DropdownContextValue {
   closeOnSelect: boolean;
   triggerId: string;
   contentId: string;
+  triggerRef: RefObject<HTMLElement | null>;
 }
 
 export interface DropdownProps {

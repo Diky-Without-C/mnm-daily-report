@@ -1,5 +1,13 @@
-import { cloneElement, forwardRef, isValidElement } from "react";
+import {
+  cloneElement,
+  forwardRef,
+  isValidElement,
+  useMemo,
+  type ReactElement,
+  type Ref,
+} from "react";
 import { cn } from "@utils/cn";
+import { combineRefs } from "@utils/combineRefs";
 import { useDropdownContext } from "./DropdownContext";
 import type { DropdownTriggerProps } from "./Dropdown.type";
 
@@ -18,7 +26,12 @@ export const DropdownTrigger = forwardRef<
   },
   ref,
 ) {
-  const { open, setOpen, close, triggerId, contentId } = useDropdownContext();
+  const { open, setOpen, close, triggerId, contentId, triggerRef } =
+    useDropdownContext();
+  const combinedRef = useMemo(
+    () => combineRefs(ref, triggerRef),
+    [ref, triggerRef],
+  );
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     onClick?.(event);
@@ -63,12 +76,20 @@ export const DropdownTrigger = forwardRef<
       );
     }
 
-    return cloneElement(children, { ...triggerProps });
+    return cloneElement(
+      children as ReactElement<{
+        ref?: Ref<HTMLElement>;
+      }>,
+      {
+        ...triggerProps,
+        ref: combinedRef,
+      },
+    );
   }
 
   return (
     <button
-      ref={ref}
+      ref={combinedRef}
       {...triggerProps}
       className={cn(
         "inline-flex items-center justify-center focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-1 focus-visible:outline-none",

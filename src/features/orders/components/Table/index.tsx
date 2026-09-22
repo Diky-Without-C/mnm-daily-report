@@ -33,7 +33,7 @@ export default function Table({
   const totalColumns = selection.enabled ? 8 : 7;
 
   return (
-    <div className="relative w-full overflow-x-auto">
+    <div data-dropdown-boundary className="relative w-full">
       <table className="w-full table-fixed border-collapse text-gray-700">
         <thead className="relative border-b border-gray-200 bg-gray-50">
           <tr className="h-12 text-xs font-semibold tracking-wide text-gray-500 uppercase">

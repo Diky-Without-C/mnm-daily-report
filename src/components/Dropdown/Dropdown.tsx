@@ -29,6 +29,7 @@ export const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(
   ) {
     const [internalOpen, setInternalOpen] = useState(defaultOpen);
     const containerRef = useRef<HTMLDivElement>(null);
+    const triggerRef = useRef<HTMLElement>(null);
 
     const triggerId = useId();
     const contentId = useId();
@@ -124,6 +125,7 @@ export const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(
         closeOnSelect,
         triggerId,
         contentId,
+        triggerRef,
       }),
       [open, setOpen, close, closeOnSelect, triggerId, contentId],
     );
