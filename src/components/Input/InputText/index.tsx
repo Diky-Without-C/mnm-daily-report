@@ -8,7 +8,15 @@ export interface InputTextProps extends InputHTMLAttributes<HTMLInputElement> {
 
 const InputText = forwardRef<HTMLInputElement, InputTextProps>(
   function InputText(
-    { unit, invalid = false, className, type, onBeforeInput, ...props },
+    {
+      unit,
+      invalid = false,
+      className,
+      type,
+      onBeforeInput,
+      inputMode,
+      ...props
+    },
     ref,
   ) {
     const isNumber = type === "number";
@@ -20,7 +28,7 @@ const InputText = forwardRef<HTMLInputElement, InputTextProps>(
           ref={ref}
           type="text"
           autoComplete="off"
-          inputMode={isNumber ? "numeric" : props.inputMode}
+          inputMode={isNumber ? "numeric" : inputMode}
           onBeforeInput={(e) => {
             if (isNumber && e.data && /\D/.test(e.data)) {
               e.preventDefault();

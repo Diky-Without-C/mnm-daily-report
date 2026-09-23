@@ -12,7 +12,7 @@ interface SelectProps {
   value: string;
   onChange: (value: string) => void;
   onEnter?: () => void;
-  options: { content: string }[];
+  options: string[];
   className?: string;
   invalid?: boolean;
 }
@@ -37,14 +37,14 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(function Select(
       <DropdownContent className="max-h-56 w-full overflow-y-auto">
         {options.map((option) => (
           <DropdownItem
-            key={option.content}
-            selected={value === option.content}
+            key={option}
+            selected={value === option}
             onClick={() => {
-              onChange(option.content);
+              onChange(option);
               onEnter?.();
             }}
           >
-            {option.content}
+            {option}
           </DropdownItem>
         ))}
       </DropdownContent>

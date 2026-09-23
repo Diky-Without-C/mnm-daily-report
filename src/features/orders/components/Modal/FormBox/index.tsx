@@ -5,18 +5,20 @@ import Autocomplete from "@components/Input/AutocompleteText";
 import Modal from "@components/Modal";
 import { CONTAINER_TYPES, ORDER_CATEGORY } from "@constants/Order";
 import { ITEM_TYPES } from "@constants/Report";
+import { useLocalStorage } from "@hooks/useLocaleStorage";
 import type { useOrderForm } from "./useOrderForm";
 import Select from "./select";
 import Field from "./FormField";
-import { useLocalStorage } from "@hooks/useLocaleStorage";
+
+type OrderForm = ReturnType<typeof useOrderForm>;
 
 interface FormProps {
   open: boolean;
   onClose: () => void;
-  form: ReturnType<typeof useOrderForm>["data"];
-  error: ReturnType<typeof useOrderForm>["error"];
-  onChange: ReturnType<typeof useOrderForm>["change"];
-  onSubmit: ReturnType<typeof useOrderForm>["submit"];
+  form: OrderForm["data"];
+  error: OrderForm["error"];
+  onChange: OrderForm["change"];
+  onSubmit: OrderForm["submit"];
 }
 
 export default function Form({
@@ -50,8 +52,8 @@ export default function Form({
       </header>
       <Divider />
       <form
-        onSubmit={(event) => {
-          event.preventDefault();
+        onSubmit={(e) => {
+          e.preventDefault();
           onSubmit();
         }}
         className="flex min-h-0 flex-1 flex-col"
@@ -74,9 +76,7 @@ export default function Form({
                 <Select
                   value={form.category ?? "-"}
                   onChange={(value) => onChange("category", value)}
-                  options={Object.values(ORDER_CATEGORY).map((content) => ({
-                    content,
-                  }))}
+                  options={Object.values(ORDER_CATEGORY)}
                   invalid={!!getError("category")}
                   className="w-full"
                 />
@@ -85,9 +85,7 @@ export default function Form({
                 <Select
                   value={form.from ?? "-"}
                   onChange={(value) => onChange("from", value)}
-                  options={CONTAINER_TYPES.map((content) => ({
-                    content,
-                  }))}
+                  options={Object.values(CONTAINER_TYPES)}
                   invalid={!!getError("from")}
                   className="w-full"
                 />
@@ -102,8 +100,11 @@ export default function Form({
                   name="number"
                   type="number"
                   value={form.number ?? ""}
-                  onChange={(event) =>
-                    onChange("number", Number(event.target.value))
+                  onChange={(e) =>
+                    onChange(
+                      "number",
+                      e.target.value === "" ? null : Number(e.target.value),
+                    )
                   }
                   invalid={!!getError("number")}
                   className="w-full"
@@ -113,9 +114,7 @@ export default function Form({
                 <Select
                   value={form.type ?? "-"}
                   onChange={(value) => onChange("type", value)}
-                  options={ITEM_TYPES.map((content) => ({
-                    content,
-                  }))}
+                  options={Object.values(ITEM_TYPES)}
                   invalid={!!getError("type")}
                   className="w-full"
                 />
@@ -131,8 +130,11 @@ export default function Form({
                   type="number"
                   unit="PCS"
                   value={form.amount ?? ""}
-                  onChange={(event) =>
-                    onChange("amount", Number(event.target.value))
+                  onChange={(e) =>
+                    onChange(
+                      "amount",
+                      e.target.value === "" ? null : Number(e.target.value),
+                    )
                   }
                   invalid={!!getError("amount")}
                   className="w-full"
