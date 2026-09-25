@@ -8,25 +8,6 @@ import {
 } from "@components/Dropdown";
 import type { OrderSort } from "@features/orders/order.type";
 
-export const SortOptions = [
-  {
-    value: "number-asc",
-    label: "Number: Low → High",
-  },
-  {
-    value: "number-desc",
-    label: "Number: High → Low",
-  },
-  {
-    value: "amount-asc",
-    label: "Amount: Low → High",
-  },
-  {
-    value: "amount-desc",
-    label: "Amount: High → Low",
-  },
-] as const;
-
 interface SortDropdownProps {
   sort: OrderSort;
   onSort: (sort: OrderSort) => void;

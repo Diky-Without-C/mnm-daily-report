@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import type { OrderSchema } from "@apps/supabase/Order.Schema.dto";
+import type { MultipleField, SingleField } from "@constants/Order";
 import { filterOrders, searchOrders, sortOrders } from "../order.helpers";
-import type { OrderFilters, OrderSort } from "../order.type";
 
 interface UseOrderFilterParams {
   orders: OrderSchema[];
@@ -9,13 +9,15 @@ interface UseOrderFilterParams {
 
 export function useOrderFilter({ orders }: UseOrderFilterParams) {
   const [search, setSearch] = useState("");
-  const [sort, setSort] = useState<OrderSort>("number-asc");
-  const [filter, setFilter] = useState<OrderFilters>(() =>
+  const [sort, setSort] =
+    useState<Record<string, SingleField>>(getInitialSort());
+  const [filter, setFilter] = useState<Record<string, MultipleField>>(
     getInitialFilter(orders),
   );
 
   useEffect(() => {
     setFilter(getInitialFilter(orders));
+    setSort(getInitialSort());
   }, [orders]);
 
   const filteredOrders = useMemo(() => {
@@ -25,46 +27,97 @@ export function useOrderFilter({ orders }: UseOrderFilterParams) {
     return searchOrders(filtered, search);
   }, [orders, search, filter, sort]);
 
-  const handleSearch = useCallback((value: string) => {
+  const searchOrder = useCallback((value: string) => {
     setSearch(value);
   }, []);
 
-  const handleFilterChange = useCallback(
-    (group: keyof OrderFilters, key: string, value: boolean) => {
+  const filterChange = useCallback(
+    (group: string, selectedValue: MultipleField["selectedValue"]) => {
       setFilter((prev) => ({
         ...prev,
         [group]: {
           ...prev[group],
-          [key]: value,
+          selectedValue: selectedValue as MultipleField["selectedValue"],
         },
       }));
     },
     [],
   );
 
-  const handleSortChange = useCallback((value: OrderSort) => {
-    setSort(value);
-  }, []);
+  const sortChange = useCallback(
+    (group: string, selectedValue: SingleField["selectedValue"]) => {
+      setSort((prev) => ({
+        ...prev,
+        [group]: {
+          ...prev[group],
+          selectedValue,
+        },
+      }));
+    },
+    [],
+  );
 
   return {
     orders: filteredOrders,
     search,
     filter,
     sort,
-    handlers: {
-      handleSearch,
-      handleFilterChange,
-      handleSortChange,
-    },
+    searchOrder,
+    filterChange,
+    sortChange,
   };
 }
 
-function getInitialFilter(orders: OrderSchema[]): OrderFilters {
+function getInitialFilter(
+  orders: OrderSchema[],
+): Record<string, MultipleField> {
   const types = [...new Set(orders.map((order) => order.type))];
   const from = [...new Set(orders.map((order) => order.from))];
 
-  return {
-    from: Object.fromEntries(from.map((value) => [value, true])),
-    type: Object.fromEntries(types.map((value) => [value, true])),
+  const result = {
+    from: {
+      type: "multiple",
+      selectedValue: from,
+      options: from.map((value) => ({
+        label: value,
+        value,
+      })),
+    },
+    type: {
+      type: "multiple",
+      selectedValue: types,
+      options: types.map((value) => ({
+        label: value,
+        value,
+      })),
+    },
   };
+
+  return result as Record<string, MultipleField>;
+}
+
+function getInitialSort(): Record<string, SingleField> {
+  const field = ["number", "amount", "type"];
+  const direction = ["ascending", "descending"];
+
+  const result = {
+    field: {
+      type: "single",
+      selectedValue: "number",
+      options: field.map((value) => ({
+        label: value,
+        value,
+      })),
+    },
+    direction: {
+      type: "single",
+      selectedValue: "ascending",
+      options: direction.map((value) => ({
+        label: value,
+        value,
+      })),
+    },
+  };
+
+  return result as Record<string, SingleField>;
 }

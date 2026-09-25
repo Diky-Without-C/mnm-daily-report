@@ -3,7 +3,7 @@ import Divider from "@components/Divider";
 import InputText from "@components/Input/InputText";
 import Autocomplete from "@components/Input/AutocompleteText";
 import Modal from "@components/Modal";
-import { CONTAINER_TYPES, ORDER_CATEGORY } from "@constants/Order";
+import { CONTAINER_TYPES, ORDER_CATEGORIES } from "@constants/Order";
 import { ITEM_TYPES } from "@constants/Report";
 import { useLocalStorage } from "@hooks/useLocaleStorage";
 import type { useOrderForm } from "./useOrderForm";
@@ -76,7 +76,7 @@ export default function Form({
                 <Select
                   value={form.category ?? "-"}
                   onChange={(value) => onChange("category", value)}
-                  options={Object.values(ORDER_CATEGORY)}
+                  options={Object.values(ORDER_CATEGORIES)}
                   invalid={!!getError("category")}
                   className="w-full"
                 />

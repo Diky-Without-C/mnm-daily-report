@@ -22,9 +22,9 @@ export function useOrders({ tabs }: UseOrdersParams) {
     filter: {
       value: filter.filter,
       sort: filter.sort,
-      search: filter.handlers.handleSearch,
-      change: filter.handlers.handleFilterChange,
-      changeSort: filter.handlers.handleSortChange,
+      search: filter.searchOrder,
+      change: filter.filterChange,
+      changeSort: filter.sortChange,
     },
   };
 }

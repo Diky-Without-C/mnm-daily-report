@@ -1,17 +1,20 @@
-import { PlusIcon } from "@heroicons/react/24/outline";
+import {
+  AdjustmentsHorizontalIcon,
+  ArrowsUpDownIcon,
+  PlusIcon,
+} from "@heroicons/react/24/outline";
 import Button from "@components/Button";
 import SearchBar from "@components/SearchBar";
-import type { OrderFilters, OrderSort } from "@features/orders/order.type";
-import FilterDropdown from "./FilterDropdown";
-import SortDropdown from "./SortDropdown";
+import type { OrderOptionField } from "@constants/Order";
+import OptionDropdown from "./OptionDropdown";
 
 interface ToolbarProps {
   onSearch: (value: string) => void;
   onAdd: () => void;
-  filter: OrderFilters;
-  onFilter: (group: keyof OrderFilters, key: string, value: boolean) => void;
-  sort: OrderSort;
-  onSort: (sort: OrderSort) => void;
+  filter: Record<string, OrderOptionField>;
+  onFilter: (group: string, value: OrderOptionField["selectedValue"]) => void;
+  sort: Record<string, OrderOptionField>;
+  onSort: (group: string, value: OrderOptionField["selectedValue"]) => void;
 }
 
 export default function Toolbar({
@@ -30,8 +33,18 @@ export default function Toolbar({
           placeHolder="Search order"
           className="mr-0.5 w-full bg-white"
         />
-        <FilterDropdown filter={filter} onFilter={onFilter} />
-        <SortDropdown sort={sort} onSort={onSort} />
+        <OptionDropdown
+          label={"Filter"}
+          icon={<AdjustmentsHorizontalIcon className="size-5" />}
+          options={filter}
+          onChange={onFilter}
+        />
+        <OptionDropdown
+          label={"Sort"}
+          icon={<ArrowsUpDownIcon className="size-5" />}
+          options={sort}
+          onChange={onSort}
+        />
         <Button
           variant="info"
           className="px-3 whitespace-nowrap"
