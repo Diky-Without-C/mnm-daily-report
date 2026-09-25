@@ -36,7 +36,7 @@ export default function Table({
     <div data-dropdown-boundary className="relative w-full">
       <table className="w-full table-fixed border-collapse text-gray-700">
         <thead className="relative border-b border-gray-200 bg-gray-50">
-          <tr className="h-12 text-xs font-semibold tracking-wide text-gray-500 uppercase">
+          <tr className="h-14 text-sm font-semibold tracking-wide text-gray-500 uppercase">
             {selection.enabled && (
               <th className="w-[5%] px-4 text-center">
                 <CheckBox
