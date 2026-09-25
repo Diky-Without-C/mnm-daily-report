@@ -5,16 +5,16 @@ import {
 } from "@heroicons/react/24/outline";
 import Button from "@components/Button";
 import SearchBar from "@components/SearchBar";
-import type { OrderOptionField } from "@constants/Order";
+import type { MultipleField, SingleField } from "@constants/Order";
 import OptionDropdown from "./OptionDropdown";
 
 interface ToolbarProps {
   onSearch: (value: string) => void;
   onAdd: () => void;
-  filter: Record<string, OrderOptionField>;
-  onFilter: (group: string, value: OrderOptionField["selectedValue"]) => void;
-  sort: Record<string, OrderOptionField>;
-  onSort: (group: string, value: OrderOptionField["selectedValue"]) => void;
+  filter: Record<string, MultipleField>;
+  onFilter: (group: string, value: MultipleField["selectedValue"]) => void;
+  sort: Record<string, SingleField>;
+  onSort: (group: string, value: SingleField["selectedValue"]) => void;
 }
 
 export default function Toolbar({

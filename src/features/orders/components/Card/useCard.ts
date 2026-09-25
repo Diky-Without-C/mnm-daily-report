@@ -63,8 +63,8 @@ export function useCard() {
       value: orders.filter.value,
       sort: orders.filter.sort,
       search,
-      change: orders.filter.change,
-      changeSort: orders.filter.changeSort,
+      filterChange: orders.filter.filterChange,
+      sortChange: orders.filter.sortChange,
     },
     form,
     deletion: {

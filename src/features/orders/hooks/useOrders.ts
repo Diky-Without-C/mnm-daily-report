@@ -23,8 +23,8 @@ export function useOrders({ tabs }: UseOrdersParams) {
       value: filter.filter,
       sort: filter.sort,
       search: filter.searchOrder,
-      change: filter.filterChange,
-      changeSort: filter.sortChange,
+      filterChange: filter.filterChange,
+      sortChange: filter.sortChange,
     },
   };
 }

@@ -10,19 +10,19 @@ import CheckBox from "@components/Input/CheckBox";
 import RadioBox from "@components/Input/RadioBox";
 import type { OrderOptionField } from "@constants/Order";
 
-interface OptionDropdownProps {
-  options: Record<string, OrderOptionField>;
+interface OptionDropdownProps<T extends OrderOptionField> {
   label: string;
   icon: ReactNode;
-  onChange: (group: string, value: OrderOptionField["selectedValue"]) => void;
+  options: Record<string, T>;
+  onChange: (group: string, value: T["selectedValue"]) => void;
 }
 
-export default function OptionDropdown({
+export default function OptionDropdown<T extends OrderOptionField>({
   options,
   label,
   icon,
   onChange,
-}: OptionDropdownProps) {
+}: OptionDropdownProps<T>) {
   return (
     <Dropdown closeOnSelect={false}>
       <DropdownTrigger asChild>

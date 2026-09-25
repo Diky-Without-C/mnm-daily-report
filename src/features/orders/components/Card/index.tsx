@@ -24,9 +24,9 @@ export default function Card({ onSelect }: CardProps) {
         onSearch={filter.search}
         onAdd={form.add}
         filter={filter.value}
-        onFilter={filter.change}
+        onFilter={filter.filterChange}
         sort={filter.sort}
-        onSort={filter.changeSort}
+        onSort={filter.sortChange}
       />
       <div className="flex h-full w-full flex-col overflow-hidden">
         <Tabs items={ORDER_TABS} value={tab.value} onChange={tab.change} />
