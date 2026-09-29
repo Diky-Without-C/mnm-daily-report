@@ -26,33 +26,32 @@ export default function Toolbar({
   onSort,
 }: ToolbarProps) {
   return (
-    <div className="mb-2 flex">
-      <div className="flex w-full gap-1">
-        <SearchBar
-          onSearch={onSearch}
-          placeHolder="Search order"
-          className="mr-0.5 w-full bg-white"
-        />
-        <OptionDropdown
-          label={"Filter"}
-          icon={<AdjustmentsHorizontalIcon className="size-5" />}
-          options={filter}
-          onChange={onFilter}
-        />
-        <OptionDropdown
-          label={"Sort"}
-          icon={<ArrowsUpDownIcon className="size-5" />}
-          options={sort}
-          onChange={onSort}
-        />
-        <Button
-          variant="info"
-          className="px-3 whitespace-nowrap"
-          onClick={onAdd}
-        >
-          <PlusIcon className="size-5" /> Order
-        </Button>
-      </div>
+    <div className="mb-2 flex gap-1">
+      <SearchBar
+        onSearch={onSearch}
+        placeHolder="Search order"
+        className="min-w-0 flex-1 bg-white"
+      />
+      <OptionDropdown
+        label="Filter"
+        icon={<AdjustmentsHorizontalIcon className="size-5" />}
+        options={filter}
+        onChange={onFilter}
+      />
+      <OptionDropdown
+        label="Sort"
+        icon={<ArrowsUpDownIcon className="size-5" />}
+        options={sort}
+        onChange={onSort}
+      />
+      <Button
+        variant="info"
+        className="shrink-0 px-3 whitespace-nowrap"
+        onClick={onAdd}
+      >
+        <PlusIcon className="size-5" />
+        Order
+      </Button>
     </div>
   );
 }
