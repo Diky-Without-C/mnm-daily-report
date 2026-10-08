@@ -32,7 +32,9 @@ export default function useSales({ tabs }: UseSalesProps) {
     filter: filter.filter,
     sort: filter.sort,
     handlers: {
-      ...filter.handlers,
+      filter: filter.filterChange,
+      sort: filter.sortChange,
+      search: filter.searchSale,
     },
   };
 }

@@ -1,16 +1,17 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import type { ParsedSales } from "@libs/xlsx/xlsx.type";
-import type { SalesFilter, SalesSort } from "../sales.type";
 import { filterSales, searchSales, sortSales } from "../sales.helper";
+import type { MultipleField, SingleField } from "@constants/Order";
 
-interface UseOrderFilterParams {
+interface UseSalesFilterParams {
   sales: ParsedSales[];
 }
 
-export function useSalesFilter({ sales }: UseOrderFilterParams) {
+export function useSalesFilter({ sales }: UseSalesFilterParams) {
   const [search, setSearch] = useState("");
-  const [sort, setSort] = useState<SalesSort>("monthly-desc");
-  const [filter, setFilter] = useState<SalesFilter>(() =>
+  const [sort, setSort] =
+    useState<Record<string, SingleField>>(getInitialSort());
+  const [filter, setFilter] = useState<Record<string, MultipleField>>(() =>
     getInitialFilter(sales),
   );
 
@@ -23,46 +24,102 @@ export function useSalesFilter({ sales }: UseOrderFilterParams) {
     const filtered = filterSales(sorted, filter);
 
     return searchSales(filtered, search);
-  }, [filter, sales, search, sort]);
+  }, [sales, search, filter, sort]);
 
-  const handleSearch = useCallback((value: string) => {
+  const searchSale = useCallback((value: string) => {
     setSearch(value);
   }, []);
 
-  const handleFilterChange = useCallback(
-    (group: keyof SalesFilter, key: string, value: boolean) => {
-      setFilter((prev) => ({
-        ...prev,
-        [group]: {
-          ...prev[group],
-          [key]: value,
-        },
-      }));
+  const filterChange = useCallback(
+    (group: string, selectedValue: MultipleField["selectedValue"]) => {
+      setFilter((prev) => {
+        const current = prev[group];
+
+        if (!current) return prev;
+
+        return {
+          ...prev,
+          [group]: {
+            ...current,
+            selectedValue,
+          },
+        };
+      });
     },
     [],
   );
 
-  const handleSortChange = useCallback((value: SalesSort) => {
-    setSort(value);
-  }, []);
+  const sortChange = useCallback(
+    (group: string, selectedValue: SingleField["selectedValue"]) => {
+      setSort((prev) => {
+        const current = prev[group];
+
+        if (!current) return prev;
+
+        return {
+          ...prev,
+          [group]: {
+            ...current,
+            selectedValue,
+          },
+        };
+      });
+    },
+    [],
+  );
 
   return {
     sales: filteredSales,
     search,
     filter,
     sort,
-    handlers: {
-      handleSearch,
-      handleFilterChange,
-      handleSortChange,
+    searchSale,
+    filterChange,
+    sortChange,
+  };
+}
+
+function getInitialFilter(sales: ParsedSales[]): Record<string, MultipleField> {
+  const packing = [
+    ...new Set(
+      sales
+        .map((sale) => sale.packing)
+        .filter((value): value is string => Boolean(value)),
+    ),
+  ];
+
+  return {
+    packing: {
+      type: "multiple",
+      selectedValue: packing,
+      options: packing.map((value) => ({
+        label: value,
+        value,
+      })),
     },
   };
 }
 
-function getInitialFilter(sales: ParsedSales[]): SalesFilter {
-  const packing = [...new Set(sales.map((sale) => sale.packing))];
+function getInitialSort(): Record<string, SingleField> {
+  const fields = ["total", "code"];
+  const directions = ["ascending", "descending"];
 
   return {
-    packing: Object.fromEntries(packing.map((value) => [value, true])),
+    field: {
+      type: "single",
+      selectedValue: "total",
+      options: fields.map((value) => ({
+        label: value,
+        value,
+      })),
+    },
+    direction: {
+      type: "single",
+      selectedValue: "descending",
+      options: directions.map((value) => ({
+        label: value,
+        value,
+      })),
+    },
   };
 }

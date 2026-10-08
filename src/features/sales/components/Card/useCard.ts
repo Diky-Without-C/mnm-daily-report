@@ -36,7 +36,7 @@ export function useCard() {
   const search = useCallback(
     (value: string) => {
       pagination.setFirstPage();
-      handlers.handleSearch(value);
+      handlers.search(value);
     },
     [pagination, handlers],
   );
@@ -49,8 +49,8 @@ export function useCard() {
     pagination,
     actions: {
       search,
-      filter: handlers.handleFilterChange,
-      sort: handlers.handleSortChange,
+      filter: handlers.filter,
+      sort: handlers.sort,
       changeTab,
     },
   };
