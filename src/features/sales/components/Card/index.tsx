@@ -18,6 +18,7 @@ export default function SalesCard() {
         onFilter={actions.filter}
         sort={sort}
         onSort={actions.sort}
+        onFileChange={actions.changeFile}
       />
       <div className="flex h-full w-full flex-col overflow-hidden">
         <Tabs

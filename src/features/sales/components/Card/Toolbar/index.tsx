@@ -1,10 +1,9 @@
 import {
   AdjustmentsHorizontalIcon,
   ArrowsUpDownIcon,
-  ArrowUpTrayIcon,
+  CloudArrowUpIcon,
 } from "@heroicons/react/24/outline";
 import SearchBar from "@components/SearchBar";
-import Button from "@components/Button";
 import type { MultipleField, SingleField } from "@constants/Order";
 import OptionDropdown from "./OptionDropdown";
 
@@ -14,6 +13,7 @@ interface ToolbarProps {
   onFilter: (group: string, value: MultipleField["selectedValue"]) => void;
   sort: Record<string, SingleField>;
   onSort: (group: string, value: SingleField["selectedValue"]) => void;
+  onFileChange: (file: File | null) => void;
 }
 
 export default function Toolbar({
@@ -22,6 +22,7 @@ export default function Toolbar({
   onFilter,
   sort,
   onSort,
+  onFileChange,
 }: ToolbarProps) {
   return (
     <div className="z-20 mb-2 flex">
@@ -43,9 +44,19 @@ export default function Toolbar({
           options={sort}
           onChange={onSort}
         />
-        <Button className="px-3 whitespace-nowrap" onClick={() => {}}>
-          <ArrowUpTrayIcon className="size-5" /> Import Sales
-        </Button>
+        <label className="inline-flex cursor-pointer items-center gap-2 rounded-md border border-gray-200 bg-gray-100 px-4 py-2 text-sm font-medium text-gray-700 hover:border-gray-300 hover:bg-gray-200">
+          <CloudArrowUpIcon className="size-5" />
+          Import
+          <input
+            type="file"
+            className="sr-only"
+            accept=".xlsx,.xls"
+            onChange={(e) => {
+              onFileChange(e.target.files?.[0] ?? null);
+              e.target.value = "";
+            }}
+          />
+        </label>
       </div>
     </div>
   );

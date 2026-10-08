@@ -7,10 +7,12 @@ import {
 } from "@features/sales/sales.helper";
 import { ITEMS_PER_PAGE } from "@features/sales/sales.constant";
 import type { ProcessedSale, SalesTabs } from "@features/sales/sales.type";
+import { usePersistedFile } from "@hooks/usePersistedFile";
 
 export function useCard() {
   const [currentTab, setcurrentTabs] = useState<SalesTabs>("all");
   const { sales, filter, sort, handlers } = useSales({ tabs: currentTab });
+  const { setFile } = usePersistedFile("mnm-xlsx-sales-storage");
 
   const pagination = usePagination({
     totalItems: sales.length,
@@ -41,6 +43,14 @@ export function useCard() {
     [pagination, handlers],
   );
 
+  const changeFile = useCallback(
+    (file: File | null) => {
+      if (!file) return;
+      setFile(file);
+    },
+    [setFile],
+  );
+
   return {
     tabs: currentTab,
     currentSales,
@@ -52,6 +62,7 @@ export function useCard() {
       filter: handlers.filter,
       sort: handlers.sort,
       changeTab,
+      changeFile,
     },
   };
 }
