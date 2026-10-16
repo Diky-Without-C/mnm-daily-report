@@ -50,7 +50,7 @@ export default function Toolbar({
           <input
             type="file"
             className="sr-only"
-            accept=".xlsx,.xls"
+            accept=".xlsx,.xls, .xlsm"
             onChange={(e) => {
               onFileChange(e.target.files?.[0] ?? null);
               e.target.value = "";

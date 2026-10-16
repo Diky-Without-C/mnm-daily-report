@@ -57,7 +57,7 @@ export default function PreviewPanel({
           <div className="grid shrink-0 grid-cols-[1fr_auto] items-start gap-2">
             <div className="min-w-0">
               <InputFile
-                accept=".xlsx,.xls"
+                accept=".xlsx,.xls,.xlsm"
                 value={file}
                 onChange={setFile}
                 className="w-full"
