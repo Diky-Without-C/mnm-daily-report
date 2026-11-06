@@ -24,7 +24,7 @@ export default function Tabs<T extends string>({
             type="button"
             onClick={() => onChange(item)}
             className={cn(
-              "relative px-4 py-2 text-sm font-medium capitalize transition-colors duration-200 after:absolute after:inset-x-0 after:bottom-0 after:h-0.5 focus-visible:outline-none",
+              "relative px-4 py-2 text-sm font-medium capitalize transition-colors duration-200 after:absolute after:inset-x-0 after:bottom-0 after:h-0.5 focus-visible:rounded-sm focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:outline-none",
               isActive
                 ? "text-blue-500 after:bg-blue-500"
                 : "text-gray-500 after:bg-transparent hover:text-gray-700",

@@ -4,6 +4,7 @@ import { supabaseService } from "@apps/supabase/service";
 import type { ContainerType } from "@constants/Order";
 import { useOrdersStore } from "@stores/useOrders.store";
 import { StuffingFormSchema } from "./StuffingForm.schema";
+import { DB_TABLES } from "@constants/App";
 
 interface StuffingForm {
   item: OrderSchema | null;
@@ -35,7 +36,7 @@ export default function useStuffing() {
   const [form, setForm] = useState<StuffingForm>(initialForm);
   const [error, setError] = useState<StuffingError | null>(null);
 
-  const { setOrders } = useOrdersStore();
+  const setOrders = useOrdersStore((state) => state.setOrders);
 
   const selectItem = useCallback((item: OrderSchema) => {
     setError(null);
@@ -149,9 +150,9 @@ export default function useStuffing() {
       };
 
       if (remainingQty > 0 && !clearOrder) {
-        const created = await supabaseService.create("report", containerData);
+        const created = await supabaseService.create(DB_TABLES.orders, containerData);
 
-        await supabaseService.update("report", id, {
+        await supabaseService.update(DB_TABLES.orders, id, {
           amount: remainingQty,
         });
 
@@ -163,7 +164,7 @@ export default function useStuffing() {
           ),
         );
       } else {
-        await supabaseService.update("report", id, containerData);
+        await supabaseService.update(DB_TABLES.orders, id, containerData);
 
         setOrders((prev) =>
           prev.map((order) =>

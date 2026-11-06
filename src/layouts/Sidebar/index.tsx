@@ -10,6 +10,7 @@ import Divider from "@components/Divider";
 import Brand from "@components/Brand";
 import Tooltip from "@components/Tooltip";
 import { useClickOutside } from "@hooks/useClickOutside";
+import { ROUTES } from "@constants/App";
 import { cn } from "@utils/cn";
 
 interface SidebarProps {
@@ -27,17 +28,17 @@ const menuItems: MenuItem[] = [
   {
     label: "Order",
     icon: <DocumentCheckIcon className="size-6" />,
-    path: "/order",
+    path: ROUTES.order,
   },
   {
     label: "Stuffing",
     icon: <TruckIcon className="size-6" />,
-    path: "/stuffing",
+    path: ROUTES.stuffing,
   },
   {
     label: "Sales",
     icon: <ChartBarIcon className="size-6" />,
-    path: "/sales",
+    path: ROUTES.sales,
   },
 ];
 
@@ -82,7 +83,7 @@ export default function Sidebar({ expanded, onToggle }: SidebarProps) {
                 aria-label={!expanded ? item.label : undefined}
                 className={({ isActive }) =>
                   cn(
-                    "group relative flex h-11 items-center rounded-md transition-colors duration-200",
+                    "group relative flex h-11 items-center rounded-md transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none",
                     expanded ? "px-3" : "justify-center px-3",
                     isActive
                       ? "bg-gray-800/80 text-white shadow-sm before:absolute before:left-0 before:h-6 before:w-0.5 before:rounded-full before:bg-blue-500"

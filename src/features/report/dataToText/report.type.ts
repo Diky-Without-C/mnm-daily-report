@@ -1,6 +1,6 @@
 import type { OrderSchema } from "@apps/supabase/Order.Schema.dto";
 import type { ParsedReport, ParsedSales } from "@libs/xlsx/xlsx.type";
-import { CATEGORY_KEYS } from "../report.constant";
+import { ITEM_CATEGORIES } from "@constants/Items";
 
 export type ProcessedGroup = {
   content: ParsedReport[];
@@ -9,6 +9,6 @@ export type ProcessedGroup = {
 };
 
 export type ProcessedGroups = Record<
-  (typeof CATEGORY_KEYS)[number],
+  (typeof ITEM_CATEGORIES)[number],
   ProcessedGroup[]
 >;

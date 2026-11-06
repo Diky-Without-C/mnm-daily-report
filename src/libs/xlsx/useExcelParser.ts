@@ -1,23 +1,12 @@
 import { useEffect, useState } from "react";
-import type { Contents, ParsedReport, ParsedSales } from "./xlsx.type";
-import reportParser from "./parser/report.parser";
-import salesParser from "./parser/sales.parser";
-
-type ParserMap = {
-  report: ParsedReport;
-  sales: ParsedSales;
-};
+import { parseSheet } from "./parseCache";
+import type { Contents, ParserMap } from "./xlsx.type";
 
 interface UseExcelParserProps<T extends Contents> {
   file: File | null;
   sheetIndex: number[];
   content: T;
 }
-
-const contentsToParser = {
-  report: reportParser,
-  sales: salesParser,
-};
 
 export function useExcelParser<T extends Contents>({
   file,
@@ -29,39 +18,35 @@ export function useExcelParser<T extends Contents>({
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!file) return;
+    // No file (removed / not uploaded yet): drop any previous result.
+    if (!file) {
+      setData([]);
+      setError(null);
+      setLoading(false);
+      return;
+    }
 
-    const reader = new FileReader();
+    let cancelled = false;
 
     setLoading(true);
     setError(null);
 
-    reader.onload = (e) => {
-      try {
-        const buffer = e.target?.result;
-
-        if (!(buffer instanceof ArrayBuffer)) {
-          throw new Error("Invalid file");
-        }
-
-        const bytes = new Uint8Array(buffer);
-
-        const parsedData = sheetIndex.map((idx) =>
-          contentsToParser[content](bytes, idx),
-        ) as ParserMap[T][][];
-
-        setData(parsedData);
-      } catch (err) {
+    Promise.all(sheetIndex.map((idx) => parseSheet(file, content, idx)))
+      .then((parsed) => {
+        if (cancelled) return;
+        setData(parsed);
+      })
+      .catch((err: unknown) => {
+        if (cancelled) return;
+        setData([]);
         setError(err instanceof Error ? err.message : "Unknown error");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    reader.readAsArrayBuffer(file);
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
 
     return () => {
-      reader.abort();
+      cancelled = true;
     };
   }, [file, sheetIndex, content]);
 

@@ -12,6 +12,8 @@ dist
 dist-ssr
 *.local
 
+__tests__
+
 .env
 working tree.txt
 

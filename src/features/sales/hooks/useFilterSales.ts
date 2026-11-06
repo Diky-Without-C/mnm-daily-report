@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import type { ParsedSales } from "@libs/xlsx/xlsx.type";
 import { filterSales, searchSales, sortSales } from "../sales.helper";
-import type { MultipleField, SingleField } from "@constants/Order";
+import type { MultipleField, SingleField } from "@/types/option";
 
 interface UseSalesFilterParams {
   sales: ParsedSales[];

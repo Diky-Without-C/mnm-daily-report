@@ -1,4 +1,4 @@
-import NotFoundImage from "@assets/image/no-data-found.png";
+import NotFoundImage from "@assets/image/no-data-found.webp";
 
 export default function NotFound() {
   return (
@@ -6,6 +6,9 @@ export default function NotFound() {
       <img
         src={NotFoundImage}
         alt="No orders found"
+        width={450}
+        height={450}
+        decoding="async"
         className="h-60 w-auto object-contain select-none"
       />
       <p className="text-lg text-gray-500">No orders found</p>

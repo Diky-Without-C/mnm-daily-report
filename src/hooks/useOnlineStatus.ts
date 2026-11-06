@@ -1,11 +1,10 @@
 import { useEffect, useRef } from "react";
 import { supabase } from "@apps/supabase/supabase";
 import { useOnlineStore } from "@stores/useOnline.store";
-
-const INTERVAL = 30000;
+import { DB_TABLES, ONLINE_CHECK_INTERVAL_MS } from "@constants/App";
 
 async function checkConnection() {
-  const { error } = await supabase.from("report").select("id").limit(1);
+  const { error } = await supabase.from(DB_TABLES.orders).select("id").limit(1);
 
   return !error;
 }
@@ -32,7 +31,7 @@ export function useOnlineStatus() {
   useEffect(() => {
     check();
 
-    const interval = setInterval(check, INTERVAL);
+    const interval = setInterval(check, ONLINE_CHECK_INTERVAL_MS);
 
     window.addEventListener("focus", check);
     window.addEventListener("online", check);

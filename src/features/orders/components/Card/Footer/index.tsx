@@ -1,5 +1,5 @@
 import Pagination from "@components/Pagination";
-import { ITEMS_PER_PAGE } from "@constants/Order";
+import { ORDER_ITEMS_PER_PAGE } from "@constants/Order";
 import SelectionBar from "./SelectionBar";
 import type { useCard } from "../useCard";
 
@@ -14,10 +14,10 @@ export default function Footer({
   pagination,
   deletion,
 }: FooterProps) {
-  const start = (pagination.page - 1) * ITEMS_PER_PAGE + 1;
+  const start = (pagination.page - 1) * ORDER_ITEMS_PER_PAGE + 1;
   const end = Math.min(
-    start + ITEMS_PER_PAGE - 1,
-    pagination.totalPages * ITEMS_PER_PAGE,
+    start + ORDER_ITEMS_PER_PAGE - 1,
+    pagination.totalPages * ORDER_ITEMS_PER_PAGE,
   );
 
   return (
@@ -30,7 +30,7 @@ export default function Footer({
             Show {start}–{end}
           </span>
           <span className="font-medium text-gray-700">
-            of {pagination.totalPages * ITEMS_PER_PAGE}
+            of {pagination.totalPages * ORDER_ITEMS_PER_PAGE}
           </span>
         </div>
       )}

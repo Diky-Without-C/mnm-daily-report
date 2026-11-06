@@ -20,13 +20,37 @@ export function setOffline() {
   useOnlineStore.getState().setStatus("offline");
 }
 
-export function isNetworkError(error: unknown) {
-  if (!(error instanceof Error)) return false;
+// Specific browser messages for a failed request (Chrome, Firefox, Safari).
+const NETWORK_ERROR_PATTERNS = [
+  /failed to fetch/i,
+  /fetch failed/i,
+  /load failed/i,
+  /networkerror/i,
+  /network request failed/i,
+  /network error/i,
+];
 
-  return (
-    error.name === "AbortError" ||
-    error.message === "Failed to fetch" ||
-    error.message.includes("fetch") ||
-    error.message.includes("network")
-  );
+const getErrorField = (error: unknown, field: "message" | "name") => {
+  if (typeof error === "string") return field === "message" ? error : "";
+  if (typeof error !== "object" || error === null) return "";
+
+  const value = (error as Record<string, unknown>)[field];
+
+  return typeof value === "string" ? value : "";
+};
+
+/**
+ * True when `error` looks like a connectivity problem. Accepts plain objects
+ * too: supabase-js reports failures as `{ message, ... }`, not always `Error`.
+ */
+export function isNetworkError(error: unknown) {
+  if (typeof navigator !== "undefined" && navigator.onLine === false) {
+    return true;
+  }
+
+  if (getErrorField(error, "name") === "AbortError") return true;
+
+  const message = getErrorField(error, "message");
+
+  return NETWORK_ERROR_PATTERNS.some((pattern) => pattern.test(message));
 }

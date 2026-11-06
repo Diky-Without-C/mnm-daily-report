@@ -4,7 +4,7 @@ import { useOrderForm } from "@features/orders/components/Modal/FormBox/useOrder
 import { useOrderDeletion } from "@features/orders/hooks/useOrderDeletion";
 import { usePagination } from "@features/orders/hooks/usePagination";
 import { useSelection } from "@features/orders/hooks/useSelection";
-import { ITEMS_PER_PAGE } from "@features/orders/order.constants";
+import { ORDER_ITEMS_PER_PAGE } from "@constants/Order";
 import type { OrderTabs } from "@features/orders/order.type";
 
 export function useCard() {
@@ -16,7 +16,7 @@ export function useCard() {
 
   const pagination = usePagination({
     totalItems: orders.data.length,
-    itemsPerPage: ITEMS_PER_PAGE,
+    itemsPerPage: ORDER_ITEMS_PER_PAGE,
   });
 
   const currentOrders = pagination.getPageItems(orders.data);

@@ -5,18 +5,19 @@ import {
   createEmptySales,
   processingSales,
 } from "@features/sales/sales.helper";
-import { ITEMS_PER_PAGE } from "@features/sales/sales.constant";
+import { SALES_ITEMS_PER_PAGE } from "@constants/Sales";
 import type { ProcessedSale, SalesTabs } from "@features/sales/sales.type";
 import { usePersistedFile } from "@hooks/usePersistedFile";
+import { FILE_KEYS } from "@constants/App";
 
 export function useCard() {
   const [currentTab, setcurrentTabs] = useState<SalesTabs>("all");
   const { sales, filter, sort, handlers } = useSales({ tabs: currentTab });
-  const { setFile } = usePersistedFile("mnm-xlsx-sales-storage");
+  const { setFile } = usePersistedFile(FILE_KEYS.sales);
 
   const pagination = usePagination({
     totalItems: sales.length,
-    itemsPerPage: ITEMS_PER_PAGE,
+    itemsPerPage: SALES_ITEMS_PER_PAGE,
   });
 
   const changeTab = useCallback(
@@ -31,7 +32,7 @@ export function useCard() {
   const currentSales = useMemo(() => {
     return [
       ...processingSales(pages),
-      ...createEmptySales(ITEMS_PER_PAGE - pages.length),
+      ...createEmptySales(SALES_ITEMS_PER_PAGE - pages.length),
     ] as ProcessedSale[];
   }, [pages]);
 

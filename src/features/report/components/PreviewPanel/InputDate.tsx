@@ -6,6 +6,7 @@ import {
 import { useMemo, useState } from "react";
 
 import Button from "@components/Button";
+import { MONTHS_LONG_EN, WEEKDAYS_SHORT_EN } from "@constants/Date";
 import { useClickOutside } from "@hooks/useClickOutside";
 import { cn } from "@utils/cn";
 
@@ -13,23 +14,6 @@ interface InputDateProps {
   date: Date;
   onDateChange: (date: Date) => void;
 }
-
-const MONTHS = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
-];
-
-const WEEKDAYS = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
 
 const getDaysInMonth = (date: Date) =>
   new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
@@ -96,7 +80,7 @@ export default function InputDate({ date, onDateChange }: InputDateProps) {
             onNext={() => changeMonth(1)}
           />
           <div className="mb-2 grid grid-cols-7 text-center text-xs text-gray-400">
-            {WEEKDAYS.map((day) => (
+            {WEEKDAYS_SHORT_EN.map((day) => (
               <span key={day}>{day}</span>
             ))}
           </div>
@@ -152,7 +136,7 @@ function CalendarHeader({
         <ChevronLeftIcon className="size-4" />
       </Button>
       <span className="text-sm font-semibold text-gray-800">
-        {MONTHS[month]} {year}
+        {MONTHS_LONG_EN[month]} {year}
       </span>
       <Button onClick={onNext} className="p-1">
         <ChevronRightIcon className="size-4" />

@@ -1,16 +1,17 @@
 import { replaceItem } from "@features/report/utils/replaceItem";
-import { ITEMS_TO_REPLACE } from "@features/sales/sales.constant";
+import { SALES_ITEMS_TO_REPLACE } from "@constants/rules/sales.rules";
 import { clearWhiteSpace } from "@utils/clearWhiteSpace";
 import { parseExcelFile } from "../xlsx.parser";
 import type { ParsedSales } from "../xlsx.type";
 import { schemas } from "./sales.schema";
 
-export default function salesParser(bytes: Uint8Array, sheetIndex: number) {
-  const { headerRows, contentRows } = parseExcelFile(bytes, sheetIndex, [
-    "nama barang",
-    "merk",
-  ]);
+type Row = unknown[];
 
+/** Pure: turns the header + content rows of a sales sheet into sales items. */
+export function parseSalesRows(
+  headerRows: Row,
+  contentRows: Row[],
+): ParsedSales[] {
   const getIndex = (key: string | string[]) => {
     const keys = Array.isArray(key) ? key : [key];
 
@@ -43,9 +44,16 @@ export default function salesParser(bytes: Uint8Array, sheetIndex: number) {
   const salesData = contentRows
     .filter((row) => row.some((cell) => cell))
     .map((row) => {
-      const item = `${row[indexes.item]} (${row[indexes.packing] || row[indexes.item].match(/[([](.+?)[)\]]/)?.[1]})`;
-      const clearItem = replaceItem(clearWhiteSpace(item), ITEMS_TO_REPLACE);
-      const category = row[indexes.category];
+      const rawItem = String(row[indexes.item] ?? "");
+      const rawPacking =
+        String(row[indexes.packing] ?? "").trim() ||
+        rawItem.match(/[([](.+?)[)\]]/)?.[1];
+
+      // Only append "(packing)" when there is one (it used to append the
+      // literal text "(undefined)").
+      const item = rawPacking ? `${rawItem} (${rawPacking})` : rawItem;
+      const clearItem = replaceItem(clearWhiteSpace(item), SALES_ITEMS_TO_REPLACE);
+      const category = String(row[indexes.category] ?? "");
 
       const matchPacking = clearItem.match(/[([](.+?)[)\]]/);
       const packing = matchPacking?.[1];
@@ -75,4 +83,16 @@ export default function salesParser(bytes: Uint8Array, sheetIndex: number) {
   return salesData.filter(
     ({ code, total, category }) => category && code !== "" && total > 0,
   ) as ParsedSales[];
+}
+
+export default async function salesParser(
+  bytes: Uint8Array,
+  sheetIndex: number,
+) {
+  const { headerRows, contentRows } = await parseExcelFile(bytes, sheetIndex, [
+    "nama barang",
+    "merk",
+  ]);
+
+  return parseSalesRows(headerRows, contentRows);
 }

@@ -1,5 +1,5 @@
 import type { OrderSchema } from "@apps/supabase/Order.Schema.dto";
-import { CODE_GROUPS } from "@features/sales/sales.constant";
+import { CODE_GROUPS } from "@constants/rules/sales.rules";
 import type {
   GroupedCategories,
   ParsedReport,

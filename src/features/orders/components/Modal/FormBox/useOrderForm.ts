@@ -3,6 +3,7 @@ import { supabaseService } from "@apps/supabase/service";
 import type { OrderSchema } from "@apps/supabase/Order.Schema.dto";
 import { useOrdersStore } from "@stores/useOrders.store";
 import { OrderFormSchema } from "./OrderForm.schema";
+import { DB_TABLES } from "@constants/App";
 
 export interface OrderForm {
   id: string | null;
@@ -108,7 +109,7 @@ export function useOrderForm() {
 
     try {
       if (form.id) {
-        await supabaseService.update("report", form.id, result.data);
+        await supabaseService.update(DB_TABLES.orders, form.id, result.data);
 
         setOrders((orders) =>
           orders.map((order) =>
@@ -116,7 +117,7 @@ export function useOrderForm() {
           ),
         );
       } else {
-        const created = await supabaseService.create("report", result.data);
+        const created = await supabaseService.create(DB_TABLES.orders, result.data);
 
         setOrders((orders) => [...orders, created]);
       }

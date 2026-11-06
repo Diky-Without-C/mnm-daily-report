@@ -3,7 +3,10 @@ import { useEffect, useState } from "react";
 import Button from "@components/Button";
 import Divider from "@components/Divider";
 import InputFile from "@components/Input/InputFile";
+import Spinner from "@components/Spinner";
+import { COPY_FEEDBACK_MS, EXCEL_ACCEPT, FILE_KEYS } from "@constants/App";
 import { usePersistedFile } from "@hooks/usePersistedFile";
+import { toast } from "@stores/useToast.store";
 import { cn } from "@utils/cn";
 import InputDate from "./InputDate";
 
@@ -14,6 +17,8 @@ interface PreviewPanelProps {
   text: string;
   content: string;
   isReady: boolean;
+  loading?: boolean;
+  error?: string | null;
 }
 
 export default function PreviewPanel({
@@ -23,16 +28,24 @@ export default function PreviewPanel({
   text,
   content,
   isReady,
+  loading = false,
+  error = null,
 }: PreviewPanelProps) {
   const [isCopy, setIsCopy] = useState(false);
 
-  const { file } = usePersistedFile("mnm-xlsx-report-storage");
+  const { file } = usePersistedFile(FILE_KEYS.report);
 
-  const handleCopy = () => {
+  const handleCopy = async () => {
     if (!isReady) return;
 
-    navigator.clipboard.writeText(text);
-    setIsCopy(true);
+    try {
+      await navigator.clipboard.writeText(text);
+      setIsCopy(true);
+    } catch {
+      toast.error(
+        "Couldn't copy to the clipboard. Select the text and copy it manually.",
+      );
+    }
   };
 
   useEffect(() => {
@@ -40,10 +53,25 @@ export default function PreviewPanel({
 
     const timeout = setTimeout(() => {
       setIsCopy(false);
-    }, 1500);
+    }, COPY_FEEDBACK_MS);
 
     return () => clearTimeout(timeout);
   }, [isCopy]);
+
+  // What the preview box shows. Errors used to be hidden behind the
+  // "Import a report" hint because `isReady` is false while loading / failing.
+  const hasText = !!file && !loading && !error && content.trim() !== "";
+  const message = !file ? (
+    <p className="text-gray-500">Import a report to preview its content.</p>
+  ) : loading ? (
+    <Spinner label="Reading the file" />
+  ) : error ? (
+    <p role="alert" className="text-red-600">
+      {error}
+    </p>
+  ) : (
+    <p className="text-gray-500">No data for this date.</p>
+  );
 
   return (
     <section className="flex h-full w-full flex-col">
@@ -57,7 +85,7 @@ export default function PreviewPanel({
           <div className="grid shrink-0 grid-cols-[1fr_auto] items-start gap-2">
             <div className="min-w-0">
               <InputFile
-                accept=".xlsx,.xls,.xlsm"
+                accept={EXCEL_ACCEPT}
                 value={file}
                 onChange={setFile}
                 className="w-full"
@@ -69,9 +97,10 @@ export default function PreviewPanel({
             <Button
               variant="info"
               disabled={!isReady}
-              className="absolute top-2 right-2 z-10 shrink-0 p-1.5"
+              className="absolute top-2 right-2 z-10 shrink-0 p-1.5 disabled:cursor-not-allowed disabled:opacity-50"
               onClick={handleCopy}
               title={isCopy ? "Copied" : "Copy report"}
+              aria-label={isCopy ? "Copied" : "Copy report"}
             >
               {isCopy ? (
                 <CheckIcon className="size-6" />
@@ -80,20 +109,19 @@ export default function PreviewPanel({
               )}
             </Button>
             <div
+              aria-busy={loading}
               className={cn(
                 "flex min-h-0 flex-1 flex-col rounded-md border border-gray-400 p-2",
-                !isReady && "items-center justify-center",
+                !hasText && "items-center justify-center text-center",
               )}
             >
-              <pre
-                className={cn(
-                  "h-full w-full overflow-y-auto text-sm leading-relaxed whitespace-pre-wrap",
-                  !isReady &&
-                    "flex items-center justify-center text-center text-gray-500",
-                )}
-              >
-                {isReady ? content : "Import a report to preview its content."}
-              </pre>
+              {hasText ? (
+                <pre className="h-full w-full overflow-y-auto text-sm leading-relaxed whitespace-pre-wrap">
+                  {content}
+                </pre>
+              ) : (
+                message
+              )}
             </div>
           </section>
         </div>

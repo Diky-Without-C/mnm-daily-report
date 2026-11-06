@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import BrandSvg from "@assets/brand/brand.svg";
 import LogoSvg from "@assets/brand/Logo Propper.svg";
+import { ROUTES } from "@constants/App";
 import { cn } from "@utils/cn";
 
 interface BrandProps {
@@ -11,7 +12,8 @@ interface BrandProps {
 export default function Brand({ className, variant = "light" }: BrandProps) {
   return (
     <Link
-      to="/"
+      to={ROUTES.home}
+      aria-label="Logific home"
       className={cn(
         "relative flex h-11 items-center justify-center gap-2",
         className,
@@ -20,7 +22,7 @@ export default function Brand({ className, variant = "light" }: BrandProps) {
       <div className="flex size-9 shrink-0 items-center justify-center rounded-tl-xl rounded-br-xl bg-blue-500 p-1.5">
         <img
           src={LogoSvg}
-          alt="Logific"
+          alt=""
           className="h-full w-auto object-contain"
         />
       </div>

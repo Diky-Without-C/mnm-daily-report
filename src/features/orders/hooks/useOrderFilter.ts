@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import type { OrderSchema } from "@apps/supabase/Order.Schema.dto";
-import type { MultipleField, SingleField } from "@constants/Order";
+import type { MultipleField, SingleField } from "@/types/option";
 import { filterOrders, searchOrders, sortOrders } from "../order.helpers";
 
 interface UseOrderFilterParams {

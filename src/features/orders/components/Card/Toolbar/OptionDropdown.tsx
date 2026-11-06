@@ -8,7 +8,7 @@ import {
 } from "@components/Dropdown";
 import CheckBox from "@components/Input/CheckBox";
 import RadioBox from "@components/Input/RadioBox";
-import type { OrderOptionField } from "@constants/Order";
+import type { OrderOptionField } from "@/types/option";
 
 interface OptionDropdownProps<T extends OrderOptionField> {
   label: string;

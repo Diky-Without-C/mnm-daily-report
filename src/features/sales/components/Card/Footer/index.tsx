@@ -1,5 +1,5 @@
 import Pagination from "@components/Pagination";
-import { ITEMS_PER_PAGE } from "@constants/Order";
+import { SALES_ITEMS_PER_PAGE } from "@constants/Sales";
 import type { usePagination } from "@features/sales/hooks/usePagination";
 
 interface FooterProps {
@@ -7,10 +7,10 @@ interface FooterProps {
 }
 
 export default function Footer({ pagination }: FooterProps) {
-  const start = (pagination.page - 1) * ITEMS_PER_PAGE + 1;
+  const start = (pagination.page - 1) * SALES_ITEMS_PER_PAGE + 1;
   const end = Math.min(
-    start + ITEMS_PER_PAGE - 1,
-    pagination.totalPages * ITEMS_PER_PAGE,
+    start + SALES_ITEMS_PER_PAGE - 1,
+    pagination.totalPages * SALES_ITEMS_PER_PAGE,
   );
 
   return (
@@ -20,7 +20,7 @@ export default function Footer({ pagination }: FooterProps) {
           Show {start}–{end}
         </span>
         <span className="font-medium text-gray-700">
-          of {pagination.totalPages * ITEMS_PER_PAGE}
+          of {pagination.totalPages * SALES_ITEMS_PER_PAGE}
         </span>
       </div>
       <Pagination {...pagination} />

@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { OrderSchema } from "@apps/supabase/Order.Schema.dto";
-import { CONTAINER_TYPES } from "@/constants/Order";
+import { CONTAINER_TYPES } from "@constants/Order";
 
 export const StuffingFormSchema = z.object({
   item: OrderSchema.nullable().refine((value) => value !== null, {

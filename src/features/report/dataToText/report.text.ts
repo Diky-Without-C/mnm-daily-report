@@ -1,7 +1,9 @@
 import type { OrderSchema } from "@apps/supabase/Order.Schema.dto";
-import { ITEM_TYPES } from "@apps/constants";
+import { ITEM_TYPES, ITEM_CATEGORIES } from "@constants/Items";
+import { getLast3Months } from "@features/sales/sales.utils";
+import { CUSTOM_TITLES, EXTRA_INFO } from "@constants/rules/report.rules";
+import { REPORT_HEADER } from "@constants/Report";
 import { getOrderLabel } from "@features/orders/order.helpers";
-import { LAST_3_MONTHS } from "@features/sales/sales.constant";
 import type {
   GroupedCategories,
   ParsedReport,
@@ -10,12 +12,6 @@ import type {
 import { capitalize } from "@utils/capitalize";
 import { formatDate } from "@utils/formatDate";
 import { formatNumber } from "@utils/formatNumber";
-import {
-  CATEGORY_KEYS,
-  CUSTOM_TITLES,
-  EXTRA_INFO,
-  HEADER,
-} from "../report.constant";
 import { processedData } from "./report.builder";
 import type { ProcessedGroup } from "./report.type";
 
@@ -89,22 +85,39 @@ const buildTotalLine = (content: ParsedReport[], orders: OrderSchema[]) => {
   });
 };
 
+const getPacking = (sale: ParsedSales) =>
+  Number(sale.packing?.match(/\d+/)?.[0] ?? 0);
+
 const buildSalesLine = (sales: ParsedSales[]) => {
-  const totalSales = sales
-    .flatMap((sale) =>
-      LAST_3_MONTHS().map((month) => sale.monthlySale[month.index] || 0),
-    )
-    .reduce((acc, curr) => acc + curr, 0);
+  if (sales.length === 0) return [];
 
-  const packing = Number(sales[0]?.packing?.match(/\d+/)?.[0] ?? 0);
+  const months = getLast3Months();
+  const fallbackPacking = sales.map(getPacking).find(Boolean) ?? 0;
 
-  const salesLine = [
-    `MPO: ${formatNumber(totalSales)} ctn`,
-    `x ${packing || "(?)"}`,
-    `⇒ ${formatNumber(totalSales * packing)} pcs`,
-  ].join(" ");
+  let totalCartons = 0;
+  let totalPieces = 0;
+  const packings = new Set<number>();
 
-  return sales.length > 0 ? [salesLine] : [];
+  for (const sale of sales) {
+    const cartons = months.reduce(
+      (sum, month) => sum + (sale.monthlySale[month.index] || 0),
+      0,
+    );
+    // Each row is converted with ITS OWN packing size (falls back to the first
+    // known one for rows without it).
+    const packing = getPacking(sale) || fallbackPacking;
+
+    totalCartons += cartons;
+    totalPieces += cartons * packing;
+    packings.add(packing);
+  }
+
+  const multiplier =
+    packings.size > 1 ? "(mixed)" : String([...packings][0] || "(?)");
+
+  return [
+    `MPO: ${formatNumber(totalCartons)} ctn x ${multiplier} ⇒ ${formatNumber(totalPieces)} pcs`,
+  ];
 };
 
 const buildReportText = (group: ProcessedGroup) => {
@@ -127,13 +140,13 @@ export const reportToText = (
 ) => {
   const normalized = processedData(data, orders, sales);
 
-  const body = CATEGORY_KEYS.map((key) => {
+  const body = ITEM_CATEGORIES.map((key) => {
     const groups = normalized[key].map(buildReportText).join("\n\n");
 
     return `*${capitalize(key.replace(/_/g, " "))}\n\n${groups}\n`;
   });
 
-  return [HEADER, formatDate(date), "-".repeat(HEADER.length), ...body].join(
+  return [REPORT_HEADER, formatDate(date), "-".repeat(REPORT_HEADER.length), ...body].join(
     "\n",
   );
 };

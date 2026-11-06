@@ -1,5 +1,4 @@
-import type { ItemTypeCode } from "@apps/constants";
-import type { CATEGORY_KEYS } from "@features/report/report.constant";
+import type { ItemTypeCode, ITEM_CATEGORIES } from "@constants/Items";
 
 export interface ParsedReport {
   name: string;
@@ -21,8 +20,13 @@ export interface ParsedSales {
 }
 
 export type GroupedCategories = Record<
-  (typeof CATEGORY_KEYS)[number],
+  (typeof ITEM_CATEGORIES)[number],
   ParsedReport[][]
 >;
 
 export type Contents = "report" | "sales";
+
+export type ParserMap = {
+  report: ParsedReport;
+  sales: ParsedSales;
+};

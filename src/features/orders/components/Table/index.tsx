@@ -4,7 +4,7 @@ import Badge from "@components/Badge";
 import CheckBox from "@components/Input/CheckBox";
 import { cn } from "@utils/cn";
 import { formatNumber } from "@utils/formatNumber";
-import { ITEMS_PER_PAGE } from "../../order.constants";
+import { ORDER_ITEMS_PER_PAGE } from "@constants/Order";
 import type { useCard } from "../Card/useCard";
 import Action from "./Action";
 
@@ -29,7 +29,7 @@ export default function Table({
   deletion,
   onSelect,
 }: TableProps) {
-  const emptyRows = Math.max(ITEMS_PER_PAGE - orders.length, 0);
+  const emptyRows = Math.max(ORDER_ITEMS_PER_PAGE - orders.length, 0);
   const totalColumns = selection.enabled ? 8 : 7;
 
   return (
@@ -63,18 +63,27 @@ export default function Table({
                 order.from as keyof typeof FROM_BADGE_VARIANT
               ] ?? "default";
 
+            const activate = () =>
+              selection.enabled ? selection.toggle(order) : onSelect?.(order);
+
             return (
               <tr
                 key={order.id}
                 className={cn(
-                  "group relative h-16 cursor-pointer transition-colors duration-200 ease-in-out hover:bg-gray-50",
+                  "group relative h-16 cursor-pointer transition-colors duration-200 ease-in-out hover:bg-gray-50 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-blue-400",
                   selected && "bg-blue-50/60 hover:bg-blue-50",
                 )}
-                onClick={() =>
-                  selection.enabled
-                    ? selection.toggle(order)
-                    : onSelect?.(order)
-                }
+                tabIndex={0}
+                onClick={activate}
+                onKeyDown={(e) => {
+                  // Ignore keys pressed on the checkbox / menu inside the row.
+                  if (e.target !== e.currentTarget) return;
+
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    activate();
+                  }
+                }}
               >
                 {selection.enabled && (
                   <td

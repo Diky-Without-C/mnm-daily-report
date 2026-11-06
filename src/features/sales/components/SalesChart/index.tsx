@@ -1,115 +1,90 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { BarChart } from "@mui/x-charts/BarChart";
+import { useMemo } from "react";
+import { cn } from "@utils/cn";
 import { formatNumber } from "@utils/formatNumber";
-import { LAST_3_MONTHS } from "../../sales.constant";
+import { getLast3Months } from "../../sales.utils";
 import type { ProcessedSale } from "../../sales.type";
+import { buildChartRows } from "./chart.utils";
 
 interface SalesChartProps {
   displayedSales: ProcessedSale[];
 }
 
-const BAR_OFFSET = 12;
+// Oldest month → newest month, light → dark.
+const SEGMENT_STYLES = [
+  "bg-blue-500",
+  "bg-emerald-500",
+  "bg-amber-500",
+] as const;
 
+/**
+ * Stacked horizontal bars (last 3 months per item), drawn with plain HTML/CSS.
+ * Replaces the MUI chart, which needed its internal DOM to be read back to
+ * position the labels and pulled in ~300 KB of libraries for one graph.
+ */
 export default function SalesChart({ displayedSales }: SalesChartProps) {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [seriesPositions, setSeriesPositions] = useState<number[]>([]);
-
-  const chartSeries = useMemo(
-    () =>
-      LAST_3_MONTHS().map((month, index) => ({
-        label: month.label,
-        data: displayedSales.map(
-          ({ last3MonthSales }) => last3MonthSales[index],
-        ),
-        stack: "total",
-      })),
-    [displayedSales],
+  const months = useMemo(() => getLast3Months(), [displayedSales]);
+  const rows = useMemo(
+    () => buildChartRows(displayedSales, months),
+    [displayedSales, months],
   );
-
-  const getSeriesPositions = useCallback(() => {
-    const container = containerRef.current;
-
-    if (!container) return;
-
-    const series = container.querySelector<HTMLElement>(".MuiBarChart-series");
-
-    if (!series) return;
-
-    const positions = [...series.children]
-      .map((element) => {
-        const y = element.getAttribute("y");
-
-        return y ? Number(y) - BAR_OFFSET : null;
-      })
-      .filter((position): position is number => position !== null);
-
-    if (positions.length !== displayedSales.length) return;
-
-    setSeriesPositions(positions);
-  }, [displayedSales.length]);
-
-  useEffect(() => {
-    const frame = requestAnimationFrame(getSeriesPositions);
-    return () => cancelAnimationFrame(frame);
-  }, [displayedSales, getSeriesPositions]);
-
-  useEffect(() => {
-    const container = containerRef.current;
-
-    if (!container) return;
-    const observer = new ResizeObserver(getSeriesPositions);
-    observer.observe(container);
-
-    return () => observer.disconnect();
-  }, [getSeriesPositions]);
 
   return (
     <section
-      ref={containerRef}
-      className="relative flex h-full w-full flex-col"
+      aria-label="Sales over the last 3 months"
+      className="flex h-full w-full flex-col gap-3"
     >
-      <div className="pointer-events-none absolute inset-0 z-10">
-        {displayedSales.map(
-          (sale, index) =>
-            sale.total > 0 &&
-            seriesPositions[index] !== undefined && (
-              <span
-                key={sale.item}
-                className="absolute left-2 truncate"
-                style={{ top: seriesPositions[index] }}
-              >
-                {`${sale.item} - total ${formatNumber(sale.total)} ctn`}
+      <ul className="mt-1 flex min-h-0 flex-1 flex-col gap-2">
+        {rows.map((row) =>
+          row.total > 0 ? (
+            <li
+              key={row.key}
+              className="flex min-h-0 flex-1 flex-col justify-center gap-1"
+            >
+              <p className="truncate text-sm font-medium text-gray-700">
+                {`${row.item} - total ${formatNumber(row.total)} ctn`}
+              </p>
+              <div className="flex h-8 overflow-hidden bg-gray-100">
+                {row.segments.map((segment, i) => (
+                  <div
+                    key={segment.month}
+                    className={cn(
+                      SEGMENT_STYLES[i],
+                      "flex items-center justify-center truncate text-sm text-black/80",
+                    )}
+                    style={{ width: `${segment.widthPct}%` }}
+                    title={`${segment.month}: ${formatNumber(segment.value)} ctn`}
+                  >
+                    {formatNumber(segment.value)}
+                  </div>
+                ))}
+              </div>
+              <span className="sr-only">
+                {row.segments
+                  .map((s) => `${s.month}: ${formatNumber(s.value)} ctn`)
+                  .join(", ")}
               </span>
-            ),
+            </li>
+          ) : (
+            // Keeps the row height so the layout doesn't jump between pages.
+            <li key={row.key} aria-hidden="true" className="flex-1" />
+          ),
         )}
-      </div>
-      <BarChart
-        layout="horizontal"
-        className="h-full w-full"
-        hideLegend
-        sx={{
-          "& .MuiBarChart-series": {
-            transform: `translateY(${BAR_OFFSET}px)`,
-          },
-        }}
-        margin={{
-          top: 20,
-          bottom: 20,
-          left: -40,
-          right: 0,
-        }}
-        yAxis={[
-          {
-            scaleType: "band",
-            data: displayedSales.map(({ item, total }) =>
-              total === 0 ? " ".repeat(Number(item)) : item,
-            ),
-            disableTicks: true,
-            categoryGapRatio: 0.4,
-          },
-        ]}
-        series={chartSeries}
-      />
+      </ul>
+
+      <ul
+        aria-label="Legend"
+        className="mb-1 flex shrink-0 flex-wrap items-center justify-center gap-4 text-xs text-gray-600"
+      >
+        {months.map((month, i) => (
+          <li key={month.label} className="flex items-center gap-1.5">
+            <span
+              aria-hidden="true"
+              className={cn("size-2.5 rounded-full", SEGMENT_STYLES[i])}
+            />
+            {month.label}
+          </li>
+        ))}
+      </ul>
     </section>
   );
 }

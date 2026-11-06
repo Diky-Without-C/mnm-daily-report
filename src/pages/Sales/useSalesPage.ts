@@ -3,15 +3,16 @@ import { processData } from "@features/report";
 import { reportToText } from "@features/report/dataToText/report.text";
 import { usePersistedFile } from "@hooks/usePersistedFile";
 import { useExcelParser } from "@libs/xlsx/useExcelParser";
-import { useDateStore } from "@stores/usetDate.store";
+import { useDateStore } from "@stores/useDate.store";
 import { useOrdersStore } from "@stores/useOrders.store";
+import { FILE_KEYS } from "@constants/App";
 
 export default function useSalesPage() {
-  const { file: salesfile } = usePersistedFile("mnm-xlsx-sales-storage");
-  const { file, setFile } = usePersistedFile("mnm-xlsx-report-storage");
+  const { file: salesfile } = usePersistedFile(FILE_KEYS.sales);
+  const { file, setFile } = usePersistedFile(FILE_KEYS.report);
 
   const { date, setDate } = useDateStore();
-  const { orders } = useOrdersStore();
+  const orders = useOrdersStore((state) => state.orders);
 
   const {
     data: sales,

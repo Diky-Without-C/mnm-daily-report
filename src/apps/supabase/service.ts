@@ -61,6 +61,19 @@ export const supabaseService = {
     );
   },
 
+  /** Deletes many rows in ONE request (all-or-nothing, unlike N requests). */
+  removeMany(table: string, ids: string[]) {
+    return execute(
+      (async () => {
+        if (ids.length === 0) return;
+
+        const { error } = await supabase.from(table).delete().in("id", ids);
+
+        if (error) throw error;
+      })(),
+    );
+  },
+
   remove(table: string, id: string) {
     return execute(
       (async () => {

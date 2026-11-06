@@ -1,12 +1,12 @@
 import type { ParsedSales } from "@libs/xlsx/xlsx.type";
 import { capitalize } from "@utils/capitalize";
-import { LAST_3_MONTHS } from "./sales.constant";
+import { getLast3Months } from "@features/sales/sales.utils";
+import type { MultipleField, SingleField } from "@/types/option";
 import type { ProcessedSale } from "./sales.type";
-import type { MultipleField, SingleField } from "@constants/Order";
 
 export const processingSales = (sales: ParsedSales[]): ProcessedSale[] => {
   return sales.map((item) => {
-    const last3MonthSales = LAST_3_MONTHS().map(
+    const last3MonthSales = getLast3Months().map(
       (month) => item.monthlySale[month.index] || 0,
     );
 
@@ -24,7 +24,7 @@ export const createEmptySales = (count: number): ProcessedSale[] => {
     category: "",
     code: "",
     monthlySale: [],
-    last3MonthSales: LAST_3_MONTHS().map(() => 0),
+    last3MonthSales: getLast3Months().map(() => 0),
     total: 0,
   }));
 };

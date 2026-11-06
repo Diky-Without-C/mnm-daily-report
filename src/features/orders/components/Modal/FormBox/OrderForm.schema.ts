@@ -1,12 +1,12 @@
 import { z } from "zod";
-import { ITEM_TYPES } from "@constants/Report";
+import { ITEM_TYPE_LABELS } from "@constants/Items";
 import { ORDER_CATEGORIES, CONTAINER_TYPES } from "@constants/Order";
 
 export const OrderFormSchema = z.object({
   category: z.enum(ORDER_CATEGORIES, {
     message: "Please select category",
   }),
-  type: z.enum(ITEM_TYPES, {
+  type: z.enum(ITEM_TYPE_LABELS, {
     message: "Please select a type",
   }),
   amount: z

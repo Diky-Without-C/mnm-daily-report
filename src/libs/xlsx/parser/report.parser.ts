@@ -1,18 +1,17 @@
-import { ITEM_TYPES, type ItemTypeCode } from "@apps/constants";
-import {
-  ITEMS_TO_REPLACE,
-  ITEMS_TO_CLEAR,
-} from "@features/report/report.constant";
+import { ITEM_TYPES, type ItemTypeCode } from "@constants/Items";
+import { ITEMS_TO_REPLACE, ITEMS_TO_CLEAR } from "@constants/rules/report.rules";
 import { clearItem } from "@features/report/utils/clearItem";
 import { replaceItem } from "@features/report/utils/replaceItem";
 import type { ParsedReport } from "../xlsx.type";
 import { parseExcelFile } from "../xlsx.parser";
 
-export default function reportParser(bytes: Uint8Array, sheetIndex: number) {
-  const { headerRows, contentRows } = parseExcelFile(bytes, sheetIndex, [
-    "item",
-  ]);
+type Row = unknown[];
 
+/** Pure: turns the header + content rows of a sheet into report items. */
+export function parseReportRows(
+  headerRows: Row,
+  contentRows: Row[],
+): ParsedReport[] {
   const getIndex = (key: string) =>
     headerRows.findIndex(
       (cell) => String(cell).trim().toLowerCase() === key.toLowerCase(),
@@ -26,59 +25,75 @@ export default function reportParser(bytes: Uint8Array, sheetIndex: number) {
   }
 
   let currentCategory = "";
+  const items: ParsedReport[] = [];
 
-  return contentRows
-    .filter((row) => row.some((cell) => cell))
-    .map((row) => {
-      const item = row[itemIdx];
-      const stock = String(row[stockIdx] ?? "");
+  for (const row of contentRows) {
+    if (!row.some((cell) => cell)) continue;
 
-      if (!item?.includes(" - ")) {
-        currentCategory = item;
-        return;
-      }
+    // Excel may hand back numbers for numeric-looking cells.
+    const item = String(row[itemIdx] ?? "");
+    const stock = String(row[stockIdx] ?? "");
 
-      const updatedItem = clearItem(
-        replaceItem(item, ITEMS_TO_REPLACE),
-        ITEMS_TO_CLEAR,
-      );
-      const parts = updatedItem.split(" - ");
-      const [rawType, ...rest] = parts;
+    // Rows without " - " are category headings.
+    if (!item.includes(" - ")) {
+      currentCategory = item;
+      continue;
+    }
 
-      let size = "";
-      let weight = "";
-      const restCopy = [...rest];
+    const updatedItem = clearItem(
+      replaceItem(item, ITEMS_TO_REPLACE),
+      ITEMS_TO_CLEAR,
+    );
+    const [rawType, ...rest] = updatedItem.split(" - ");
 
-      if (/\d+(gr|g|c)/i.test(restCopy.at(-1)!)) {
-        weight = restCopy.pop()!;
-      }
+    let size = "";
+    let weight = "";
+    const restCopy = [...rest];
 
-      if (/\d+x\d+/i.test(restCopy.at(-1)!)) {
-        size = restCopy.pop()!;
-      }
+    if (/\d+(gr|g|c)/i.test(restCopy.at(-1) ?? "")) {
+      weight = restCopy.pop()!;
+    }
 
-      const rawText = restCopy.join(" ").trim();
+    if (/\d+x\d+/i.test(restCopy.at(-1) ?? "")) {
+      size = restCopy.pop()!;
+    }
 
-      const match = rawText.match(/\b(?:MC|MD|SR|FC|RM|MF|TS)\d{3,4}\S*/g);
-      const code = match?.[0] ?? "";
+    const rawText = restCopy.join(" ").trim();
 
-      const name = rawText
-        .replace(code, "")
-        .replace(/-/g, "")
-        .replace(/\s+/gi, " ")
-        .trim();
+    const code =
+      rawText.match(/\b(?:MC|MD|SR|FC|RM|MF|TS)\d{3,4}\S*/g)?.[0] ?? "";
 
-      const type = rawType in ITEM_TYPES ? (rawType as ItemTypeCode) : "";
+    const name = rawText
+      .replace(code, "")
+      .replace(/-/g, "")
+      .replace(/\s+/gi, " ")
+      .trim();
 
-      return {
-        name,
-        type,
-        code,
-        category: currentCategory.trim(),
-        size,
-        weight,
-        stock,
-      };
-    })
-    .filter(Boolean) as ParsedReport[];
+    const type = Object.hasOwn(ITEM_TYPES, rawType)
+      ? (rawType as ItemTypeCode)
+      : "";
+
+    items.push({
+      name,
+      type,
+      code,
+      category: currentCategory.trim(),
+      size,
+      weight,
+      stock,
+    });
+  }
+
+  return items;
+}
+
+export default async function reportParser(
+  bytes: Uint8Array,
+  sheetIndex: number,
+) {
+  const { headerRows, contentRows } = await parseExcelFile(bytes, sheetIndex, [
+    "item",
+  ]);
+
+  return parseReportRows(headerRows, contentRows);
 }

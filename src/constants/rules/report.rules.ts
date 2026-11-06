@@ -1,8 +1,24 @@
-export const HEADER = "LAPORAN HARIAN STOCK LAYER PVC";
+/**
+ * REPORT RULES — data only, no logic, no app imports.
+ *
+ * Everything here exists because the Excel sheet cannot be grouped
+ * automatically for a few products. When a new product shows up wrong in the
+ * report, this is the only file that should need editing.
+ * `validateRules.ts` + `rules.test.ts` guard against obvious mistakes.
+ */
 
+/** Tokens removed from the raw item string before parsing. */
 export const ITEMS_TO_CLEAR = ["LOKAL"];
 
-//replace item name before grouping for item that cannot be grouped by code or name
+/**
+ * Raw item text -> corrected item text, applied BEFORE grouping.
+ * Matching is a plain, case-sensitive substring match. When several keys could
+ * match at the same position the LONGEST key wins (so a "-S" / "-L2" variant
+ * can be listed next to its base product safely), and replaced text is never
+ * re-scanned by another rule.
+ * Note: a value that contains its own key (e.g. "MC 298" -> "MC 298A") will be
+ * applied again if the sheet already contains the corrected text.
+ */
 export const ITEMS_TO_REPLACE = {
   "BEYBLADE MC277": "277 - MC277",
   "BEYBLADE MC412": "412 - MC412",
@@ -18,19 +34,14 @@ export const ITEMS_TO_REPLACE = {
   " SEPEDA MOTOR GP9 MC288": " SEPEDA MOTOR GP9 MC288AB",
 };
 
-export const CATEGORY_KEYS = [
-  "star rider",
-  "fancy",
-  "snipper",
-  "roboman",
-] as const;
-
+/** Items whose NAME contains one of these are split into their own group. */
 export const ITEM_SPLIT_BY_NAME = [
   "MOTO CROSS METALIC",
   "SEPEDA MOTOR GP3 SABLON",
   "FANCY GUESSING EGG BOX",
 ] as const;
 
+/** Items whose CODE contains one of these are split into their own group. */
 export const ITEM_SPLIT_BY_CODE = [
   "522A",
   "MD3461",
@@ -54,7 +65,14 @@ export const ITEM_SPLIT_BY_CODE = [
   "SR007-L",
 ] as const;
 
-//custom merge rules for items that cannot be automatically grouped by code or name
+/**
+ * Merge rules: the group matching `parent` absorbs the groups matching every
+ * `child` (all children must be found, otherwise the rule is skipped).
+ *  - `{ code }` matches a group containing an item with EXACTLY that code
+ *    (ignoring case and whitespace).
+ *  - `{ name }` matches a group containing an item whose name CONTAINS that
+ *    text (ignoring case).
+ */
 export type MergeRule = { code: string } | { name: string };
 
 export const ITEM_TO_MERGE: ReadonlyArray<{
@@ -77,12 +95,14 @@ export const ITEM_TO_MERGE: ReadonlyArray<{
   },
 ];
 
+/** "NAME (CODE)" title produced by default -> title shown in the report. */
 export const CUSTOM_TITLES = {
   "ROBOMAN BLOCK MERAH (MC319-D)": "ROBOMAN BOX (MC319-BOX)",
   "ROBOMAN (RM019)": "ROBOMAN TACTICAL FORCE (RM019)",
   "MOBIL CARTOON HELI (MD3488)": "MOBIL CARTOON (MD3488)",
 } as const;
 
+/** Words in an item name used to label variants of the same product. */
 export const EXTRA_INFO = [
   "Heli",
   "Pesawat",

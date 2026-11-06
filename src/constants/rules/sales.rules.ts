@@ -1,38 +1,10 @@
-import { useDateStore } from "@stores/usetDate.store";
-import { CATEGORY_KEYS } from "@features/report/report.constant";
-import type { SalesTabs } from "./sales.type";
+/**
+ * SALES RULES — data only. Same matching semantics as `ITEMS_TO_REPLACE` in
+ * `report.rules.ts` (case-sensitive substring, longest key wins, single pass).
+ */
 
-export const MONTHS = [
-  "Jan",
-  "Feb",
-  "Mar",
-  "Apr",
-  "Mei",
-  "Jun",
-  "Jul",
-  "Agu",
-  "Sep",
-  "Okt",
-  "Nov",
-  "Des",
-];
-
-export const ITEMS_PER_PAGE = 7;
-
-export const LAST_3_MONTHS = () => {
-  const currentMonth = useDateStore.getState().date.getMonth() - 1;
-
-  return Array.from({ length: 3 }, (_, i) => {
-    const monthIndex = (currentMonth - 2 + i + 12) % 12;
-
-    return {
-      label: MONTHS[monthIndex],
-      index: monthIndex,
-    };
-  });
-};
-
-export const ITEMS_TO_REPLACE = {
+/** Raw sales item text -> corrected text, applied before code extraction. */
+export const SALES_ITEMS_TO_REPLACE = {
   "METALIC MC 522": "METALIC MC 522M",
   "BIKE SE MC 204": "BIKE SE MC 241",
   "MC 298": "MC 298A",
@@ -56,6 +28,7 @@ export const ITEMS_TO_REPLACE = {
   "MC 550-B": "MC 550B",
 } as const;
 
+/** Several product codes that share one stock line in the report. */
 export const CODE_GROUPS = {
   MC297: "MC297/MC379",
   MC379: "MC297/MC379",
@@ -64,5 +37,3 @@ export const CODE_GROUPS = {
   MC550A: "MC550A",
   MC550B: "MC550A",
 } as const;
-
-export const SALES_TABS: SalesTabs[] = ["all", ...CATEGORY_KEYS];

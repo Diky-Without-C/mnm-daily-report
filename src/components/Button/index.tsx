@@ -19,7 +19,7 @@ const variants: Record<BtnVariant, string> = {
   info: "bg-blue-100 text-blue-700 border-blue-200 hover:bg-blue-200 hover:border-blue-300",
   default:
     "bg-gray-100 text-gray-700 border-gray-200 hover:bg-gray-200 hover:border-gray-300",
-  transparent: "text-gray-700 border-none text-black",
+  transparent: "border-none bg-transparent text-gray-900 hover:bg-gray-100",
 };
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
@@ -28,13 +28,13 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
   { variant = "default", className, children, ...props },
-  forwardRef,
+  ref,
 ) {
   return (
     <button
-      ref={forwardRef}
+      ref={ref}
       className={cn(
-        "inline-flex cursor-pointer items-center gap-2 rounded-md border px-4 py-2 text-sm font-medium",
+        "inline-flex cursor-pointer items-center gap-2 rounded-md border px-4 py-2 text-sm font-medium focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-1 focus-visible:outline-none",
         variants[variant],
         className,
       )}

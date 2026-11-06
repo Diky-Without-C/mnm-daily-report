@@ -1,10 +1,11 @@
+import { EXCEL_ACCEPT } from "@constants/App";
 import {
   AdjustmentsHorizontalIcon,
   ArrowsUpDownIcon,
   CloudArrowUpIcon,
 } from "@heroicons/react/24/outline";
 import SearchBar from "@components/SearchBar";
-import type { MultipleField, SingleField } from "@constants/Order";
+import type { MultipleField, SingleField } from "@/types/option";
 import OptionDropdown from "./OptionDropdown";
 
 interface ToolbarProps {
@@ -50,7 +51,7 @@ export default function Toolbar({
           <input
             type="file"
             className="sr-only"
-            accept=".xlsx,.xls, .xlsm"
+            accept={EXCEL_ACCEPT}
             onChange={(e) => {
               onFileChange(e.target.files?.[0] ?? null);
               e.target.value = "";

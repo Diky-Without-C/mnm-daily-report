@@ -6,14 +6,13 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "test": "vitest",
     "lint": "eslint .",
     "preview": "vite preview"
   },
   "dependencies": {
     "@emotion/styled": "^11.14.1",
     "@heroicons/react": "^2.2.0",
-    "@mui/material": "^9.0.1",
-    "@mui/x-charts": "^9.3.0",
     "@supabase/supabase-js": "^2.57.4",
     "@tailwindcss/vite": "^4.1.11",
     "clsx": "^2.1.1",
@@ -42,6 +41,7 @@
     "prettier-plugin-tailwindcss": "^0.6.14",
     "typescript": "~5.8.3",
     "typescript-eslint": "^8.35.1",
-    "vite": "^7.0.4"
+    "vite": "^7.0.4",
+    "vitest": "^5.1.0"
   }
 }

@@ -4,11 +4,12 @@ import InputText from "@components/Input/InputText";
 import Autocomplete from "@components/Input/AutocompleteText";
 import Modal from "@components/Modal";
 import { CONTAINER_TYPES, ORDER_CATEGORIES } from "@constants/Order";
-import { ITEM_TYPES } from "@constants/Report";
-import { useLocalStorage } from "@hooks/useLocaleStorage";
+import { ITEM_TYPE_LABELS } from "@constants/Items";
+import { useLocalStorage } from "@hooks/useLocalStorage";
 import type { useOrderForm } from "./useOrderForm";
 import Select from "./select";
 import Field from "./FormField";
+import { LOCAL_STORAGE_KEYS } from "@constants/App";
 
 type OrderForm = ReturnType<typeof useOrderForm>;
 
@@ -29,7 +30,7 @@ export default function Form({
   onChange,
   onSubmit,
 }: FormProps) {
-  const [codeHints] = useLocalStorage("codeHint", []);
+  const [codeHints] = useLocalStorage(LOCAL_STORAGE_KEYS.codeHints, []);
 
   if (!form) return null;
   const getError = (field: string) => error?.fields?.[field];
@@ -114,7 +115,7 @@ export default function Form({
                 <Select
                   value={form.type ?? "-"}
                   onChange={(value) => onChange("type", value)}
-                  options={Object.values(ITEM_TYPES)}
+                  options={Object.values(ITEM_TYPE_LABELS)}
                   invalid={!!getError("type")}
                   className="w-full"
                 />

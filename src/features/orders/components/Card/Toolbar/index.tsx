@@ -5,7 +5,7 @@ import {
 } from "@heroicons/react/24/outline";
 import Button from "@components/Button";
 import SearchBar from "@components/SearchBar";
-import type { MultipleField, SingleField } from "@constants/Order";
+import type { MultipleField, SingleField } from "@/types/option";
 import OptionDropdown from "./OptionDropdown";
 
 interface ToolbarProps {

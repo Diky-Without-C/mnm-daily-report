@@ -1,5 +1,5 @@
 import NotFound from "@features/orders/components/NotFound";
-import { SALES_TABS } from "@features/sales/sales.constant";
+import { SALES_TABS } from "@constants/Sales";
 import Divider from "@components/Divider";
 import Tabs from "@components/Tabs";
 import SalesChart from "../SalesChart";

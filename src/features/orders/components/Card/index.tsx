@@ -8,7 +8,7 @@ import DeleteBox from "../Modal/DeleteBox";
 import Toolbar from "./Toolbar";
 import Footer from "./Footer";
 import { useCard } from "./useCard";
-import { ORDER_TABS } from "@features/orders/order.constants";
+import { ORDER_TABS } from "@constants/Order";
 
 interface CardProps {
   onSelect?: (order: OrderSchema) => void;

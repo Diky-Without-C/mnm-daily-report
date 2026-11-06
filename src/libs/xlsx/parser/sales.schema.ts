@@ -1,4 +1,4 @@
-import { LAST_3_MONTHS } from "@features/sales/sales.constant";
+import { getLast3Months } from "@features/sales/sales.utils";
 
 interface Schema {
   name: string;
@@ -36,7 +36,7 @@ export const schemas: Schema[] = [
 
       return {
         monthlySale,
-        total: LAST_3_MONTHS().reduce(
+        total: getLast3Months().reduce(
           (sum, { index }) => sum + (monthlySale[index] || 0),
           0,
         ),
