@@ -7,7 +7,6 @@ import AppLayout from "@layouts/index";
 const Order = lazy(() => import("@pages/Order"));
 const Stuffing = lazy(() => import("@pages/Stuffing"));
 const Sales = lazy(() => import("@pages/Sales"));
-const Rules = lazy(() => import("@pages/Rules"));
 
 export default function AppRoutes() {
   return (
@@ -20,7 +19,7 @@ export default function AppRoutes() {
         <Route path={ROUTES.order} element={<Order />} />
         <Route path={ROUTES.stuffing} element={<Stuffing />} />
         <Route path={ROUTES.sales} element={<Sales />} />
-        <Route path={ROUTES.rules} element={<Rules />} />
+        <Route path={ROUTES.rules} element={<></>} />
       </Route>
     </Routes>
   );
