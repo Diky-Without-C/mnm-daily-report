@@ -1,26 +1,39 @@
+import type { ItemToSplit } from "@constants/rules/report.rules";
 import type { ParsedReport } from "@libs/xlsx/xlsx.type";
-import { ITEM_SPLIT_BY_CODE, ITEM_SPLIT_BY_NAME } from "@constants/rules/report.rules";
 
-export const splitGroup = (items: ParsedReport[]) => {
-  const grouped = {
-    names: [] as ParsedReport[],
-    codes: [] as ParsedReport[],
-    others: [] as ParsedReport[],
-  };
+export const splitGroup = (
+  groups: ParsedReport[][],
+  splitItems: ItemToSplit[],
+): ParsedReport[][] => {
+  const result: ParsedReport[][] = [];
 
-  for (const item of items) {
-    if (item.name.match(new RegExp(ITEM_SPLIT_BY_NAME.join("|"), "gi"))) {
-      grouped.names.push(item);
-    } else if (
-      item.code.match(new RegExp(ITEM_SPLIT_BY_CODE.join("|"), "gi"))
-    ) {
-      grouped.codes.push(item);
-    } else {
-      grouped.others.push(item);
+  for (const group of groups) {
+    const matched = new Map<string, ParsedReport[]>();
+    const unmatched: ParsedReport[] = [];
+
+    for (const item of group) {
+      const rule = splitItems.find((rule) => {
+        if ("name" in rule) return item.name === rule.name;
+        if ("code" in rule) return item.code === rule.code;
+        return false;
+      });
+
+      if (!rule) {
+        unmatched.push(item);
+        continue;
+      }
+
+      const key = "name" in rule ? `name:${rule.name}` : `code:${rule.code}`;
+      const items = matched.get(key) ?? [];
+
+      items.push(item);
+      matched.set(key, items);
     }
+
+    if (unmatched.length) result.push(unmatched);
+
+    result.push(...matched.values());
   }
 
-  return [grouped.others, grouped.names, grouped.codes].filter(
-    (group) => group.length > 0,
-  );
+  return result;
 };

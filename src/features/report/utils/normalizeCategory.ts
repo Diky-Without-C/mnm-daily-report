@@ -1,4 +1,4 @@
-import { CATEGORY_ALIASES, ITEM_CATEGORIES, type ItemCategory } from "@constants/Items";
+import { ITEM_CATEGORIES, type ItemCategory } from "@constants/Items";
 
 /**
  * Maps a category as written in a spreadsheet ("SNIPER ", "Star Rider") to a
@@ -7,8 +7,7 @@ import { CATEGORY_ALIASES, ITEM_CATEGORIES, type ItemCategory } from "@constants
 export const normalizeCategory = (
   category: string | null | undefined,
 ): ItemCategory | undefined => {
-  const key = (category ?? "").trim().toLowerCase();
-  const resolved = CATEGORY_ALIASES[key] ?? key;
+  const resolved = (category ?? "").trim().toLowerCase();
 
   return (ITEM_CATEGORIES as readonly string[]).includes(resolved)
     ? (resolved as ItemCategory)

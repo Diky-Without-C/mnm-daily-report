@@ -16,7 +16,7 @@ export const ROUTES = {
   order: "/order",
   stuffing: "/stuffing",
   sales: "/sales",
-  archive: "/archive",
+  rules: "/rules",
 } as const;
 
 /** Supabase table that stores orders (both pre-order and container rows). */

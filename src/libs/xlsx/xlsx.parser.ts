@@ -22,7 +22,6 @@ async function getSheetNames(XLSX: XlsxModule, bytes: Uint8Array) {
     names = XLSX.read(bytes, { type: "array", bookSheets: true }).SheetNames;
     sheetNamesCache.set(bytes, names);
   }
-
   return names;
 }
 
@@ -74,5 +73,5 @@ export async function parseExcelFile(
 
   const contentRows = contentRowIndex === -1 ? [] : rows.slice(contentRowIndex);
 
-  return { headerRows, contentRows };
+  return { headerRows, contentRows, sheetName };
 }

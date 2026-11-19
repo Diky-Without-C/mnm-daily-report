@@ -74,7 +74,6 @@ export default function OptionDropdown<T extends OrderOptionField>({
                       onClick={(e) => {
                         e.preventDefault();
                         handleChange();
-                        console.log("");
                       }}
                     >
                       <label

@@ -1,13 +1,14 @@
 import type { ParsedReport } from "@libs/xlsx/xlsx.type";
-import { ITEM_TO_MERGE, type MergeRule } from "@constants/rules/report.rules";
+import { type MergeRule } from "@constants/rules/report.rules";
 
-const normalizeCode = (code: string) => code.replace(/\s+/g, "").toUpperCase();
+/** Code: exact match. Name: case-insensitive contains. */
+const matchesRule = (rule: MergeRule, item: ParsedReport): boolean => {
+  return Object.entries(rule).every(([key, value]) => {
+    const itemValue = item[key as keyof ParsedReport];
 
-/** code rule: exact code match. name rule: case-insensitive "contains". */
-const matchesRule = (rule: MergeRule, item: ParsedReport) =>
-  "code" in rule
-    ? normalizeCode(item.code) === normalizeCode(rule.code)
-    : item.name.toLowerCase().includes(rule.name.toLowerCase());
+    return itemValue === value;
+  });
+};
 
 function findGroupIndex(
   groups: Map<number, ParsedReport[]>,
@@ -18,38 +19,36 @@ function findGroupIndex(
   }
 }
 
-const findFirstIndex = (
-  groups: Map<number, ParsedReport[]>,
-  rules: MergeRule[],
-) => {
-  for (const rule of rules) {
-    const index = findGroupIndex(groups, rule);
-    if (index !== undefined) return index;
-  }
-};
+export const mergeGroup = (
+  groups: ParsedReport[][],
+  rules: MergeRule[][],
+): ParsedReport[][] => {
+  const groupMap = new Map(groups.map((group, i) => [i, group]));
 
-export const mergeGroup = (groups: ParsedReport[][]): ParsedReport[][] => {
-  const groupMap = new Map<number, ParsedReport[]>();
-  groups.forEach((group, i) => groupMap.set(i, group));
+  for (const [parent, ...children] of rules) {
+    const mainIndex = findGroupIndex(groupMap, parent);
 
-  for (const { parent, child } of ITEM_TO_MERGE) {
-    const mainIndex = findFirstIndex(groupMap, parent);
     if (mainIndex === undefined) continue;
 
-    const targetIndexes = child
-      .map((rule) => findGroupIndex(groupMap, rule))
-      .filter((i): i is number => i !== undefined && i !== mainIndex);
+    const targetIndexes = children.map((rule) =>
+      findGroupIndex(groupMap, rule),
+    );
 
-    // Only merge when EVERY child was found.
-    if (targetIndexes.length !== child.length) continue;
+    // Every child must exist and belong to a different group.
+    if (
+      targetIndexes.some((index) => index === undefined || index === mainIndex)
+    ) {
+      continue;
+    }
 
     const merged = [
       ...groupMap.get(mainIndex)!,
-      ...targetIndexes.flatMap((i) => groupMap.get(i)!),
+      ...targetIndexes.flatMap((index) => groupMap.get(index!)!),
     ];
 
     groupMap.set(mainIndex, merged);
-    targetIndexes.forEach((i) => groupMap.delete(i));
+
+    targetIndexes.forEach((index) => groupMap.delete(index!));
   }
 
   return [...groupMap.values()];

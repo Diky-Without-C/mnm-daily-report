@@ -1,13 +1,9 @@
-import { getLast3Months } from "@features/sales/sales.utils";
-
 interface Schema {
   name: string;
   columns: {
     item: string | string[];
     packing: string | string[];
-    category: string | string[];
     total?: string | string[];
-    monthStart?: string | string[];
     request?: string | string[];
   };
   transform: (
@@ -21,35 +17,10 @@ interface Schema {
 
 export const schemas: Schema[] = [
   {
-    name: "realization",
-    columns: {
-      item: "nama barang",
-      packing: "kemasan",
-      category: "merk",
-      monthStart: "bulan",
-    },
-    transform: (row, indexes) => {
-      const monthlySale = Array.from(
-        { length: 12 },
-        (_, i) => Number(row[indexes.monthStart + i]) || 0,
-      );
-
-      return {
-        monthlySale,
-        total: getLast3Months().reduce(
-          (sum, { index }) => sum + (monthlySale[index] || 0),
-          0,
-        ),
-      };
-    },
-  },
-
-  {
     name: "request",
     columns: {
       item: "nama barang",
-      packing: "packing",
-      category: "merk",
+      packing: "kemasan",
       request: "mpo",
     },
     transform: (row, indexes) => {

@@ -12,16 +12,16 @@ export const ITEM_TYPES = {
   STC: "Stiker",
   TRY: "Tray",
   KRT: "Kartu",
+  BSR: "Brosur",
 } as const;
 
 export type ItemTypeCode = keyof typeof ITEM_TYPES;
 export type ItemTypeLabel = (typeof ITEM_TYPES)[ItemTypeCode];
 
 /** Labels only ("Layer", "PVC", ...), as a tuple so it can feed `z.enum`. */
-export const ITEM_TYPE_LABELS = Object.values(ITEM_TYPES) as unknown as readonly [
-  ItemTypeLabel,
-  ...ItemTypeLabel[],
-];
+export const ITEM_TYPE_LABELS = Object.values(
+  ITEM_TYPES,
+) as unknown as readonly [ItemTypeLabel, ...ItemTypeLabel[]];
 
 /* =========================
  * CATEGORIES
@@ -31,10 +31,6 @@ export const ITEM_CATEGORIES = [
   "fancy",
   "snipper",
   "roboman",
+  "tosi",
 ] as const;
 export type ItemCategory = (typeof ITEM_CATEGORIES)[number];
-
-/** Alternative spellings found in spreadsheets. Keys must be lower-case. */
-export const CATEGORY_ALIASES: Readonly<Record<string, ItemCategory>> = {
-  sniper: "snipper",
-};
